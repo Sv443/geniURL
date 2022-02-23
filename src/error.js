@@ -1,5 +1,10 @@
 const k = require("kleur");
 
+/**
+ * @param {string} msg
+ * @param {Error} [err]
+ * @param {boolean} [fatal=false] 
+ */
 function error(msg, err, fatal = false)
 {
     console.error("\n");
