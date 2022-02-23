@@ -3,7 +3,6 @@ const express = require("express");
 const { check: portUsed } = require("tcp-port-used");
 const helmet = require("helmet");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
-const dotenv = require("dotenv");
 const k = require("kleur");
 const cors = require("cors");
 
@@ -11,7 +10,6 @@ const packageJson = require("../package.json");
 const error = require("./error");
 const { getLyrics } = require("./lyrics");
 
-dotenv.config();
 const { env } = process;
 
 /** @typedef {import("svcorelib").JSONCompatible} JSONCompatible */
