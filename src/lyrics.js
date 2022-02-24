@@ -49,12 +49,12 @@ async function getLyrics(title, artist)
 {
     try
     {
-        return await apiGetLyrics({
+        return (await apiGetLyrics({
             apiKey: accessToken,
             title,
             artist,
             optimizeQuery: true,
-        });
+        })) ?? "nullish";
     }
     catch(err)
     {
