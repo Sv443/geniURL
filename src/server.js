@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const packageJson = require("../package.json");
 const error = require("./error");
-const { getMeta, getLyrics } = require("./lyrics");
+const { getMeta } = require("./lyrics");
 
 /** @typedef {import("svcorelib").JSONCompatible} JSONCompatible */
 /** @typedef {import("express").Response} Response */
@@ -86,17 +86,15 @@ function registerEndpoints()
             return respond(res, "success", meta);
         });
 
-        app.get("/lyrics", async (req, res) => {
+        app.get("/search/top", async (req, res) => {
             const { q } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
                 return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
 
-            const { top } = await getMeta(q);
+            const meta = await getMeta(q);
 
-            const lyrics = await getLyrics(top.meta.title, top.meta.primaryArtist.name);
-
-            return respond(res, "success", { lyrics, ...top });
+            return respond(res, "success", meta.top);
         });
     }
     catch(err)

@@ -1,6 +1,4 @@
 const { default: axios } = require("axios");
-const { getLyrics: apiGetLyrics } = require("genius-lyrics-api");
-const error = require("./error");
 
 const accessToken = process.env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV";
 
@@ -41,26 +39,4 @@ async function getMeta(search)
     }
 }
 
-/**
- * @param {string} title
- * @param {string} artist
- * @returns {Promise<string | null>}
- */
-async function getLyrics(title, artist)
-{
-    try
-    {
-        return await apiGetLyrics({
-            apiKey: accessToken,
-            title,
-            artist,
-            optimizeQuery: true,
-        });
-    }
-    catch(err)
-    {
-        error("Error while getting lyrics", err);
-    }
-}
-
-module.exports = { getMeta, getLyrics };
+module.exports = { getMeta };
