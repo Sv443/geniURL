@@ -31,7 +31,6 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "genius-lyrics-api": "^3.2.0",
     "helmet": "^5.0.2",
     "kleur": "^4.1.4",
     "rate-limiter-flexible": "^2.3.6",

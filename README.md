@@ -1,9 +1,17 @@
 # geniURL
-Simple "REST proxy" for searching for lyrics on genius.com
+Simple JSON "REST proxy" to search for lyrics metadata on [genius](https://genius.com/).  
+Obtaining actual lyrics sadly isn't possible.
 
 
 <br><br>
 
+## Base URL:
+I host a public instance on this URL:
+```
+https://api.sv443.net/geniurl/
+```
+
+<br>
 
 ## Routes:
 All routes support gzip and deflate compression.  
@@ -13,8 +21,12 @@ All routes support gzip and deflate compression.
 > ### GET `/search?q=search_text`
 > This endpoint gives you the top 10 results for a search query specified by `search_text`  
 > The returned data contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).  
->   
-> The `search_text` should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace)
+> 
+> <br>
+> 
+> **Parameters:**  
+> `?q=search%20query`  
+> This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
 > If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 > 
@@ -66,16 +78,19 @@ All routes support gzip and deflate compression.
 > </details>
 > <br>
 
-<br><br>
+<br>
 
-> ### GET `/lyrics?q=search_text`
-> Use this endpoint to get the lyrics of a specified song and additionally all properties from the top result of the `/search` endpoint.  
->   
-> The `search_text` should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace)
+> ### GET `/search/top`
+> This endpoint is the same as `/search`, but it only gives the top result.  
+> Use this if you are only interested in the top result and want to reduce traffic.  
+> 
+> <br>
+> 
+> **Parameters:**  
+> `?q=search%20query`  
+> This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
 > If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
->   
-> This feature is powered by [this awesome scraper.](https://github.com/farshed/genius-lyrics-api)
 > 
 > <br>
 > <details><summary><b>Successful response (click to view)</b></summary>
@@ -83,7 +98,6 @@ All routes support gzip and deflate compression.
 > ```json
 > {
 >     "error": false,
->     "lyrics": "[Verse 1]\nAyy ayy ayy\nYou know who it is ayy\n",
 >     "url": "https://genius.com/Artist-1-song-name-lyrics",
 >     "path": "/Artist-1-song-name-lyrics",
 >     "meta": {
