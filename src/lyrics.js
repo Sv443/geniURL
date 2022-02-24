@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
 const { getLyrics: apiGetLyrics } = require("genius-lyrics-api");
+const error = require("./error");
 
 const accessToken = process.env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV";
 
@@ -49,16 +50,16 @@ async function getLyrics(title, artist)
 {
     try
     {
-        return (await apiGetLyrics({
+        return await apiGetLyrics({
             apiKey: accessToken,
             title,
             artist,
             optimizeQuery: true,
-        })) ?? "nullish";
+        });
     }
     catch(err)
     {
-        return err.toString();
+        error("Error while getting lyrics", err);
     }
 }
 
