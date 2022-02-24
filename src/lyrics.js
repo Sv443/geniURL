@@ -1,11 +1,12 @@
 const { default: axios } = require("axios");
+const { getLyrics: apiGetLyrics } = require("genius-lyrics-api");
 
-const { env } = process;
+const accessToken = process.env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV";
 
-async function getLyrics(search)
+async function getMeta(search)
 {
     const { data: { response } } = await axios.get(`https://api.genius.com/search?q=${encodeURIComponent(search)}`, {
-        headers: { "Authorization": `Bearer ${env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV"}` },
+        headers: { "Authorization": `Bearer ${accessToken}` },
     });
 
     if(Array.isArray(response?.hits))
@@ -39,4 +40,26 @@ async function getLyrics(search)
     }
 }
 
-module.exports = { getLyrics };
+/**
+ * @param {string} title
+ * @param {string} artist
+ * @returns {Promise<string | null>}
+ */
+async function getLyrics(title, artist)
+{
+    try
+    {
+        return await apiGetLyrics({
+            apiKey: accessToken,
+            title,
+            artist,
+            optimizeQuery: true,
+        });
+    }
+    catch(err)
+    {
+        return null;
+    }
+}
+
+module.exports = { getMeta, getLyrics };

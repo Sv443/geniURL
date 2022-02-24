@@ -8,9 +8,7 @@ const cors = require("cors");
 
 const packageJson = require("../package.json");
 const error = require("./error");
-const { getLyrics } = require("./lyrics");
-
-const { env } = process;
+const { getMeta, getLyrics } = require("./lyrics");
 
 /** @typedef {import("svcorelib").JSONCompatible} JSONCompatible */
 /** @typedef {import("express").Response} Response */
@@ -30,7 +28,7 @@ const rateLimiter = new RateLimiterMemory({
 
 async function init()
 {
-    const port = parseInt(env.HTTP_PORT);
+    const port = parseInt(process.env.HTTP_PORT);
 
     if(await portUsed(port))
         return error(`TCP port ${port} is already used`, undefined, true);
@@ -83,9 +81,23 @@ function registerEndpoints()
             if(typeof q !== "string" || q.length === 0)
                 return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
 
-            const lyricsInfo = await getLyrics(q);
+            const meta = await getMeta(q);
 
-            return respond(res, "success", lyricsInfo);
+            return respond(res, "success", meta);
+        });
+
+        app.get("/lyrics", async (req, res) => {
+            const { q } = req.query;
+
+            if(typeof q !== "string" || q.length === 0)
+                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
+
+            const meta = await getMeta(q);
+            const { top } = meta;
+
+            const lyrics = await getLyrics(top.meta.title, top.meta.primaryArtist.name);
+
+            return respond(res, "success", { lyrics, ...meta });
         });
     }
     catch(err)
