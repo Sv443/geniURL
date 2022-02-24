@@ -58,7 +58,7 @@ async function getLyrics(title, artist)
     }
     catch(err)
     {
-        return null;
+        return err.toString();
     }
 }
 
