@@ -92,12 +92,11 @@ function registerEndpoints()
             if(typeof q !== "string" || q.length === 0)
                 return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
 
-            const meta = await getMeta(q);
-            const { top } = meta;
+            const { top } = await getMeta(q);
 
             const lyrics = await getLyrics(top.meta.title, top.meta.primaryArtist.name);
 
-            return respond(res, "success", { lyrics, ...meta });
+            return respond(res, "success", { lyrics, ...top });
         });
     }
     catch(err)
