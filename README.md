@@ -29,10 +29,14 @@ All routes support gzip and deflate compression.
 > <br>
 >
 > **Parameters:**  
-> `?q=search%20query`  
+> `?q=search%20query` (required)  
 > This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
+> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+>   
+> `?format=json/xml` (optional)  
+> Use this parameter to change the response format from the default (`json`) to `xml`  
+> The structure of the data closely resembles that of the shown JSON data.
 >
 > <br>
 > <details><summary><b>Successful response (click to view)</b></summary>
@@ -91,10 +95,14 @@ All routes support gzip and deflate compression.
 > <br>
 >
 > **Parameters:**  
-> `?q=search%20query`  
+> `?q=search%20query` (required)  
 > This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
+> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+>   
+> `?format=json/xml` (optional)  
+> Use this parameter to change the response format from the default (`json`) to `xml`  
+> The structure of the data closely resembles that of the shown JSON data.
 >
 > <br>
 > <details><summary><b>Successful response (click to view)</b></summary>

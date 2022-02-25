@@ -1,6 +1,6 @@
 {
   "name": "geniurl",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple \"REST proxy\" to search for lyrics on genius.com",
   "main": "src/index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
+    "js2xmlparser": "^4.0.2",
     "kleur": "^4.1.4",
     "rate-limiter-flexible": "^2.3.6",
     "svcorelib": "^1.14.2",

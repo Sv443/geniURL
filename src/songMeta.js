@@ -1,7 +1,14 @@
 const { default: axios } = require("axios");
 
+/** @typedef {import("./types").SongMeta} SongMeta */
+
 const accessToken = process.env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV";
 
+/**
+ * Returns meta information about the top 10 results of a search through the genius API
+ * @param {string} search
+ * @returns {Promise<{ top: SongMeta, all: SongMeta[] }>}
+ */
 async function getMeta(search)
 {
     const { data: { response } } = await axios.get(`https://api.genius.com/search?q=${encodeURIComponent(search)}`, {

@@ -5,13 +5,16 @@ const helmet = require("helmet");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
 const k = require("kleur");
 const cors = require("cors");
+const jsonToXml = require("js2xmlparser");
 
 const packageJson = require("../package.json");
 const error = require("./error");
-const { getMeta } = require("./lyrics");
+const { getMeta } = require("./songMeta");
 
 /** @typedef {import("svcorelib").JSONCompatible} JSONCompatible */
 /** @typedef {import("express").Response} Response */
+/** @typedef {import("./types").ResponseType} ResponseType */
+/** @typedef {import("./types").ResponseFormat} ResponseFormat */
 
 const app = express();
 
@@ -36,7 +39,7 @@ async function init()
     // on error
     app.use((err, req, res, next) => {
         if(typeof err === "string" || err instanceof Error)
-            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`);
+            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.params?.format);
         else
             return next();
     });
@@ -53,7 +56,7 @@ async function init()
             catch(rlRejected)
             {
                 res.set("Retry-After", rlRejected?.msBeforeNext ? String(Math.round(rlRejected.msBeforeNext / 1000)) || 1 : 1);
-                return respond(res, 429, { message: "You are being rate limited" });
+                return respond(res, 429, { message: "You are being rate limited" }, req?.params?.format);
             }
 
             return next();
@@ -76,25 +79,28 @@ function registerEndpoints()
         });
 
         app.get("/search", async (req, res) => {
-            const { q } = req.query;
+            const { q, format } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
+                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.params?.format);
 
             const meta = await getMeta(q);
 
-            return respond(res, "success", meta);
+            // js2xmlparser needs special treatment when using arrays to produce a good XML structure
+            const response = format === "xml" ? { top: meta.top, all: { "result": meta.all } } : meta;
+
+            return respond(res, "success", response, req?.params?.format);
         });
 
         app.get("/search/top", async (req, res) => {
             const { q } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid");
+                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.params?.format);
 
             const meta = await getMeta(q);
 
-            return respond(res, "success", meta.top);
+            return respond(res, "success", meta.top, req?.params?.format);
         });
     }
     catch(err)
@@ -105,15 +111,21 @@ function registerEndpoints()
 
 /**
  * @param {Response} res
- * @param {"serverError"|"clientError"|"success"|number} type Set to number for custom status code
+ * @param {ResponseType|number} type Specifies the type of response and thus a predefined status code - overload: set to number for custom status code
  * @param {JSONCompatible} data JSON object for "success", else an error message string
+ * @param {ResponseFormat} [format]
  */
-function respond(res, type, data)
+function respond(res, type, data, format)
 {
     let statusCode = 500;
     let error = true;
 
     let resData = {};
+
+    if(typeof format !== "string" || !["json", "xml"].includes(format.toLowerCase()))
+        format = "json";
+
+    format = format.toLowerCase();
 
     switch(type)
     {
@@ -148,7 +160,9 @@ function respond(res, type, data)
         timestamp: Date.now(),
     };
 
-    res.status(statusCode).send(resData);
+    const finalData = format === "xml" ? jsonToXml.parse("data", resData) : resData;
+
+    res.status(statusCode).send(finalData);
 }
 
 module.exports = { init };
