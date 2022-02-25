@@ -21,7 +21,7 @@ All routes support gzip and deflate compression.
 
 <br>
 
-> ### GET `/search?q=search_text`
+> ### GET `/search`
 >
 > This endpoint gives you the top 10 results for a search query specified by `search_text`  
 > The returned data contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
