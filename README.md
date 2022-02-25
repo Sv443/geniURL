@@ -1,12 +1,14 @@
 # geniURL
+
 Simple JSON "REST proxy" to search for lyrics metadata on [genius](https://genius.com/).  
 Obtaining actual lyrics sadly isn't possible.
-
 
 <br><br>
 
 ## Base URL:
+
 I host a public instance on this URL:
+
 ```
 https://api.sv443.net/geniurl/
 ```
@@ -14,25 +16,27 @@ https://api.sv443.net/geniurl/
 <br>
 
 ## Routes:
-All routes support gzip and deflate compression.  
+
+All routes support gzip and deflate compression.
 
 <br>
 
 > ### GET `/search?q=search_text`
+>
 > This endpoint gives you the top 10 results for a search query specified by `search_text`  
-> The returned data contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).  
-> 
+> The returned data contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
+>
 > <br>
-> 
+>
 > **Parameters:**  
 > `?q=search%20query`  
 > This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
-> 
+> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
+>
 > <br>
 > <details><summary><b>Successful response (click to view)</b></summary>
-> 
+>
 > ```json
 > {
 >     "error": false,
@@ -56,17 +60,20 @@ All routes support gzip and deflate compression.
 >         "id": 42069
 >     },
 >     "all": [
->         /* 10 elements, same structure as "top", sorted best match first */
+>         /*
+>             10 items, same structure as "top", sorted best match first
+>             The first item of this is the exact same as "top"
+>         */
 >     ],
 >     "timestamp": 1234567890123
 > }
 > ```
-> 
+>
 > </details>
 > <br>
 >   
 > <details><summary>Errored response (click to view)</summary>
-> 
+>
 > ```json
 > {
 >     "error": true,
@@ -74,27 +81,28 @@ All routes support gzip and deflate compression.
 >     "timestamp": 1234567890123
 > }
 > ```
-> 
+>
 > </details>
 > <br>
 
-<br>
+<br><br>
 
 > ### GET `/search/top`
+>
 > This endpoint is the same as `/search`, but it only gives the top result.  
-> Use this if you are only interested in the top result and want to reduce traffic.  
-> 
+> Use this if you are only interested in the top result and want to reduce traffic.
+>
 > <br>
-> 
+>
 > **Parameters:**  
 > `?q=search%20query`  
 > This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
-> 
+> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
+>
 > <br>
 > <details><summary><b>Successful response (click to view)</b></summary>
-> 
+>
 > ```json
 > {
 >     "error": false,
@@ -118,12 +126,12 @@ All routes support gzip and deflate compression.
 >     "timestamp": 1234567890123
 > }
 > ```
-> 
+>
 > </details>
 > <br>
 >   
 > <details><summary>Errored response (click to view)</summary>
-> 
+>
 > ```json
 > {
 >     "error": true,
@@ -131,6 +139,22 @@ All routes support gzip and deflate compression.
 >     "timestamp": 1234567890123
 > }
 > ```
-> 
+>
 > </details>
 > <br>
+
+<br>
+
+## Rate Limiting
+
+My public API instance is rate limited to 8 requests in 10 seconds.  
+If you want to host your own instance and increase the values, look at the top of `src/server.js`
+
+<br><br><br>
+
+<div align="center" style="text-align:center;">
+
+Made with low effort but still lots of ❤️ by [Sv443](https://sv443.net/)  
+Licensed under the [MIT license](./LICENSE.txt#readme)
+
+</div>
