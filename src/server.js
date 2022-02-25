@@ -39,7 +39,7 @@ async function init()
     // on error
     app.use((err, req, res, next) => {
         if(typeof err === "string" || err instanceof Error)
-            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.params?.format);
+            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.query?.format);
         else
             return next();
     });
@@ -56,7 +56,7 @@ async function init()
             catch(rlRejected)
             {
                 res.set("Retry-After", rlRejected?.msBeforeNext ? String(Math.round(rlRejected.msBeforeNext / 1000)) || 1 : 1);
-                return respond(res, 429, { message: "You are being rate limited" }, req?.params?.format);
+                return respond(res, 429, { message: "You are being rate limited" }, req?.query?.format);
             }
 
             return next();
@@ -82,25 +82,25 @@ function registerEndpoints()
             const { q, format } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.params?.format);
+                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.query?.format);
 
             const meta = await getMeta(q);
 
             // js2xmlparser needs special treatment when using arrays to produce a good XML structure
             const response = format === "xml" ? { top: meta.top, all: { "result": meta.all } } : meta;
 
-            return respond(res, "success", response, req?.params?.format);
+            return respond(res, "success", response, req?.query?.format);
         });
 
         app.get("/search/top", async (req, res) => {
             const { q } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.params?.format);
+                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.query?.format);
 
             const meta = await getMeta(q);
 
-            return respond(res, "success", meta.top, req?.params?.format);
+            return respond(res, "success", meta.top, req?.query?.format);
         });
     }
     catch(err)

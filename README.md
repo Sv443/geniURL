@@ -1,7 +1,7 @@
 # geniURL
 
-Simple JSON "REST proxy" to search for lyrics metadata on [genius](https://genius.com/).  
-Obtaining actual lyrics sadly isn't possible.
+Simple JSON and XML "REST proxy" to search for song and lyrics metadata on [genius.](https://genius.com/)  
+Obtaining actual lyrics sadly isn't possible yet.
 
 <br><br>
 
@@ -13,7 +13,10 @@ I host a public instance on this URL:
 https://api.sv443.net/geniurl/
 ```
 
-<br>
+Note that this instance is rate limited to 8 requests in 10 seconds.  
+If you want to host your own and increase the values, look at the top of `src/server.js`
+
+<br><br>
 
 ## Routes:
 
@@ -145,14 +148,7 @@ All routes support gzip and deflate compression.
 >
 > </details><br>
 
-<br>
-
-## Rate Limiting
-
-My public API instance is rate limited to 8 requests in 10 seconds.  
-If you want to host your own instance and increase the values, look at the top of `src/server.js`
-
-<br><br><br>
+<br><br>
 
 <div align="center" style="text-align:center;">
 
