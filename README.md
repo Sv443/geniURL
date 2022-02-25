@@ -60,10 +60,8 @@ All routes support gzip and deflate compression.
 >         "id": 42069
 >     },
 >     "all": [
->         /*
->             10 items, same structure as "top", sorted best match first
->             The first item of this is the exact same as "top"
->         */
+>         "// This array contains 10 objects with the same structure as 'top', sorted best match first",
+>         "// The first item of this array is exactly the same as 'top'"
 >     ],
 >     "timestamp": 1234567890123
 > }
@@ -71,7 +69,6 @@ All routes support gzip and deflate compression.
 >
 > </details>
 > <br>
->   
 > <details><summary>Errored response (click to view)</summary>
 >
 > ```json
@@ -82,8 +79,7 @@ All routes support gzip and deflate compression.
 > }
 > ```
 >
-> </details>
-> <br>
+> </details><br>
 
 <br><br>
 
@@ -129,7 +125,6 @@ All routes support gzip and deflate compression.
 >
 > </details>
 > <br>
->   
 > <details><summary>Errored response (click to view)</summary>
 >
 > ```json
@@ -140,8 +135,7 @@ All routes support gzip and deflate compression.
 > }
 > ```
 >
-> </details>
-> <br>
+> </details><br>
 
 <br>
 
