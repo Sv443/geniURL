@@ -1,7 +1,7 @@
 # geniURL
 
-Simple JSON and XML "REST proxy" to search for song and lyrics metadata on [genius.](https://genius.com/)  
-Obtaining actual lyrics sadly isn't possible yet.
+Simple JSON and XML REST API to search for song metadata and the lyrics URL on [genius](https://genius.com/)  
+Obtaining actual lyrics sadly isn't possible yet (ideas are welcome lol)
 
 <br><br>
 

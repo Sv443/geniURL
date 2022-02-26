@@ -87,7 +87,7 @@ function registerEndpoints()
             const meta = await getMeta(q);
 
             // js2xmlparser needs special treatment when using arrays to produce a good XML structure
-            const response = format === "xml" ? { top: meta.top, all: { "result": meta.all } } : meta;
+            const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
 
             return respond(res, "success", response, req?.query?.format);
         });
@@ -154,6 +154,8 @@ function respond(res, type, data, format)
             break;
     }
 
+    const mimeType = format !== "xml" ? "application/json" : "application/xml";
+
     resData = {
         error,
         ...resData,
@@ -162,6 +164,7 @@ function respond(res, type, data, format)
 
     const finalData = format === "xml" ? jsonToXml.parse("data", resData) : resData;
 
+    res.setHeader("Content-Type", mimeType);
     res.status(statusCode).send(finalData);
 }
 
