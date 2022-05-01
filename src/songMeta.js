@@ -2,32 +2,35 @@ const { default: axios } = require("axios");
 
 /** @typedef {import("./types").SongMeta} SongMeta */
 
-const accessToken = process.env.GENIUS_ACCESS_TOKEN || "ERR_NO_ENV";
-
 /**
- * Returns meta information about the top 10 results of a search through the genius API
+ * Returns meta information about the top results of a search using the genius API
  * @param {string} search
- * @returns {Promise<{ top: SongMeta, all: SongMeta[] }>}
+ * @returns {Promise<{ top: SongMeta, all: SongMeta[] } | null>} Resolves null if no results are found
  */
 async function getMeta(search)
 {
+    const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
+
     const { data: { response } } = await axios.get(`https://api.genius.com/search?q=${encodeURIComponent(search)}`, {
         headers: { "Authorization": `Bearer ${accessToken}` },
     });
 
     if(Array.isArray(response?.hits))
     {
+        if(response.hits.length === 0)
+            return null;
+
         const hits = response.hits
             .filter(h => h.type === "song")
             .map(({ result }) => ({
                 url: result.url,
                 path: result.path,
                 meta: {
-                    title: result.title,
-                    fullTitle: result.full_title,
-                    artists: result.artist_names,
+                    title: normalizeString(result.title),
+                    fullTitle: normalizeString(result.full_title),
+                    artists: normalizeString(result.artist_names),
                     primaryArtist: {
-                        name: result.primary_artist.name,
+                        name: normalizeString(result.primary_artist.name),
                         url: result.primary_artist.url,
                     },
                 },
@@ -44,6 +47,16 @@ async function getMeta(search)
             all: hits.slice(0, 10),
         };
     }
+}
+
+/**
+ * Removes invisible characters and control characters from a string
+ * @param {string} str
+ * @returns {string}
+ */
+function normalizeString(str)
+{
+    return str.replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "").replace(/\u00A0/g, " ");
 }
 
 module.exports = { getMeta };

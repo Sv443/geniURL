@@ -1,7 +1,7 @@
 # geniURL
 
 Simple JSON and XML REST API to search for song metadata and the lyrics URL on [genius](https://genius.com/)  
-Obtaining actual lyrics sadly isn't possible yet (ideas are welcome lol)
+Obtaining actual lyrics sadly isn't possible yet (suggestions are welcome lol)
 
 <br><br>
 
@@ -33,9 +33,9 @@ All routes support gzip and deflate compression.
 >
 > **Parameters:**  
 > `?q=search%20query` (required)  
-> This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
-> Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+> This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
+> Sometimes the song name alone might be enough but the results vary greatly.  
+> Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
 > `?format=json/xml` (optional)  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
@@ -67,7 +67,7 @@ All routes support gzip and deflate compression.
 >         "id": 42069
 >     },
 >     "all": [
->         "// This array contains 10 objects with the same structure as 'top', sorted best match first",
+>         "// This array contains up to 10 objects with the same structure as 'top', sorted best match first",
 >         "// The first item of this array is exactly the same as 'top'"
 >     ],
 >     "timestamp": 1234567890123
@@ -99,9 +99,9 @@ All routes support gzip and deflate compression.
 >
 > **Parameters:**  
 > `?q=search%20query` (required)  
-> This parameter should contain both song and artist name(s) if possible (order doesn't matter, separate with a whitespace).  
-> Sometimes the song name alone might be enough but the results may vary.  
-> If the search query contains special characters, they need to be [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+> This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
+> Sometimes the song name alone might be enough but the results vary greatly.  
+> Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
 > `?format=json/xml` (optional)  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
@@ -125,8 +125,8 @@ All routes support gzip and deflate compression.
 >         }
 >     },
 >     "resources": {
->         "thumbnail": "https://images.genius.com/8485557225af0345d2c550af8bae731b.300x300x1.png",
->         "image": "https://images.genius.com/13d7b13ef827a9f007a5d24c115b9ebb.1000x1000x1.png"
+>         "thumbnail": "https://images.genius.com/123456789abcdef.300x300x1.png",
+>         "image": "https://images.genius.com/123456789abcdef.1000x1000x1.png"
 >     },
 >     "lyricsState": "complete",
 >     "id": 42069,

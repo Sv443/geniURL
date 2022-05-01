@@ -6,6 +6,8 @@
 
 ## v0.2.0
 - Added XML format
+- API now filters out invisible characters ([#1](https://github.com/Sv443/geniURL/issues/1))
+- Improvements to reliability
 
 <br><br>
 

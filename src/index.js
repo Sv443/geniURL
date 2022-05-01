@@ -18,7 +18,7 @@ async function init()
     }
     catch(err)
     {
-        error(`Error while ${stage}`, err);
+        error(`Error while ${stage}`, err, true);
     }
 }
 

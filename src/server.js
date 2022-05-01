@@ -55,7 +55,7 @@ async function init()
             }
             catch(rlRejected)
             {
-                res.set("Retry-After", rlRejected?.msBeforeNext ? String(Math.round(rlRejected.msBeforeNext / 1000)) || 1 : 1);
+                res.set("Retry-After", String(rlRejected?.msBeforeNext ? Math.round(rlRejected.msBeforeNext / 1000) : 1));
                 return respond(res, 429, { message: "You are being rate limited" }, req?.query?.format);
             }
 
@@ -74,7 +74,7 @@ function registerEndpoints()
 {
     try
     {
-        app.get("/", (req, res) => {
+        app.get("/", (_req, res) => {
             res.redirect(packageJson.homepage);
         });
 
@@ -86,21 +86,27 @@ function registerEndpoints()
 
             const meta = await getMeta(q);
 
-            // js2xmlparser needs special treatment when using arrays to produce a good XML structure
+            if(!meta)
+                return respond(res, "clientError", "Found no results matching your search query", format);
+
+            // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
             const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
 
-            return respond(res, "success", response, req?.query?.format);
+            return respond(res, "success", response, format);
         });
 
         app.get("/search/top", async (req, res) => {
-            const { q } = req.query;
+            const { q, format } = req.query;
 
             if(typeof q !== "string" || q.length === 0)
                 return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.query?.format);
 
             const meta = await getMeta(q);
 
-            return respond(res, "success", meta.top, req?.query?.format);
+            if(!meta)
+                return respond(res, "clientError", "Found no results matching your search query", format);
+
+            return respond(res, "success", meta.top, format);
         });
     }
     catch(err)

@@ -1,9 +1,9 @@
 const k = require("kleur");
 
 /**
- * @param {string} msg
- * @param {Error} [err]
- * @param {boolean} [fatal=false] 
+ * @param {string} msg Error message
+ * @param {Error} [err] Error instance
+ * @param {boolean} [fatal=false] Exits with code 1 if set to true
  */
 function error(msg, err, fatal = false)
 {

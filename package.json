@@ -1,7 +1,7 @@
 {
   "name": "geniurl",
   "version": "0.2.0",
-  "description": "Simple \"REST proxy\" to search for lyrics on genius.com",
+  "description": "Simple JSON and XML REST API to search for song metadata and the lyrics URL on genius.com",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/Sv443/geniURL/issues"
   },
-  "homepage": "https://github.com/Sv443/geniURL#readme",
+  "homepage": "https://github.com/Sv443/geniURL",
   "dependencies": {
     "axios": "^0.26.0",
     "compression": "^1.7.4",
