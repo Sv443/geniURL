@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(compression());
 
 const rateLimiter = new RateLimiterMemory({
-    points: 8,
+    points: 5,
     duration: 10,
 });
 
@@ -78,35 +78,55 @@ function registerEndpoints()
             res.redirect(packageJson.homepage);
         });
 
+        const hasArg = (val) => typeof val === "string" && val.length > 0;
+
         app.get("/search", async (req, res) => {
-            const { q, format } = req.query;
+            try
+            {
+                const { q, artist, song, format } = req.query;
 
-            if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.query?.format);
+                if(hasArg(q) || (hasArg(artist) && hasArg(song)))
+                {
+                    const meta = await getMeta({ q, artist, song });
 
-            const meta = await getMeta(q);
+                    if(!meta || meta.all.length < 1)
+                        return respond(res, "clientError", "Found no results matching your search query", format, 0);
 
-            if(!meta)
-                return respond(res, "clientError", "Found no results matching your search query", format);
+                    // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
+                    const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
 
-            // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
-            const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
-
-            return respond(res, "success", response, format);
+                    return respond(res, "success", response, format, meta.all.length);
+                }
+                else
+                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format);
+            }
+            catch(err)
+            {
+                return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
+            }
         });
 
         app.get("/search/top", async (req, res) => {
-            const { q, format } = req.query;
+            try
+            {
+                const { q, artist, song, format } = req.query;
 
-            if(typeof q !== "string" || q.length === 0)
-                return respond(res, "clientError", "No query parameter (?q=...) provided or it is invalid", req?.query?.format);
+                if(hasArg(q) || (hasArg(artist) && hasArg(song)))
+                {
+                    const meta = await getMeta({ q, artist, song });
 
-            const meta = await getMeta(q);
+                    if(!meta || !meta.top)
+                        return respond(res, "clientError", "Found no results matching your search query", format, 0);
 
-            if(!meta)
-                return respond(res, "clientError", "Found no results matching your search query", format);
-
-            return respond(res, "success", meta.top, format);
+                    return respond(res, "success", meta.top, format, 1);
+                }
+                else
+                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format);
+            }
+            catch(err)
+            {
+                return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
+            }
         });
     }
     catch(err)
@@ -121,10 +141,11 @@ function registerEndpoints()
  * @param {JSONCompatible} data JSON object for "success", else an error message string
  * @param {ResponseFormat} [format]
  */
-function respond(res, type, data, format)
+function respond(res, type, data, format, matchesAmt)
 {
     let statusCode = 500;
     let error = true;
+    let matches = null;
 
     let resData = {};
 
@@ -137,16 +158,19 @@ function respond(res, type, data, format)
     {
         case "success":
             error = false;
+            matches = matchesAmt ?? 0;
             statusCode = 200;
             resData = { ...data };
             break;
         case "clientError":
             error = true;
+            matches = matchesAmt ?? null;
             statusCode = 400;
             resData = { message: data };
             break;
         case "serverError":
             error = true;
+            matches = matchesAmt ?? null;
             statusCode = 500;
             resData = { message: data };
             break;
@@ -154,6 +178,7 @@ function respond(res, type, data, format)
             if(typeof type === "number")
             {
                 error = false;
+                matches = matchesAmt ?? 0;
                 statusCode = type;
                 resData = { ...data };
             }
@@ -164,6 +189,7 @@ function respond(res, type, data, format)
 
     resData = {
         error,
+        matches,
         ...resData,
         timestamp: Date.now(),
     };

@@ -13,8 +13,8 @@ I host a public instance on this URL:
 https://api.sv443.net/geniurl/
 ```
 
-Note that this instance is rate limited to 8 requests in 10 seconds.  
-If you want to host your own and increase the values, look at the top of `src/server.js`
+Note that this instance is rate limited to 5 requests in 10 seconds.  
+<sub>If you want to host your own and increase the values, look at the top of `src/server.js`</sub>
 
 <br><br>
 
@@ -31,13 +31,19 @@ All routes support gzip and deflate compression.
 >
 > <br>
 >
-> **Parameters:**  
-> `?q=search%20query` (required)  
+> **URL Parameters:**  
+> `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
+> Using this parameter instead of `?artist` and `?song` will not modify the search results and so you will rarely get blatantly wrong top matches.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
-> `?format=json/xml` (optional)  
+> `?artist=name` and `?song=name`  
+> Instead of `?q`, you can use `?artist` and `?song` to tell geniURL to preemptively filter the search results.  
+> This is done using a fuzzy search to greatly increase the chances the correct search result will be at the top.  
+> Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+>   
+> `?format=json/xml`  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the data closely resembles that of the shown JSON data.
 >
@@ -47,6 +53,7 @@ All routes support gzip and deflate compression.
 > ```json
 > {
 >     "error": false,
+>     "matches": 10,
 >     "top": {
 >         "url": "https://genius.com/Artist-1-song-name-lyrics",
 >         "path": "/Artist-1-song-name-lyrics",
@@ -81,7 +88,21 @@ All routes support gzip and deflate compression.
 > ```json
 > {
 >     "error": true,
+>     "matches": null,
 >     "message": "Something went wrong",
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Response when no results found (click to view)</summary>
+>
+> ```json
+> {
+>     "error": false,
+>     "matches": 0,
+>     "message": "Found no results matching your search query",
 >     "timestamp": 1234567890123
 > }
 > ```
@@ -97,13 +118,19 @@ All routes support gzip and deflate compression.
 >
 > <br>
 >
-> **Parameters:**  
-> `?q=search%20query` (required)  
+> **URL Parameters:**  
+> `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
+> Using this parameter instead of `?artist` and `?song` will not modify the search result and so you will rarely get a blatantly wrong top match.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
-> `?format=json/xml` (optional)  
+> `?artist=name` and `?song=name`  
+> Instead of `?q`, you can use `?artist` and `?song` to tell geniURL to preemptively filter the search results.  
+> This is done using a fuzzy search to greatly increase the chances the correct search result will be returned.  
+> Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
+>   
+> `?format=json/xml`  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the data closely resembles that of the shown JSON data.
 >
@@ -113,6 +140,7 @@ All routes support gzip and deflate compression.
 > ```json
 > {
 >     "error": false,
+>     "matches": 1,
 >     "url": "https://genius.com/Artist-1-song-name-lyrics",
 >     "path": "/Artist-1-song-name-lyrics",
 >     "meta": {
@@ -141,7 +169,21 @@ All routes support gzip and deflate compression.
 > ```json
 > {
 >     "error": true,
+>     "matches": null,
 >     "message": "Something went wrong",
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Response when no result found (click to view)</summary>
+>
+> ```json
+> {
+>     "error": false,
+>     "matches": 0,
+>     "message": "Found no results matching your search query",
 >     "timestamp": 1234567890123
 > }
 > ```
@@ -152,7 +194,7 @@ All routes support gzip and deflate compression.
 
 <div align="center" style="text-align:center;">
 
-Made with low effort but still lots of ❤️ by [Sv443](https://sv443.net/)  
-Licensed under the [MIT license](./LICENSE.txt#readme)
+Made with ❤️ by [Sv443](https://sv443.net/)  
+If you like geniURL, please consider [supporting the development](https://github.com/sponsors/Sv443)
 
 </div>
