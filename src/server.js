@@ -18,7 +18,7 @@ const { getMeta } = require("./songMeta");
 
 const app = express();
 
-app.use(cors({ methods: "GET,HEAD,OPTIONS" }));
+app.use(cors({ methods: "GET,HEAD,OPTIONS", origin: "*" }));
 app.use(helmet());
 app.use(express.json());
 app.use(compression());
