@@ -1,20 +1,17 @@
-const compression = require("compression");
-const express = require("express");
-const { check: portUsed } = require("tcp-port-used");
-const helmet = require("helmet");
-const { RateLimiterMemory } = require("rate-limiter-flexible");
-const k = require("kleur");
-const cors = require("cors");
-const jsonToXml = require("js2xmlparser");
+import compression from "compression";
+import express, { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { check as portUsed } from "tcp-port-used";
+import helmet from "helmet";
+import { RateLimiterMemory, RateLimiterRes } from "rate-limiter-flexible";
+import k from "kleur";
+import cors from "cors";
+import jsonToXml from "js2xmlparser";
 
-const packageJson = require("../package.json");
-const error = require("./error");
-const { getMeta } = require("./songMeta");
-
-/** @typedef {import("svcorelib").JSONCompatible} JSONCompatible */
-/** @typedef {import("express").Response} Response */
-/** @typedef {import("./types").ResponseType} ResponseType */
-/** @typedef {import("./types").ResponseFormat} ResponseFormat */
+import packageJson from "../package.json";
+import { error } from "./error";
+import { getMeta } from "./songMeta";
+import { ResponseType } from "./types";
+import { Errors, Stringifiable } from "svcorelib";
 
 const app = express();
 
@@ -29,17 +26,17 @@ const rateLimiter = new RateLimiterMemory({
 });
 
 
-async function init()
+export async function init()
 {
-    const port = parseInt(process.env.HTTP_PORT);
+    const port = parseInt(String(process.env.HTTP_PORT));
 
     if(await portUsed(port))
         return error(`TCP port ${port} is already used`, undefined, true);
 
     // on error
-    app.use((err, req, res, next) => {
+    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         if(typeof err === "string" || err instanceof Error)
-            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.query?.format);
+            return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.query?.format ? String(req.query.format) : undefined);
         else
             return next();
     });
@@ -49,17 +46,19 @@ async function init()
 
         // rate limiting
         app.use(async (req, res, next) => {
-            try
-            {
-                await rateLimiter.consume(req.ip);
-            }
-            catch(rlRejected)
-            {
-                res.set("Retry-After", String(rlRejected?.msBeforeNext ? Math.round(rlRejected.msBeforeNext / 1000) : 1));
-                return respond(res, 429, { message: "You are being rate limited" }, req?.query?.format);
-            }
+            const fmt = req?.query?.format ? String(req.query.format) : undefined;
 
-            return next();
+            res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
+
+            rateLimiter.consume(req.ip)
+                .catch((err) => {
+                    if(err instanceof RateLimiterRes) {
+                        res.set("Retry-After", String(Math.ceil(err.msBeforeNext / 1000)));
+                        return respond(res, 429, { message: "You are being rate limited" }, fmt);
+                    }
+                    else return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
+                })
+                .finally(next);
         });
 
         registerEndpoints();
@@ -78,16 +77,23 @@ function registerEndpoints()
             res.redirect(packageJson.homepage);
         });
 
-        const hasArg = (val) => typeof val === "string" && val.length > 0;
+        const hasArg = (val: unknown) => typeof val === "string" && val.length > 0;
 
         app.get("/search", async (req, res) => {
             try
             {
-                const { q, artist, song, format } = req.query;
+                const { q, artist, song, format: fmt } = req.query;
+
+                const format = fmt ? String(fmt) : "json";
 
                 if(hasArg(q) || (hasArg(artist) && hasArg(song)))
                 {
-                    const meta = await getMeta({ q, artist, song });
+                    const meta = await getMeta(q ? {
+                        q: String(q),
+                    } : {
+                        artist: String(artist),
+                        song: String(song),
+                    });
 
                     if(!meta || meta.all.length < 1)
                         return respond(res, "clientError", "Found no results matching your search query", format, 0);
@@ -98,22 +104,29 @@ function registerEndpoints()
                     return respond(res, "success", response, format, meta.all.length);
                 }
                 else
-                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format);
+                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format ? String(req.query.format) : undefined);
             }
             catch(err)
             {
-                return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
+                return respond(res, "serverError", `Encountered an internal server error: ${err instanceof Error ? err.message : ""}`, "json");
             }
         });
 
         app.get("/search/top", async (req, res) => {
             try
             {
-                const { q, artist, song, format } = req.query;
+                const { q, artist, song, format: fmt } = req.query;
+
+                const format = fmt ? String(fmt) : "json";
 
                 if(hasArg(q) || (hasArg(artist) && hasArg(song)))
                 {
-                    const meta = await getMeta({ q, artist, song });
+                    const meta = await getMeta(q ? {
+                        q: String(q),
+                    } : {
+                        artist: String(artist),
+                        song: String(song),
+                    });
 
                     if(!meta || !meta.top)
                         return respond(res, "clientError", "Found no results matching your search query", format, 0);
@@ -121,7 +134,7 @@ function registerEndpoints()
                     return respond(res, "success", meta.top, format, 1);
                 }
                 else
-                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format);
+                    return respond(res, "clientError", "No search params (?q or ?song and ?artist) provided or they are invalid", req?.query?.format ? String(req.query.format) : undefined);
             }
             catch(err)
             {
@@ -131,17 +144,11 @@ function registerEndpoints()
     }
     catch(err)
     {
-        error("Error while registering endpoints", err, true);
+        error("Error while registering endpoints", err instanceof Error ? err : undefined, true);
     }
 }
 
-/**
- * @param {Response} res
- * @param {ResponseType|number} type Specifies the type of response and thus a predefined status code - overload: set to number for custom status code
- * @param {JSONCompatible} data JSON object for "success", else an error message string
- * @param {ResponseFormat} [format]
- */
-function respond(res, type, data, format, matchesAmt)
+function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt = 0)
 {
     let statusCode = 500;
     let error = true;
@@ -158,7 +165,7 @@ function respond(res, type, data, format, matchesAmt)
     {
         case "success":
             error = false;
-            matches = matchesAmt ?? 0;
+            matches = matchesAmt;
             statusCode = 200;
             resData = { ...data };
             break;
@@ -199,5 +206,3 @@ function respond(res, type, data, format, matchesAmt)
     res.setHeader("Content-Type", mimeType);
     res.status(statusCode).send(finalData);
 }
-
-module.exports = { init };

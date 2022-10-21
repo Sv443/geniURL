@@ -1,9 +1,9 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const server = require("./server");
-const error = require("./error");
+import * as server from "./server";
+import { error } from "./error";
 
 
 async function init()
@@ -18,7 +18,7 @@ async function init()
     }
     catch(err)
     {
-        error(`Error while ${stage}`, err, true);
+        error(`Error while ${stage}`, err instanceof Error ? err : undefined, true);
     }
 }
 

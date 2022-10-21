@@ -1,22 +1,22 @@
-const axios = require("axios");
-const Fuse = require("fuse.js");
-const { randomUUID } = require("crypto");
-const { reserialize } = require("svcorelib");
+import axios from "axios";
+import Fuse from "fuse.js";
+import { randomUUID } from "crypto";
+import { JSONCompatible, reserialize } from "svcorelib";
+import { ApiSearchResult, SongMeta } from "./types";
 
-/** @typedef {import("./types").SongMeta} SongMeta */
+type SearchHit = (SongMeta & { uuid?: string; });
 
 /**
  * Returns meta information about the top results of a search using the genius API
- * @param {Record<"q"|"artist"|"song", string|undefined>} search
- * @returns {Promise<{ top: SongMeta, all: SongMeta[] } | null>} Resolves null if no results are found
+ * @param param0 Pass an object with either a `q` prop or the props `artist` and `song` to make use of fuzzy filtering
  */
-async function getMeta({ q, artist, song })
+export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist" | "song", string>>): Promise<{ top: SongMeta, all: SongMeta[] } | null>
 {
     const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
 
     const query = q ? q : `${artist} ${song}`;
 
-    const { data: { response }, status } = await axios.get(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
+    const { data: { response }, status } = await axios.get<ApiSearchResult>(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
         headers: { "Authorization": `Bearer ${accessToken}` },
     });
 
@@ -25,7 +25,7 @@ async function getMeta({ q, artist, song })
         if(response.hits.length === 0)
             return null;
 
-        let hits = response.hits
+        let hits: SearchHit[] = response.hits
             .filter(h => h.type === "song")
             .map(({ result }) => ({
                 url: result.url,
@@ -38,6 +38,7 @@ async function getMeta({ q, artist, song })
                         name: normalizeString(result.primary_artist.name),
                         url: result.primary_artist.url,
                     },
+                    release: result.release_date_components,
                 },
                 resources: {
                     thumbnail: result.song_art_image_thumbnail_url,
@@ -49,13 +50,12 @@ async function getMeta({ q, artist, song })
 
         if(artist && song)
         {
-            /** @type {Record<string, number>} */
-            const scoreMap = {};
+            const scoreMap: Record<string, number> = {};
 
             hits = hits.map(h => {
                 h.uuid = randomUUID();
                 return h;
-            });
+            }) as (SongMeta & { uuid: string })[];
 
             const fuseOpts = {
                 ignoreLocation: true,
@@ -67,32 +67,40 @@ async function getMeta({ q, artist, song })
             const artistFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.primaryArtist.name" ] });
 
             /** @param {({ item: { uuid: string }, score: number })[]} searchRes */
-            const addScores = (searchRes) => searchRes.forEach(({ item, score }) => {
-                if(!scoreMap[item.uuid])
-                    scoreMap[item.uuid] = score;
-                else
-                    scoreMap[item.uuid] += score;
-            });
+            const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
+                searchRes.forEach(({ item, score }) => {
+                    if(!item.uuid || !score)
+                        return;
+
+                    if(!scoreMap[item.uuid])
+                        scoreMap[item.uuid] = score;
+                    else
+                        scoreMap[item.uuid] += score;
+                });
 
             addScores(titleFuse.search(song));
             addScores(artistFuse.search(artist));
 
             const bestMatches = Object.entries(scoreMap)
-                .sort(([, valA], [, valB]) => valA > valB)
+                .sort(([, valA], [, valB]) => valA > valB ? 1 : -1) // TODO: check
                 .map(e => e[0]);
 
-            const oldHits = reserialize(hits);
+            const oldHits = reserialize(hits as unknown as JSONCompatible) as unknown as SearchHit[];
 
             hits = bestMatches
                 .map(uuid => oldHits.find(h => h.uuid === uuid))
                 .map(hit => {
-                    delete hit.uuid;
-                    return hit;
-                });
+                    if(hit)
+                    {
+                        delete hit.uuid;
+                        return hit;
+                    }
+                })
+                .filter(h => h !== undefined) as SearchHit[];
         }
 
         return {
-            top: hits[0],
+            top: hits[0] as SearchHit,
             all: hits.slice(0, 10),
         };
     }
@@ -102,12 +110,8 @@ async function getMeta({ q, artist, song })
 
 /**
  * Removes invisible characters and control characters from a string
- * @param {string} str
- * @returns {string}
  */
-function normalizeString(str)
+function normalizeString(str: string)
 {
     return str.replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "").replace(/\u00A0/g, " ");
 }
-
-module.exports = { getMeta };
