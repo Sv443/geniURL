@@ -1,23 +1,33 @@
 //#SECTION meta
 
+interface Artist {
+    name: string | null;
+    url: string | null;
+    image: string | null;
+    headerImage: string | null;
+}
+
 export interface SongMeta {
-    url: string;
-    path: string;
+    url: string | null;
+    path: string | null;
     meta: {
-        title: string;
-        fullTitle: string;
-        artists: string;
-        primaryArtist: {
-            name: string;
-            url: string;
-        },
-    },
+        title: string | null;
+        fullTitle: string | null;
+        artists: string | null;
+        releaseDate: {
+            year: number | null;
+            month: number | null;
+            day: number | null;
+        };
+        primaryArtist: Artist | null;
+        featuredArtists: Artist[];
+    };
     resources: {
-        thumbnail: string;
-        image: string;
-    },
-    lyricsState: string;
-    id: number;
+        thumbnail: string | null;
+        image: string | null;
+    };
+    lyricsState: string | null;
+    id: number | null;
 }
 
 //#SECTION server

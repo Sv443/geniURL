@@ -31,21 +31,31 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
                 url: result.url,
                 path: result.path,
                 meta: {
-                    title: normalizeString(result.title),
-                    fullTitle: normalizeString(result.full_title),
-                    artists: normalizeString(result.artist_names),
+                    title: normalizeString(result.title) ?? null,
+                    fullTitle: normalizeString(result.full_title) ?? null,
+                    artists: normalizeString(result.artist_names) ?? null,
                     primaryArtist: {
-                        name: normalizeString(result.primary_artist.name),
-                        url: result.primary_artist.url,
+                        name: normalizeString(result.primary_artist.name) ?? null,
+                        url: result.primary_artist.url ?? null,
+                        headerImage: result.primary_artist.header_image_url ?? null,
+                        image: result.primary_artist.image_url ?? null,
                     },
-                    release: result.release_date_components,
+                    featuredArtists: Array.isArray(result.featured_artists) && result.featured_artists.length > 0
+                        ? result.featured_artists.map((a) => ({
+                            name: a.name ?? null,
+                            url: a.url ?? null,
+                            headerImage: a.header_image_url ?? null,
+                            image: a.image_url ?? null,
+                        }))
+                        : [],
+                    releaseDate: result.release_date_components ?? null,
                 },
                 resources: {
-                    thumbnail: result.song_art_image_thumbnail_url,
-                    image: result.song_art_image_url,
+                    thumbnail: result.song_art_image_thumbnail_url ?? null,
+                    image: result.song_art_image_url ?? null,
                 },
-                lyricsState: result.lyrics_state,
-                id: result.id,
+                lyricsState: result.lyrics_state ?? null,
+                id: result.id ?? null,
             }));
 
         if(artist && song)
@@ -109,9 +119,13 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
 }
 
 /**
- * Removes invisible characters and control characters from a string
+ * Removes invisible characters and control characters from a string  
+ * Returns null if the input is not a string
  */
-function normalizeString(str: string)
+function normalizeString(str: unknown)
 {
+    if(!str || typeof str !== "string")
+        return null;
+
     return str.replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "").replace(/\u00A0/g, " ");
 }
