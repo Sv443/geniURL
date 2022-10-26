@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/out/src/index.js",
+            "program": "${workspaceFolder}/src/index.ts",
             "preLaunchTask": "prelaunch",
             "outFiles": ["${workspaceFolder}/out/**/*.js"],
             "console": "integratedTerminal"

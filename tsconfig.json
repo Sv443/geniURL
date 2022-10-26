@@ -6,6 +6,7 @@
     "rootDir": ".",
     "outDir": "./out/",
     "moduleResolution": "node",
+    "sourceMap": true,
     "useDefineForClassFields": true,
     "allowJs": false,
     "importHelpers": true,
