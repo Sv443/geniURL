@@ -57,13 +57,29 @@ All routes support gzip and deflate compression.
 >     "top": {
 >         "url": "https://genius.com/Artist-1-song-name-lyrics",
 >         "path": "/Artist-1-song-name-lyrics",
+>         "language": "en",
 >         "meta": {
 >             "title": "Song Name",
 >             "fullTitle": "Song Name by Artist 1 (ft. Artist 2)",
 >             "artists": "Artist 1 (ft. Artist 2)",
 >             "primaryArtist": {
 >                 "name": "Artist 1",
->                 "url": "https://genius.com/artists/Artist-1"
+>                 "url": "https://genius.com/artists/Artist-1",
+>                 "headerImage": "https://images.genius.com/...",
+>                 "image": "https://images.genius.com/..."
+>             },
+>             "featuredArtists": [
+>                 {
+>                     "name": "Featured Artist 1",
+>                     "url": "https://genius.com/artists/Featured-Artist-1",
+>                     "headerImage": "https://images.genius.com/...",
+>                     "image": "https://images.genius.com/..."
+>                 }
+>             ],
+>             "releaseDate": {
+>                 "year": 2018,
+>                 "month": 9,
+>                 "day": 12
 >             }
 >         },
 >         "resources": {
@@ -143,18 +159,34 @@ All routes support gzip and deflate compression.
 >     "matches": 1,
 >     "url": "https://genius.com/Artist-1-song-name-lyrics",
 >     "path": "/Artist-1-song-name-lyrics",
+>     "language": "en",
 >     "meta": {
 >         "title": "Song Name",
 >         "fullTitle": "Song Name by Artist 1 (ft. Artist 2)",
 >         "artists": "Artist 1 (ft. Artist 2)",
 >         "primaryArtist": {
 >             "name": "Artist 1",
->             "url": "https://genius.com/artists/Artist-1"
+>             "url": "https://genius.com/artists/Artist-1",
+>             "headerImage": "https://images.genius.com/...",
+>             "image": "https://images.genius.com/..."
+>         },
+>         "featuredArtists": [
+>             {
+>                 "name": "Featured Artist 1",
+>                 "url": "https://genius.com/artists/Featured-Artist-1",
+>                 "headerImage": "https://images.genius.com/...",
+>                 "image": "https://images.genius.com/..."
+>             }
+>         ],
+>         "releaseDate": {
+>             "year": 2018,
+>             "month": 9,
+>             "day": 12
 >         }
 >     },
 >     "resources": {
->         "thumbnail": "https://images.genius.com/123456789abcdef.300x300x1.png",
->         "image": "https://images.genius.com/123456789abcdef.1000x1000x1.png"
+>         "thumbnail": "https://images.genius.com/8485557225af0345d2c550af8bae731b.300x300x1.png",
+>         "image": "https://images.genius.com/13d7b13ef827a9f007a5d24c115b9ebb.1000x1000x1.png"
 >     },
 >     "lyricsState": "complete",
 >     "id": 42069,

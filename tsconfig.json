@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2022",
+    "module": "CommonJS",
+    "rootDir": ".",
+    "outDir": "./out/",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "useDefineForClassFields": true,
+    "allowJs": false,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+  }
+}

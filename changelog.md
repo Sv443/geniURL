@@ -1,9 +1,17 @@
 ## Version History:
-- **[1.0.0](#v100)**
+- [1.1.0](#v110)
+- [1.0.0](#v100)
 - [0.2.0](#v020)
 - [0.1.0](#v010)
 
 <br><br>
+
+### v1.1.0
+- Migrated code to TypeScript
+- Added new metadata:
+    - release date
+
+<br>
 
 ### v1.0.0
 - Added `?artist` and `?song` parameters as an alternative to `?q` for getting better search results through fuzzy filtering ([#4](https://github.com/Sv443/geniURL/issues/4))
