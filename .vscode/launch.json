@@ -5,24 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "name": "Launch",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\src\\index.js",
+            "program": "${workspaceFolder}/src/index.ts",
+            "preLaunchTask": "prelaunch",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
             "console": "integratedTerminal"
         },
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
-            "name": "test.js",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\test.js",
+            "name": "test.ts",
+            "program": "${workspaceFolder}/src/test.ts",
+            "preLaunchTask": "prelaunch",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
             "console": "integratedTerminal"
-        }
+        },
     ]
 }

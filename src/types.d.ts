@@ -9,12 +9,13 @@ interface Artist {
 
 /** geniURL song meta object */
 export interface SongMeta {
-    url: string | null;
-    path: string | null;
+    url: string;
+    path: string;
+    language: string | null;
     meta: {
-        title: string | null;
-        fullTitle: string | null;
-        artists: string | null;
+        title: string;
+        fullTitle: string;
+        artists: string;
         releaseDate: {
             year: number | null;
             month: number | null;
@@ -27,8 +28,8 @@ export interface SongMeta {
         thumbnail: string | null;
         image: string | null;
     };
-    lyricsState: string | null;
-    id: number | null;
+    lyricsState: string;
+    id: number;
 }
 
 //#SECTION server
@@ -46,7 +47,7 @@ export type ApiSearchResult = {
     };
 };
 
-/** One search result returned by the genius API */
+/** One result returned by the genius API search */
 export type SearchHit = {
     type: "song";
     result: {

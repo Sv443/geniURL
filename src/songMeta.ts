@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import { JSONCompatible, reserialize } from "svcorelib";
 import { ApiSearchResult, SongMeta } from "./types";
 
-type SearchHit = (SongMeta & { uuid?: string; });
+type MetaSearchHit = SongMeta & { uuid?: string; };
 
 /**
  * Returns meta information about the top results of a search using the genius API
@@ -25,17 +25,18 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
         if(response.hits.length === 0)
             return null;
 
-        let hits: SearchHit[] = response.hits
+        let hits: MetaSearchHit[] = response.hits
             .filter(h => h.type === "song")
             .map(({ result }) => ({
                 url: result.url,
                 path: result.path,
+                language: result.language ?? null,
                 meta: {
-                    title: normalizeString(result.title) ?? null,
-                    fullTitle: normalizeString(result.full_title) ?? null,
-                    artists: normalizeString(result.artist_names) ?? null,
+                    title: formatStr(result.title),
+                    fullTitle: formatStr(result.full_title),
+                    artists: formatStr(result.artist_names),
                     primaryArtist: {
-                        name: normalizeString(result.primary_artist.name) ?? null,
+                        name: formatStr(result.primary_artist.name) ?? null,
                         url: result.primary_artist.url ?? null,
                         headerImage: result.primary_artist.header_image_url ?? null,
                         image: result.primary_artist.image_url ?? null,
@@ -67,10 +68,10 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
                 return h;
             }) as (SongMeta & { uuid: string })[];
 
-            const fuseOpts = {
+            const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
                 ignoreLocation: true,
                 includeScore: true,
-                threshold: 0.5,
+                threshold: 0.6,
             };
 
             const titleFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.title" ] });
@@ -106,11 +107,11 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
                         return hit;
                     }
                 })
-                .filter(h => h !== undefined) as SearchHit[];
+                .filter(h => h !== undefined) as MetaSearchHit[];
         }
 
         return {
-            top: hits[0] as SearchHit,
+            top: hits[0] as MetaSearchHit,
             all: hits.slice(0, 10),
         };
     }
@@ -120,12 +121,12 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
 
 /**
  * Removes invisible characters and control characters from a string  
- * Returns null if the input is not a string
+ * @throws Throws TypeError if the input is not a string
  */
-function normalizeString(str: unknown)
+function formatStr(str: unknown): string
 {
     if(!str || typeof str !== "string")
-        return null;
+        throw new TypeError("formatStr(): input is not a string");
 
     return str.replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "").replace(/\u00A0/g, " ");
 }
