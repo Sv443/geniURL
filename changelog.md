@@ -12,6 +12,7 @@
     - release date
     - featured artists
     - images of artists
+    - lyrics language
 
 <br>
 
