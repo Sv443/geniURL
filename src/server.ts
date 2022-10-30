@@ -1,5 +1,5 @@
 import compression from "compression";
-import express, { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { check as portUsed } from "tcp-port-used";
 import helmet from "helmet";
 import { RateLimiterMemory, RateLimiterRes } from "rate-limiter-flexible";
@@ -10,8 +10,8 @@ import jsonToXml from "js2xmlparser";
 import packageJson from "../package.json";
 import { error } from "./error";
 import { getMeta } from "./songMeta";
-import { ResponseType } from "./types";
-import { Errors, Stringifiable } from "svcorelib";
+import type { ResponseType } from "./types";
+import type { Stringifiable } from "svcorelib";
 
 const app = express();
 

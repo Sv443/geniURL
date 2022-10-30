@@ -7,6 +7,7 @@ interface Artist {
     headerImage: string | null;
 }
 
+/** geniURL song meta object */
 export interface SongMeta {
     url: string;
     path: string;
@@ -39,6 +40,7 @@ export type ResponseFormat = "json" | "xml";
 
 //#SECTION API
 
+/** The entire object returned by the search endpoint of the genius API */
 export type ApiSearchResult = {
     response: {
         hits: SearchHit[];

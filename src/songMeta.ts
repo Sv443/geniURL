@@ -96,7 +96,7 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
                 .sort(([, valA], [, valB]) => valA > valB ? 1 : -1)
                 .map(e => e[0]);
 
-            const oldHits = reserialize(hits as unknown as JSONCompatible) as unknown as MetaSearchHit[];
+            const oldHits = [...hits];
 
             hits = bestMatches
                 .map(uuid => oldHits.find(h => h.uuid === uuid))

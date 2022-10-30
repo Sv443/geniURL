@@ -10,6 +10,8 @@
 - Migrated code to TypeScript
 - Added new metadata:
     - release date
+    - featured artists
+    - images of artists
 
 <br>
 

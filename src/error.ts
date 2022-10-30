@@ -1,4 +1,4 @@
-const k = require("kleur");
+import k from "kleur";
 
 /**
  * Handles an error
