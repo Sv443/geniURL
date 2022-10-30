@@ -1,10 +1,16 @@
 ## Version History:
+- [1.1.1](#v111)
 - [1.1.0](#v110)
 - [1.0.0](#v100)
 - [0.2.0](#v020)
 - [0.1.0](#v010)
 
 <br><br>
+
+### v1.1.1
+- Minor fixes
+
+<br>
 
 ### v1.1.0
 - Migrated code to TypeScript
