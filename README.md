@@ -48,9 +48,12 @@ All routes support gzip and deflate compression.
 > The structure of the data closely resembles that of the shown JSON data.
 >
 > <br>
+> 
+> **Response:**  
+> 
 > <details><summary><b>Successful response (click to view)</b></summary>
 >
-> ```json
+> ```jsonc
 > {
 >     "error": false,
 >     "matches": 10,
@@ -83,15 +86,16 @@ All routes support gzip and deflate compression.
 >             }
 >         },
 >         "resources": {
->             "thumbnail": "https://images.genius.com/8485557225af0345d2c550af8bae731b.300x300x1.png",
->             "image": "https://images.genius.com/13d7b13ef827a9f007a5d24c115b9ebb.1000x1000x1.png"
+>             "thumbnail": "https://images.genius.com/...",
+>             "image": "https://images.genius.com/..."
 >         },
 >         "lyricsState": "complete",
 >         "id": 42069
 >     },
 >     "all": [
->         "// This array contains up to 10 objects with the same structure as 'top', sorted best match first",
->         "// The first item of this array is exactly the same as 'top'"
+>         // This array contains up to 10 objects with the same structure as 'top', sorted best match first
+>         // The amount of objects in here is the same as the 'matches' property
+>         // The first object of this array is exactly the same as 'top'
 >     ],
 >     "timestamp": 1234567890123
 > }
@@ -151,9 +155,12 @@ All routes support gzip and deflate compression.
 > The structure of the data closely resembles that of the shown JSON data.
 >
 > <br>
+> 
+> **Response:**  
+> 
 > <details><summary><b>Successful response (click to view)</b></summary>
 >
-> ```json
+> ```jsonc
 > {
 >     "error": false,
 >     "matches": 1,
@@ -185,8 +192,8 @@ All routes support gzip and deflate compression.
 >         }
 >     },
 >     "resources": {
->         "thumbnail": "https://images.genius.com/8485557225af0345d2c550af8bae731b.300x300x1.png",
->         "image": "https://images.genius.com/13d7b13ef827a9f007a5d24c115b9ebb.1000x1000x1.png"
+>         "thumbnail": "https://images.genius.com/...",
+>         "image": "https://images.genius.com/..."
 >     },
 >     "lyricsState": "complete",
 >     "id": 42069,
