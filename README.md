@@ -1,7 +1,13 @@
 # geniURL
 
-Simple JSON and XML REST API to search for song metadata and the lyrics URL on [genius](https://genius.com/)  
-Obtaining actual lyrics sadly isn't possible yet (suggestions are welcome lol)
+Simple JSON and XML REST API to search for song metadata and the lyrics URL on [genius.com](https://genius.com/)  
+Obtaining actual lyrics sadly isn't possible due to licensing and copyright reasons
+
+<br><br>
+
+## Try it out:
+For trying out geniURL yourself, you can use [this Postman workspace.](https://www.postman.com/sv443/workspace/geniurl)  
+To download it and test locally, hover over the collection, click the three-dot-menu and then "Export"
 
 <br><br>
 
@@ -35,7 +41,7 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` will not modify the search results and so you will rarely get blatantly wrong top matches.  
+> Using this parameter instead of `?artist` and `?song` will not modify the search results and so you will sometimes get blatantly wrong top matches.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
 > `?artist=name` and `?song=name`  
@@ -45,7 +51,7 @@ All routes support gzip and deflate compression.
 >   
 > `?format=json/xml`  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
-> The structure of the data closely resembles that of the shown JSON data.
+> The structure of the XML data is similar to the shown JSON data.
 >
 > <br>
 > 
@@ -142,7 +148,7 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` will not modify the search result and so you will rarely get a blatantly wrong top match.  
+> Using this parameter instead of `?artist` and `?song` will not modify the search result and so you will sometimes get a blatantly wrong top match.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 >   
 > `?artist=name` and `?song=name`  
@@ -152,7 +158,7 @@ All routes support gzip and deflate compression.
 >   
 > `?format=json/xml`  
 > Use this parameter to change the response format from the default (`json`) to `xml`  
-> The structure of the data closely resembles that of the shown JSON data.
+> The structure of the XML data is similar to the shown JSON data.
 >
 > <br>
 > 
