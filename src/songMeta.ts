@@ -1,16 +1,30 @@
 import axios from "axios";
 import Fuse from "fuse.js";
-import { randomUUID } from "crypto";
-import { JSONCompatible, reserialize } from "svcorelib";
-import { ApiSearchResult, SongMeta } from "./types";
+import { nanoid } from "nanoid";
+import { clamp } from "svcorelib";
+import type { ApiSearchResult, SongMeta } from "./types";
 
 type MetaSearchHit = SongMeta & { uuid?: string; };
+
+interface GetMetaProps {
+    q?: string;
+    artist?: string;
+    song?: string;
+    threshold?: number;
+}
+
+interface GetMetaResult {
+    top: SongMeta;
+    all: SongMeta[];
+}
+
+const defaultFuzzyThreshold = 0.7;
 
 /**
  * Returns meta information about the top results of a search using the genius API
  * @param param0 Pass an object with either a `q` prop or the props `artist` and `song` to make use of fuzzy filtering
  */
-export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist" | "song", string>>): Promise<{ top: SongMeta, all: SongMeta[] } | null>
+export async function getMeta({ q, artist, song, threshold = defaultFuzzyThreshold }: GetMetaProps): Promise<GetMetaResult | null>
 {
     const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
 
@@ -19,6 +33,10 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
     const { data: { response }, status } = await axios.get<ApiSearchResult>(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
         headers: { "Authorization": `Bearer ${accessToken}` },
     });
+
+    if(isNaN(threshold))
+        threshold = defaultFuzzyThreshold;
+    threshold = clamp(threshold, 0.0, 1.0);
 
     if(status >= 200 && status < 300 && Array.isArray(response?.hits))
     {
@@ -36,14 +54,14 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
                     fullTitle: formatStr(result.full_title),
                     artists: formatStr(result.artist_names),
                     primaryArtist: {
-                        name: formatStr(result.primary_artist.name) ?? null,
+                        name: result.primary_artist.name ? formatStr(result.primary_artist.name) : null,
                         url: result.primary_artist.url ?? null,
                         headerImage: result.primary_artist.header_image_url ?? null,
                         image: result.primary_artist.image_url ?? null,
                     },
                     featuredArtists: Array.isArray(result.featured_artists) && result.featured_artists.length > 0
                         ? result.featured_artists.map((a) => ({
-                            name: a.name ?? null,
+                            name: a.name ? formatStr(a.name) : null,
                             url: a.url ?? null,
                             headerImage: a.header_image_url ?? null,
                             image: a.image_url ?? null,
@@ -64,14 +82,13 @@ export async function getMeta({ q, artist, song }: Partial<Record<"q" | "artist"
             const scoreMap: Record<string, number> = {};
 
             hits = hits.map(h => {
-                h.uuid = randomUUID();
+                h.uuid = nanoid();
                 return h;
             }) as (SongMeta & { uuid: string })[];
 
             const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
-                ignoreLocation: true,
                 includeScore: true,
-                threshold: 0.6,
+                threshold,
             };
 
             const titleFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.title" ] });
@@ -128,5 +145,7 @@ function formatStr(str: unknown): string
     if(!str || typeof str !== "string")
         throw new TypeError("formatStr(): input is not a string");
 
-    return str.replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "").replace(/\u00A0/g, " ");
+    return str
+        .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters
+        .replace(/\u00A0/g, " "); // non-standard 1-width spaces
 }
