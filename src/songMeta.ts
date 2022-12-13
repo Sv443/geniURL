@@ -1,7 +1,7 @@
 import axios from "axios";
 import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
-import { clamp } from "svcorelib";
+import { allOfType, clamp } from "svcorelib";
 import type { ApiSearchResult, SongMeta } from "./types";
 
 type MetaSearchHit = SongMeta & { uuid?: string; };
@@ -24,17 +24,23 @@ const defaultFuzzyThreshold = 0.7;
  * Returns meta information about the top results of a search using the genius API
  * @param param0 Pass an object with either a `q` prop or the props `artist` and `song` to make use of fuzzy filtering
  */
-export async function getMeta({ q, artist, song, threshold = defaultFuzzyThreshold }: GetMetaProps): Promise<GetMetaResult | null>
+export async function getMeta({
+    q,
+    artist,
+    song,
+    threshold,
+}: GetMetaProps): Promise<GetMetaResult | null>
 {
     const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
 
     const query = q ? q : `${artist} ${song}`;
+    const searchByQuery = allOfType([artist, song], "undefined");
 
     const { data: { response }, status } = await axios.get<ApiSearchResult>(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
         headers: { "Authorization": `Bearer ${accessToken}` },
     });
 
-    if(isNaN(threshold))
+    if(threshold === undefined || isNaN(threshold))
         threshold = defaultFuzzyThreshold;
     threshold = clamp(threshold, 0.0, 1.0);
 
@@ -77,55 +83,67 @@ export async function getMeta({ q, artist, song, threshold = defaultFuzzyThresho
                 id: result.id ?? null,
             }));
 
-        if(artist && song)
-        {
-            const scoreMap: Record<string, number> = {};
+        const scoreMap: Record<string, number> = {};
 
-            hits = hits.map(h => {
-                h.uuid = nanoid();
-                return h;
-            }) as (SongMeta & { uuid: string })[];
+        hits = hits.map(h => {
+            h.uuid = nanoid();
+            return h;
+        }) as (SongMeta & { uuid: string })[];
 
-            const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
-                includeScore: true,
-                threshold,
-            };
+        const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
+            includeScore: true,
+            threshold,
+        };
 
+        const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
+            searchRes.forEach(({ item, score }) => {
+                if(!item.uuid || !score)
+                    return;
+
+                if(!scoreMap[item.uuid])
+                    scoreMap[item.uuid] = score;
+                else
+                    scoreMap[item.uuid] += score;
+            });
+
+        if(song && artist) {
             const titleFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.title" ] });
             const artistFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.primaryArtist.name" ] });
 
-            /** @param {({ item: { uuid: string }, score: number })[]} searchRes */
-            const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
-                searchRes.forEach(({ item, score }) => {
-                    if(!item.uuid || !score)
-                        return;
-
-                    if(!scoreMap[item.uuid])
-                        scoreMap[item.uuid] = score;
-                    else
-                        scoreMap[item.uuid] += score;
-                });
-
             addScores(titleFuse.search(song));
             addScores(artistFuse.search(artist));
-
-            const bestMatches = Object.entries(scoreMap)
-                .sort(([, valA], [, valB]) => valA > valB ? 1 : -1)
-                .map(e => e[0]);
-
-            const oldHits = [...hits];
-
-            hits = bestMatches
-                .map(uuid => oldHits.find(h => h.uuid === uuid))
-                .map(hit => {
-                    if(hit)
-                    {
-                        delete hit.uuid;
-                        return hit;
-                    }
-                })
-                .filter(h => h !== undefined) as MetaSearchHit[];
         }
+        else {
+            const queryFuse = new Fuse(hits, {
+                ...fuseOpts,
+                ignoreLocation: true,
+                keys: [ "meta.title", "meta.primaryArtist.name" ],
+            });
+
+            let queryParts = [query];
+            if(query.match(/\s-\s/))
+                queryParts = query.split(/\s-\s/);
+
+            for(const part of queryParts)
+                addScores(queryFuse.search(part.trim()));
+        }
+
+        // TODO: reduce the amount of remapping cause it takes long
+
+        const bestMatches = Object.entries(scoreMap)
+            .sort(([, valA], [, valB]) => valA > valB ? 1 : -1)
+            .map(e => e[0]);
+
+        const oldHits = [...hits];
+
+        hits = bestMatches
+            .map(uuid => oldHits.find(h => h.uuid === uuid))
+            .map(hit => {
+                if(!hit) return undefined;
+                delete hit.uuid;
+                return hit;
+            })
+            .filter(h => h !== undefined) as MetaSearchHit[];
 
         return {
             top: hits[0] as MetaSearchHit,

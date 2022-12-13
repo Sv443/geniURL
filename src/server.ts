@@ -29,27 +29,29 @@ const authTokens = getAuthTokens();
 
 export async function init()
 {
-    const port = parseInt(String(process.env.HTTP_PORT));
+    const port = parseInt(String(process.env.HTTP_PORT ?? "").trim());
+    const hostRaw = String(process.env.HTTP_HOST ?? "").trim();
+    const host = hostRaw.length < 1 ? "0.0.0.0" : hostRaw;
 
     if(await portUsed(port))
-        return error(`TCP port ${port} is already used`, undefined, true);
+        return error(`TCP port ${port} is already used or invalid`, undefined, true);
 
     // on error
-    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
         if(typeof err === "string" || err instanceof Error)
             return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.query?.format ? String(req.query.format) : undefined);
         else
             return next();
     });
 
-    const listener = app.listen(port, () => {
+    const listener = app.listen(port, host, () => {
         app.disable("x-powered-by");
 
         // rate limiting
         app.use(async (req, res, next) => {
             const fmt = req?.query?.format ? String(req.query.format) : undefined;
             const { authorization } = req.headers;
-            const authHeader = authorization?.startsWith("Bearer") ? authorization.substring(7) : authorization;
+            const authHeader = authorization?.startsWith("Bearer ") ? authorization.substring(7) : authorization;
 
             res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
 
@@ -70,7 +72,7 @@ export async function init()
 
         registerEndpoints();
 
-        console.log(k.green(`Ready on port ${port}`));
+        console.log(k.green(`Listening on ${host}:${port}`));
     });
 
     listener.on("error", (err) => error("General server error", err, true));
