@@ -18,7 +18,7 @@ interface GetMetaResult {
     all: SongMeta[];
 }
 
-const defaultFuzzyThreshold = 0.7;
+const defaultFuzzyThreshold = 0.65;
 
 /**
  * Returns meta information about the top results of a search using the genius API

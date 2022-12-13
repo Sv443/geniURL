@@ -59,10 +59,10 @@ All routes support gzip and deflate compression.
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
 >   
-> `?threshold=0.7`  
-> This optional parameter can be used to change the fuzzy search threshold from the default of 0.7  
+> `?threshold=0.65`  
+> This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
 > It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-> 0.7 is a good middle ground but depending on your use-case you might want to play around with this.
+> 0.65 is a good middle ground but depending on your use-case you might want to play around with this.
 >
 > <br>
 > 
@@ -175,10 +175,10 @@ All routes support gzip and deflate compression.
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
 >   
-> `?threshold=0.7`  
-> This optional parameter can be used to change the fuzzy search threshold from the default of 0.7  
+> `?threshold=0.65`  
+> This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
 > It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-> 0.7 is a good middle ground but depending on your use-case you might want to play around with this.
+> 0.65 is a good middle ground but depending on your use-case you might want to play around with this.
 >
 > <br>
 > 
