@@ -25,30 +25,38 @@ const rateLimiter = new RateLimiterMemory({
     duration: 10,
 });
 
+const authTokens = getAuthTokens();
 
 export async function init()
 {
-    const port = parseInt(String(process.env.HTTP_PORT));
+    const port = parseInt(String(process.env.HTTP_PORT ?? "").trim());
+    const hostRaw = String(process.env.HTTP_HOST ?? "").trim();
+    const host = hostRaw.length < 1 ? "0.0.0.0" : hostRaw;
 
     if(await portUsed(port))
-        return error(`TCP port ${port} is already used`, undefined, true);
+        return error(`TCP port ${port} is already used or invalid`, undefined, true);
 
     // on error
-    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
         if(typeof err === "string" || err instanceof Error)
             return respond(res, "serverError", `General error in HTTP server: ${err.toString()}`, req?.query?.format ? String(req.query.format) : undefined);
         else
             return next();
     });
 
-    const listener = app.listen(port, () => {
+    const listener = app.listen(port, host, () => {
         app.disable("x-powered-by");
 
         // rate limiting
         app.use(async (req, res, next) => {
             const fmt = req?.query?.format ? String(req.query.format) : undefined;
+            const { authorization } = req.headers;
+            const authHeader = authorization?.startsWith("Bearer ") ? authorization.substring(7) : authorization;
 
             res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
+
+            if(authHeader && authTokens.has(authHeader))
+                return next();
 
             rateLimiter.consume(req.ip)
                 .catch((err) => {
@@ -56,14 +64,15 @@ export async function init()
                         res.set("Retry-After", String(Math.ceil(err.msBeforeNext / 1000)));
                         return respond(res, 429, { message: "You are being rate limited" }, fmt);
                     }
-                    else return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
+                    else
+                        return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
                 })
                 .finally(next);
         });
 
         registerEndpoints();
 
-        console.log(k.green(`Ready on port ${port}`));
+        console.log(k.green(`Listening on ${host}:${port}`));
     });
 
     listener.on("error", (err) => error("General server error", err, true));
@@ -82,17 +91,21 @@ function registerEndpoints()
         app.get("/search", async (req, res) => {
             try
             {
-                const { q, artist, song, format: fmt } = req.query;
+                const { q, artist, song, format: fmt, threshold: thr } = req.query;
 
-                const format = fmt ? String(fmt) : "json";
+                const format: string = fmt ? String(fmt) : "json";
+                const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
 
                 if(hasArg(q) || (hasArg(artist) && hasArg(song)))
                 {
-                    const meta = await getMeta(q ? {
-                        q: String(q),
-                    } : {
-                        artist: String(artist),
-                        song: String(song),
+                    const meta = await getMeta({
+                        ...(q ? {
+                            q: String(q),
+                        } : {
+                            artist: String(artist),
+                            song: String(song),
+                        }),
+                        threshold,
                     });
 
                     if(!meta || meta.all.length < 1)
@@ -115,17 +128,21 @@ function registerEndpoints()
         app.get("/search/top", async (req, res) => {
             try
             {
-                const { q, artist, song, format: fmt } = req.query;
+                const { q, artist, song, format: fmt, threshold: thr } = req.query;
 
-                const format = fmt ? String(fmt) : "json";
+                const format: string = fmt ? String(fmt) : "json";
+                const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
 
                 if(hasArg(q) || (hasArg(artist) && hasArg(song)))
                 {
-                    const meta = await getMeta(q ? {
-                        q: String(q),
-                    } : {
-                        artist: String(artist),
-                        song: String(song),
+                    const meta = await getMeta({
+                        ...(q ? {
+                            q: String(q),
+                        } : {
+                            artist: String(artist),
+                            song: String(song),
+                        }),
+                        threshold,
                     });
 
                     if(!meta || !meta.top)
@@ -148,6 +165,12 @@ function registerEndpoints()
     }
 }
 
+/**
+ * Responds to an incoming request
+ * @param type Type of response or status code
+ * @param data The data to send in the response body
+ * @param format json / xml
+ */
 function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt = 0)
 {
     let statusCode = 500;
@@ -167,7 +190,7 @@ function respond(res: Response, type: ResponseType | number, data: Stringifiable
             error = false;
             matches = matchesAmt;
             statusCode = 200;
-            resData = { ...data };
+            resData = typeof data === "string" ? data : { ...data };
             break;
         case "clientError":
             error = true;
@@ -187,7 +210,7 @@ function respond(res: Response, type: ResponseType | number, data: Stringifiable
                 error = false;
                 matches = matchesAmt ?? 0;
                 statusCode = type;
-                resData = { ...data };
+                resData = typeof data === "string" ? data : { ...data };
             }
             break;
     }
@@ -204,5 +227,18 @@ function respond(res: Response, type: ResponseType | number, data: Stringifiable
     const finalData = format === "xml" ? jsonToXml.parse("data", resData) : resData;
 
     res.setHeader("Content-Type", mimeType);
-    res.status(statusCode).send(finalData);
+    res.status(statusCode)
+        .send(finalData);
+}
+
+function getAuthTokens() {
+    const envVal = process.env["AUTH_TOKENS"];
+    let tokens: string[] = [];
+
+    if(!envVal || envVal.length === 0)
+        tokens = [];
+    else
+        tokens = envVal.split(/,/g);
+
+    return new Set<string>(tokens);
 }

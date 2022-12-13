@@ -1,7 +1,9 @@
 # geniURL
 
 Simple JSON and XML REST API to search for song metadata and the lyrics URL on [genius.com](https://genius.com/)  
-Obtaining actual lyrics sadly isn't possible due to licensing and copyright reasons
+Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
+  
+Obtaining actual lyrics sadly isn't possible due to licensing and copyright reasons.  
 
 <br><br>
 
@@ -32,8 +34,8 @@ All routes support gzip and deflate compression.
 
 > ### GET `/search`
 >
-> This endpoint gives you the top 10 results for a search query specified by `search_text`  
-> The returned data contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
+> This endpoint gives you up to 10 results for a search query specified by `search_text`  
+> The returned payload contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
 >
 > <br>
 >
@@ -41,17 +43,26 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` will not modify the search results and so you will sometimes get blatantly wrong top matches.  
+> Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
->   
+> 
+> **OR**
+> 
 > `?artist=name` and `?song=name`  
-> Instead of `?q`, you can use `?artist` and `?song` to tell geniURL to preemptively filter the search results.  
-> This is done using a fuzzy search to greatly increase the chances the correct search result will be at the top.  
+> Instead of `?q`, you can use `?artist` and `?song` to help geniURL filter the search results better, so your top results will be more accurate.  
 > Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
->   
+> 
+> <br>
+> 
+> **Optional URL Parameters:**  
 > `?format=json/xml`  
-> Use this parameter to change the response format from the default (`json`) to `xml`  
+> Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
+>   
+> `?threshold=0.65`  
+> This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
+> It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
+> 0.65 is a good middle ground but depending on your use-case you might want to play around with this.
 >
 > <br>
 > 
@@ -64,23 +75,23 @@ All routes support gzip and deflate compression.
 >     "error": false,
 >     "matches": 10,
 >     "top": {
->         "url": "https://genius.com/Artist-1-song-name-lyrics",
->         "path": "/Artist-1-song-name-lyrics",
+>         "url": "https://genius.com/Artist-Foo-song-name-lyrics",
+>         "path": "/Artist-Foo-song-name-lyrics",
 >         "language": "en",
 >         "meta": {
 >             "title": "Song Name",
->             "fullTitle": "Song Name by Artist 1 (ft. Artist 2)",
->             "artists": "Artist 1 (ft. Artist 2)",
+>             "fullTitle": "Song Name by Artist Foo (ft. Artist Bar)",
+>             "artists": "Artist Foo (ft. Artist Bar)",
 >             "primaryArtist": {
->                 "name": "Artist 1",
->                 "url": "https://genius.com/artists/Artist-1",
+>                 "name": "Artist Foo",
+>                 "url": "https://genius.com/artists/Artist-Foo",
 >                 "headerImage": "https://images.genius.com/...",
 >                 "image": "https://images.genius.com/..."
 >             },
 >             "featuredArtists": [
 >                 {
->                     "name": "Featured Artist 1",
->                     "url": "https://genius.com/artists/Featured-Artist-1",
+>                     "name": "Artist Bar",
+>                     "url": "https://genius.com/artists/Artist-Bar",
 >                     "headerImage": "https://images.genius.com/...",
 >                     "image": "https://images.genius.com/..."
 >                 }
@@ -139,7 +150,7 @@ All routes support gzip and deflate compression.
 
 > ### GET `/search/top`
 >
-> This endpoint is the same as `/search`, but it only gives the top result.  
+> This endpoint is similar to `/search`, but it only gives the top result.  
 > Use this if you are only interested in the top result and want to reduce traffic.
 >
 > <br>
@@ -148,17 +159,26 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name (for best result artist name should come first, separate with a whitespace).  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` will not modify the search result and so you will sometimes get a blatantly wrong top match.  
+> Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
->   
+> 
+> **OR**
+> 
 > `?artist=name` and `?song=name`  
-> Instead of `?q`, you can use `?artist` and `?song` to tell geniURL to preemptively filter the search results.  
-> This is done using a fuzzy search to greatly increase the chances the correct search result will be returned.  
+> Instead of `?q`, you can use `?artist` and `?song` to help geniURL filter the search results better, so your top results will be more accurate.  
 > Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
->   
+> 
+> <br><br>
+> 
+> **Optional URL Parameters:**  
 > `?format=json/xml`  
-> Use this parameter to change the response format from the default (`json`) to `xml`  
+> Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
+>   
+> `?threshold=0.65`  
+> This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
+> It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
+> 0.65 is a good middle ground but depending on your use-case you might want to play around with this.
 >
 > <br>
 > 
@@ -170,23 +190,23 @@ All routes support gzip and deflate compression.
 > {
 >     "error": false,
 >     "matches": 1,
->     "url": "https://genius.com/Artist-1-song-name-lyrics",
->     "path": "/Artist-1-song-name-lyrics",
+>     "url": "https://genius.com/Artist-Foo-song-name-lyrics",
+>     "path": "/Artist-Foo-song-name-lyrics",
 >     "language": "en",
 >     "meta": {
 >         "title": "Song Name",
->         "fullTitle": "Song Name by Artist 1 (ft. Artist 2)",
->         "artists": "Artist 1 (ft. Artist 2)",
+>         "fullTitle": "Song Name by Artist Foo (ft. Artist Bar)",
+>         "artists": "Artist Foo (ft. Artist Bar)",
 >         "primaryArtist": {
->             "name": "Artist 1",
->             "url": "https://genius.com/artists/Artist-1",
+>             "name": "Artist Foo",
+>             "url": "https://genius.com/artists/Artist-Foo",
 >             "headerImage": "https://images.genius.com/...",
 >             "image": "https://images.genius.com/..."
 >         },
 >         "featuredArtists": [
 >             {
->                 "name": "Featured Artist 1",
->                 "url": "https://genius.com/artists/Featured-Artist-1",
+>                 "name": "Artist Bar",
+>                 "url": "https://genius.com/artists/Artist-Bar",
 >                 "headerImage": "https://images.genius.com/...",
 >                 "image": "https://images.genius.com/..."
 >             }

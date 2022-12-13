@@ -1,6 +1,6 @@
 {
   "name": "geniurl",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Simple JSON and XML REST API to search for song metadata and the lyrics URL on genius.com",
   "main": "src/index.ts",
   "scripts": {
@@ -14,8 +14,8 @@
   "keywords": [
     "rest-api",
     "lyrics",
-    "rest-proxy",
-    "lyrics-search"
+    "lyrics-search",
+    "song-metadata"
   ],
   "author": {
     "name": "Sv443",
@@ -27,15 +27,20 @@
     "url": "https://github.com/Sv443/geniURL/issues"
   },
   "homepage": "https://github.com/Sv443/geniURL",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
   "dependencies": {
-    "axios": "^0.26.0",
+    "axios": "^1.2.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "fuse.js": "^6.6.2",
-    "helmet": "^5.0.2",
-    "js2xmlparser": "^4.0.2",
+    "helmet": "^6.0.1",
+    "js2xmlparser": "^5.0.0",
     "kleur": "^4.1.4",
+    "nanoid": "^3.3.4",
     "rate-limiter-flexible": "^2.3.6",
     "svcorelib": "^1.15.0",
     "tcp-port-used": "^1.0.2"

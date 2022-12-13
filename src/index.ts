@@ -12,7 +12,7 @@ async function init()
 
     try
     {
-        server.init();
+        await server.init();
 
         stage = "(done)";
     }
