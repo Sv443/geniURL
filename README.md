@@ -32,7 +32,7 @@ All routes support gzip and deflate compression.
 
 - [Search](#get-search)
     - [Search (only top result)](#get-searchtop)
-- [Translations](#get-translations)
+- [Translations](#get-translationssongid)
 
 <br>
 
