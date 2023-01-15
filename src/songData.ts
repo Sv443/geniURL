@@ -172,7 +172,7 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
     if(status >= 200 && status < 300 && Array.isArray(song?.translation_songs))
     {
         const results = song.translation_songs
-            .map(({ language, id, path, title, url }) => ({ language, id, path, title, url }));
+            .map(({ language, id, path, title, url }) => ({ language, title, url, path, id }));
 
         const preferredResults: SongTranslation[] = [];
 
