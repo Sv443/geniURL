@@ -1,40 +1,28 @@
-import axios from "axios";
+/* eslint-disable no-control-regex */
+
+import { axios } from "./axios";
 import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
-import { allOfType, clamp } from "svcorelib";
-import type { ApiSearchResult, SongMeta } from "./types";
-
-type MetaSearchHit = SongMeta & { uuid?: string; };
-
-interface GetMetaProps {
-    q?: string;
-    artist?: string;
-    song?: string;
-    threshold?: number;
-}
-
-interface GetMetaResult {
-    top: SongMeta;
-    all: SongMeta[];
-}
+import { clamp, Stringifiable } from "svcorelib";
+import type { ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
 
 const defaultFuzzyThreshold = 0.65;
 
 /**
  * Returns meta information about the top results of a search using the genius API
- * @param param0 Pass an object with either a `q` prop or the props `artist` and `song` to make use of fuzzy filtering
+ * @param param0 URL parameters - needs either a `q` prop or the props `artist` and `song`
  */
 export async function getMeta({
     q,
     artist,
     song,
     threshold,
-}: GetMetaProps): Promise<GetMetaResult | null>
+    preferLang,
+}: GetMetaArgs): Promise<GetMetaResult | null>
 {
     const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
 
     const query = q ? q : `${artist} ${song}`;
-    const searchByQuery = allOfType([artist, song], "undefined");
 
     const { data: { response }, status } = await axios.get<ApiSearchResult>(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
         headers: { "Authorization": `Bearer ${accessToken}` },
@@ -145,9 +133,24 @@ export async function getMeta({
             })
             .filter(h => h !== undefined) as MetaSearchHit[];
 
+        if(hits.length === 0)
+            return null;
+
+        const preferredBestMatches: MetaSearchHit[] = [];
+
+        // splice out preferredLang results and move them to the beginning of the array
+        if(preferLang) {
+            hits.forEach((hit, i) => {
+                if(hit.language === preferLang.toLowerCase())
+                    preferredBestMatches.push(hits.splice(i, 1)[0]!);
+            });
+        }
+
+        const reorderedHits = preferredBestMatches.concat(hits);
+
         return {
-            top: hits[0] as MetaSearchHit,
-            all: hits.slice(0, 10),
+            top: reorderedHits[0]!,
+            all: reorderedHits.slice(0, 10),
         };
     }
 
@@ -155,15 +158,47 @@ export async function getMeta({
 }
 
 /**
+ * Returns translations for a song with the specified ID
+ * @param songId Song ID gotten from the /search endpoints
+ * @param param1 URL parameters
+ */
+export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null> {
+    const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
+
+    const { data: { response: { song } }, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
+        headers: { "Authorization": `Bearer ${accessToken}` },
+    });
+
+    if(status >= 200 && status < 300 && Array.isArray(song?.translation_songs))
+    {
+        const results = song.translation_songs
+            .map(({ language, id, path, title, url }) => ({ language, id, path, title, url }));
+
+        const preferredResults: SongTranslation[] = [];
+
+        // splice out preferredLang results and move them to the beginning of the array
+        if(preferLang) {
+            results.forEach((res, i) => {
+                if(res.language === preferLang.toLowerCase())
+                    preferredResults.push(results.splice(i, 1)[0]!);
+            });
+        }
+
+        return preferredResults.concat(results);
+    }
+    return null;
+}
+
+/**
  * Removes invisible characters and control characters from a string  
  * @throws Throws TypeError if the input is not a string
  */
-function formatStr(str: unknown): string
+function formatStr(str: Stringifiable): string
 {
-    if(!str || typeof str !== "string")
+    if(!str || !str.toString || typeof str !== "string")
         throw new TypeError("formatStr(): input is not a string");
 
-    return str
+    return str.toString()
         .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters
         .replace(/\u00A0/g, " "); // non-standard 1-width spaces
 }
