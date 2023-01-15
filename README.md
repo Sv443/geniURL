@@ -281,6 +281,10 @@ All routes support gzip and deflate compression.
 > `?preferLang=en`  
 > Sometimes the genius API and geniURL's filtering will rank song translations higher than the original song. This optional parameter can help with that.  
 > Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
+>   
+> `?format=json/xml`  
+> Use this optional parameter to change the response format from the default (`json`) to `xml`  
+> The structure of the XML data is similar to the shown JSON data.
 > 
 > <br>
 > 
