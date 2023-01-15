@@ -14,7 +14,7 @@ export function paramValid(val: unknown): val is string {
  * @param data The data to send in the response body
  * @param format json / xml
  */
-export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt = 0)
+export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number)
 {
     let statusCode = 500;
     let error = true;
@@ -62,7 +62,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
 
     resData = {
         error,
-        matches,
+        ...(matches === undefined ? {} : { matches }),
         ...resData,
         timestamp: Date.now(),
     };
