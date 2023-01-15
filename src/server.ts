@@ -9,7 +9,7 @@ import jsonToXml from "js2xmlparser";
 
 import packageJson from "../package.json";
 import { error } from "./error";
-import { getMeta } from "./songMeta";
+import { getMeta } from "./songData";
 import type { ResponseType } from "./types";
 import type { Stringifiable } from "svcorelib";
 

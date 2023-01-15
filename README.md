@@ -30,6 +30,10 @@ Note that this instance is rate limited to 5 requests in 10 seconds.
 
 All routes support gzip and deflate compression.
 
+- [Search](#get-search)
+    - [Search (only top result)](#get-searchtop)
+- [Translations](#get-translations)
+
 <br>
 
 > ### GET `/search`
@@ -55,6 +59,10 @@ All routes support gzip and deflate compression.
 > <br>
 > 
 > **Optional URL Parameters:**  
+> `?preferLang=en`  
+> Sometimes the genius API and geniURL's filtering will rank song translations higher than the original song. This optional parameter can help with that.  
+> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
+>   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
@@ -171,6 +179,10 @@ All routes support gzip and deflate compression.
 > <br><br>
 > 
 > **Optional URL Parameters:**  
+> `?preferLang=en`  
+> Sometimes the genius API and geniURL's filtering will rank song translations higher than the original song. This optional parameter can help with that.  
+> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
+>   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
@@ -248,6 +260,59 @@ All routes support gzip and deflate compression.
 > {
 >     "error": false,
 >     "matches": 0,
+>     "message": "Found no results matching your search query",
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details><br>
+
+<br><br>
+
+> ### GET `/translations/:songId`
+>
+> This endpoint returns all translations of a certain song.  
+> Specify the song ID, gotten from the /search/ endpoints, in the URL path.  
+> Example: `/translations/3093344`
+> 
+> <br>
+>
+> **Optional URL Parameters:**  
+> `?preferLang=en`  
+> Sometimes the genius API and geniURL's filtering will rank song translations higher than the original song. This optional parameter can help with that.  
+> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
+> 
+> <br>
+> 
+> **Response:**  
+> 
+> <details><summary><b>Successful response (click to view)</b></summary>
+>
+> ```jsonc
+> // TODO
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Errored response (click to view)</summary>
+>
+> ```json
+> {
+>     "error": true,
+> // TODO
+>     "message": "Something went wrong",
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Response when no result found (click to view)</summary>
+>
+> ```json
+> {
+>     "error": false,
+> // TODO
 >     "message": "Found no results matching your search query",
 >     "timestamp": 1234567890123
 > }
