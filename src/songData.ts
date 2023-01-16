@@ -208,11 +208,11 @@ export async function getAlbum(songId: number): Promise<Album | null> {
             const { response: { song: { album } } } = data;
 
             return {
-                coverArt: album.cover_art_url ?? null,
-                fullTitle: album.full_title,
-                id: album.id,
                 name: album.name,
+                fullTitle: album.full_title,
                 url: album.url,
+                coverArt: album.cover_art_url ?? null,
+                id: album.id,
                 artist: {
                     name: album.artist.name ?? null,
                     url: album.artist.url ?? null,

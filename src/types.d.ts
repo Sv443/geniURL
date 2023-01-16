@@ -149,11 +149,11 @@ type ArtistObj = {
 }
 
 export interface Album {
-    coverArt: string | null;
-    fullTitle: string;
-    id: number;
     name: string;
+    fullTitle: string;
     url: string;
+    coverArt: string | null;
+    id: number;
     artist: Artist;
 }
 

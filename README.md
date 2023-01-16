@@ -363,15 +363,19 @@ All routes support gzip and deflate compression.
 > {
 >     "error": false,
 >     "matches": 1,
->     "translations": [
->         {
->             "language": "es",
->             "title": "Artist - Song (Traducción al Español)",
->             "url": "https://genius.com/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
->             "path": "/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
->             "id": 6942
+>     "album": {
+>         "name": "Album",
+>         "fullTitle": "Song by Artist",
+>         "url": "https://genius.com/albums/Artist/Album",
+>         "coverArt": "https://images.genius.com/...",
+>         "id": 12345,
+>         "artist": {
+>             "name": "Artist",
+>             "url": "https://genius.com/artists/Artist",
+>             "image": "https://images.genius.com/...",
+>             "headerImage": "https://images.genius.com/..."
 >         }
->     ],
+>     },
 >     "timestamp": 1234567890123
 > }
 > ```
@@ -395,9 +399,9 @@ All routes support gzip and deflate compression.
 >
 > ```json
 > {
->     "error": false,
+>     "error": true,
 >     "matches": 0,
->     "translations": [],
+>     "message": "Couldn't find any associated album for this song",
 >     "timestamp": 1234567890123
 > }
 > ```
