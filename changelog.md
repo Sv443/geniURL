@@ -10,7 +10,8 @@
 <br><br>
 
 ### v1.3.0
-- Added endpoint `/translations/:songId` to receive info about a song's translations
+- Added route `/translations/:songId` to receive info about a song's translation pages
+- Added route `/album/:songId` to get info about the album that the provided song is in
 - Added parameter `?preferLang=en` to always rank results of a certain language higher than the rest
 
 <br>

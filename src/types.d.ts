@@ -148,5 +148,14 @@ type ArtistObj = {
     url: string;
 }
 
+export interface Album {
+    coverArt: string | null;
+    fullTitle: string;
+    id: number;
+    name: string;
+    url: string;
+    artist: Artist;
+}
+
 //#SECTION internal
 export type SupportedMethods = "GET";

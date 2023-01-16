@@ -31,6 +31,7 @@ All routes support gzip and deflate compression.
 - [Search](#get-search)
     - [Search (only top result)](#get-searchtop)
 - [Translations](#get-translationssongid)
+- [Associated Album](#get-albumsongid)
 
 <br>
 
@@ -283,6 +284,71 @@ All routes support gzip and deflate compression.
 > Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
 > Note that this only changes the ranking. Results of other languages will still be returned.
 >   
+> `?format=json/xml`  
+> Use this optional parameter to change the response format from the default (`json`) to `xml`  
+> The structure of the XML data is similar to the shown JSON data.
+> 
+> <br>
+> 
+> **Response:**  
+> 
+> <details><summary><b>Successful response (click to view)</b></summary>
+>
+> ```jsonc
+> {
+>     "error": false,
+>     "matches": 1,
+>     "translations": [
+>         {
+>             "language": "es",
+>             "title": "Artist - Song (Traducción al Español)",
+>             "url": "https://genius.com/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
+>             "path": "/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
+>             "id": 6942
+>         }
+>     ],
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Errored response (click to view)</summary>
+>
+> ```json
+> {
+>     "error": true,
+>     "matches": null,
+>     "message": "Something went wrong",
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details>
+> <br>
+> <details><summary>Response when no result found (click to view)</summary>
+>
+> ```json
+> {
+>     "error": false,
+>     "matches": 0,
+>     "translations": [],
+>     "timestamp": 1234567890123
+> }
+> ```
+>
+> </details><br>
+
+<br><br>
+
+> ### GET `/album/:songId`
+>
+> This endpoint returns any associated album for a specified song.  
+> Example: `/translations/3093344`
+> 
+> <br>
+>
+> **Optional URL Parameters:**  
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.

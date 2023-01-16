@@ -4,7 +4,7 @@ import { axios } from "./axios";
 import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
 import { clamp, Stringifiable } from "svcorelib";
-import type { ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
+import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
 
 const defaultFuzzyThreshold = 0.65;
 
@@ -187,6 +187,39 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
             }
 
             return preferredResults.concat(results);
+        }
+        return null;
+    }
+    catch(e) {
+        return null;
+    }
+}
+
+export async function getAlbum(songId: number): Promise<Album | null> {
+    try {
+        const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
+
+        const { data, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
+            headers: { "Authorization": `Bearer ${accessToken}` },
+        });
+
+        if(status >= 200 && status < 300 && data?.response?.song?.album?.id)
+        {
+            const { response: { song: { album } } } = data;
+
+            return {
+                coverArt: album.cover_art_url ?? null,
+                fullTitle: album.full_title,
+                id: album.id,
+                name: album.name,
+                url: album.url,
+                artist: {
+                    name: album.artist.name ?? null,
+                    url: album.artist.url ?? null,
+                    image: album.artist.image_url ?? null,
+                    headerImage: album.artist.header_image_url ?? null,
+                }
+            };
         }
         return null;
     }

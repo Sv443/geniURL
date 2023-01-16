@@ -58,8 +58,6 @@ export function respond(res: Response, type: ResponseType | number, data: String
         break;
     }
 
-    const mimeType = format !== "xml" ? "application/json" : "application/xml";
-
     resData = {
         error,
         ...(matches === undefined ? {} : { matches }),
@@ -69,7 +67,6 @@ export function respond(res: Response, type: ResponseType | number, data: String
 
     const finalData = format === "xml" ? jsonToXml.parse("data", resData) : resData;
 
-    res.setHeader("Content-Type", mimeType);
-    res.status(statusCode)
-        .send(finalData);
+    res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
+    res.status(statusCode).send(finalData);
 }

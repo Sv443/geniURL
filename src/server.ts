@@ -55,16 +55,25 @@ export async function init()
         if(authHeader && authTokens.has(authHeader))
             return next();
 
+        const setRateLimitHeaders = (rateLimiterRes: RateLimiterRes) => {
+            res.setHeader("Retry-After", rateLimiterRes.msBeforeNext / 1000);
+            res.setHeader("X-RateLimit-Limit", rateLimiter.points);
+            res.setHeader("X-RateLimit-Remaining", rateLimiterRes.remainingPoints);
+            res.setHeader("X-RateLimit-Reset", new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
+        };
+
         rateLimiter.consume(req.ip)
+            .then((rateLimiterRes: RateLimiterRes) => {
+                setRateLimitHeaders(rateLimiterRes);
+                return next();
+            })
             .catch((err) => {
                 if(err instanceof RateLimiterRes) {
-                    res.set("Retry-After", String(Math.ceil(err.msBeforeNext / 1000)));
-                    return respond(res, 429, { message: "You are being rate limited" }, fmt);
+                    setRateLimitHeaders(err);
+                    return respond(res, 429, { message: "You are being rate limited. Please try again a little later." }, fmt);
                 }
-                else
-                    return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
-            })
-            .finally(next);
+                else return respond(res, 500, { message: "Encountered an internal error. Please try again a little later." }, fmt);
+            });
     });
 
     const listener = app.listen(port, host, () => {
