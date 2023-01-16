@@ -1,10 +1,10 @@
-import { Application } from "express";
+import { Router } from "express";
 import { paramValid, respond } from "../utils";
 import { getMeta } from "../songData";
 import { langCodes } from "../constants";
 
-export function initSearchEndpoints(app: Application) {
-    app.get("/search", async (req, res) => {
+export function initSearchRoutes(router: Router) {
+    router.get("/search", async (req, res) => {
         try
         {
             const { q, artist, song, format: fmt, threshold: thr, preferLang: prLang } = req.query;
@@ -43,7 +43,7 @@ export function initSearchEndpoints(app: Application) {
         }
     });
 
-    app.get("/search/top", async (req, res) => {
+    router.get("/search/top", async (req, res) => {
         try
         {
             const { q, artist, song, format: fmt, threshold: thr, preferLang: prLang } = req.query;

@@ -1,16 +1,16 @@
-import { Application } from "express";
+import { Router } from "express";
 import { paramValid, respond } from "../utils";
 import { getTranslations } from "../songData";
 import { langCodes } from "../constants";
 
-export function initTranslationsEndpoints(app: Application) {
-    app.get("/translations", (req, res) => {
+export function initTranslationsRoutes(router: Router) {
+    router.get("/translations", (req, res) => {
         const format: string = req.query.format ? String(req.query.format) : "json";
 
         return respond(res, "clientError", "No song ID provided", format);
     });
 
-    app.get("/translations/:songId", async (req, res) => {
+    router.get("/translations/:songId", async (req, res) => {
         try
         {
             const { songId } = req.params;

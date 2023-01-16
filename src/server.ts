@@ -8,7 +8,7 @@ import cors from "cors";
 
 import packageJson from "../package.json";
 import { error } from "./error";
-import { endpointFuncs } from "./routes";
+import { initRouter } from "./routes";
 import { respond } from "./utils";
 
 const app = express();
@@ -17,6 +17,8 @@ app.use(cors({ methods: "GET,HEAD,OPTIONS", origin: "*" }));
 app.use(helmet());
 app.use(express.json());
 app.use(compression());
+
+app.disable("x-powered-by");
 
 const rateLimiter = new RateLimiterMemory({
     points: 5,
@@ -42,33 +44,31 @@ export async function init()
             return next();
     });
 
+    // rate limiting
+    app.use(async (req, res, next) => {
+        const fmt = req?.query?.format ? String(req.query.format) : undefined;
+        const { authorization } = req.headers;
+        const authHeader = authorization?.startsWith("Bearer ") ? authorization.substring(7) : authorization;
+
+        res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
+
+        if(authHeader && authTokens.has(authHeader))
+            return next();
+
+        rateLimiter.consume(req.ip)
+            .catch((err) => {
+                if(err instanceof RateLimiterRes) {
+                    res.set("Retry-After", String(Math.ceil(err.msBeforeNext / 1000)));
+                    return respond(res, 429, { message: "You are being rate limited" }, fmt);
+                }
+                else
+                    return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
+            })
+            .finally(next);
+    });
+
     const listener = app.listen(port, host, () => {
-        app.disable("x-powered-by");
-
-        // rate limiting
-        app.use(async (req, res, next) => {
-            const fmt = req?.query?.format ? String(req.query.format) : undefined;
-            const { authorization } = req.headers;
-            const authHeader = authorization?.startsWith("Bearer ") ? authorization.substring(7) : authorization;
-
-            res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
-
-            if(authHeader && authTokens.has(authHeader))
-                return next();
-
-            rateLimiter.consume(req.ip)
-                .catch((err) => {
-                    if(err instanceof RateLimiterRes) {
-                        res.set("Retry-After", String(Math.ceil(err.msBeforeNext / 1000)));
-                        return respond(res, 429, { message: "You are being rate limited" }, fmt);
-                    }
-                    else
-                        return respond(res, 500, { message: "Internal error in rate limiting middleware. Please try again later." }, fmt);
-                })
-                .finally(next);
-        });
-
-        registerEndpoints();
+        registerRoutes();
 
         console.log(k.green(`Listening on ${host}:${port}`));
     });
@@ -76,20 +76,15 @@ export async function init()
     listener.on("error", (err) => error("General server error", err, true));
 }
 
-function registerEndpoints()
+function registerRoutes()
 {
     try
     {
-        app.get("/", (_req, res) => {
-            res.redirect(packageJson.homepage);
-        });
-
-        for(const func of endpointFuncs)
-            func(app);
+        initRouter(app);
     }
     catch(err)
     {
-        error("Error while registering endpoints", err instanceof Error ? err : undefined, true);
+        error("Error while initializing router", err instanceof Error ? err : undefined, true);
     }
 }
 

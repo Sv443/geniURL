@@ -147,3 +147,6 @@ type ArtistObj = {
     name: string;
     url: string;
 }
+
+//#SECTION internal
+export type SupportedMethods = "GET";
