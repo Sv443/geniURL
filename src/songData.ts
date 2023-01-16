@@ -136,9 +136,9 @@ export async function getMeta({
         if(hits.length === 0)
             return null;
 
+        // splice out preferredLang results and move them to the beginning of the array, while keeping their original order:
         const preferredBestMatches: MetaSearchHit[] = [];
 
-        // splice out preferredLang results and move them to the beginning of the array
         if(preferLang) {
             hits.forEach((hit, i) => {
                 if(hit.language === preferLang.toLowerCase())
@@ -163,30 +163,36 @@ export async function getMeta({
  * @param param1 URL parameters
  */
 export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null> {
-    const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
+    try {
+        const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
 
-    const { data: { response: { song } }, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
-        headers: { "Authorization": `Bearer ${accessToken}` },
-    });
+        const { data, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
+            headers: { "Authorization": `Bearer ${accessToken}` },
+        });
 
-    if(status >= 200 && status < 300 && Array.isArray(song?.translation_songs))
-    {
-        const results = song.translation_songs
-            .map(({ language, id, path, title, url }) => ({ language, title, url, path, id }));
+        if(status >= 200 && status < 300 && Array.isArray(data?.response?.song?.translation_songs))
+        {
+            const { response: { song } } = data;
+            const results = song.translation_songs
+                .map(({ language, id, path, title, url }) => ({ language, title, url, path, id }));
 
-        const preferredResults: SongTranslation[] = [];
+            // splice out preferredLang results and move them to the beginning of the array, while keeping their original order:
+            const preferredResults: SongTranslation[] = [];
 
-        // splice out preferredLang results and move them to the beginning of the array
-        if(preferLang) {
-            results.forEach((res, i) => {
-                if(res.language === preferLang.toLowerCase())
-                    preferredResults.push(results.splice(i, 1)[0]!);
-            });
+            if(preferLang) {
+                results.forEach((res, i) => {
+                    if(res.language === preferLang.toLowerCase())
+                        preferredResults.push(results.splice(i, 1)[0]!);
+                });
+            }
+
+            return preferredResults.concat(results);
         }
-
-        return preferredResults.concat(results);
+        return null;
     }
-    return null;
+    catch(e) {
+        return null;
+    }
 }
 
 /**

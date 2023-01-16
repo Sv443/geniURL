@@ -45,7 +45,7 @@ All routes support gzip and deflate compression.
 >
 > **URL Parameters:**  
 > `?q=search%20query`  
-> This parameter should contain both the song and artist name. For best result artist name should come first, separate with a hyphen (`-`)  
+> This parameter should contain both the song and artist name. For best result artist name should come first, separate with a whitespace or hyphen.  
 > Sometimes the song name alone might be enough but the results vary greatly.  
 > Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
@@ -166,7 +166,7 @@ All routes support gzip and deflate compression.
 >
 > **URL Parameters:**  
 > `?q=search%20query`  
-> This parameter should contain both the song and artist name. For best result artist name should come first, separate with a hyphen (`-`)  
+> This parameter should contain both the song and artist name. For best result artist name should come first, separate with a whitespace or hyphen.  
 > Sometimes the song name alone might be enough but the results vary greatly.  
 > Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
