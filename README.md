@@ -1,5 +1,4 @@
 # geniURL
-
 Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on [genius.com](https://genius.com/)  
 Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
   
@@ -14,20 +13,19 @@ To download it and test locally, hover over the collection, click the three-dot-
 <br><br>
 
 ## Base URL:
-
 I host a public instance on this URL:
-
 ```
 https://api.sv443.net/geniurl/
 ```
 
-Note that this instance is rate limited to 5 requests in 10 seconds.  
-<sub>If you want to host your own and increase the values, look at the top of `src/server.js`</sub>
+<sub>
+Note that this instance is rate limited to 5 requests within 10 seconds.<br>
+If you want to host your own and increase the values, look at the top of `src/server.ts`
+</sub>
 
 <br><br>
 
 ## Routes:
-
 All routes support gzip and deflate compression.
 
 - [Search](#get-search)
@@ -340,7 +338,7 @@ All routes support gzip and deflate compression.
 >
 > </details><br>
 
-<br><br>
+<br><br><br>
 
 <div align="center" style="text-align:center;">
 
