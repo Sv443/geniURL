@@ -12,6 +12,7 @@ async function init()
     try
     {
         const missingEnvVars = [
+            "HTTP_PORT",
             "GENIUS_ACCESS_TOKEN",
         ].reduce<string[]>((a, v) => ((typeof env[v] !== "string" || env[v]!.length < 1) ? a.concat(v) : a), []);
 
