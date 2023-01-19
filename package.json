@@ -1,6 +1,6 @@
 {
   "name": "geniurl",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on genius.com",
   "main": "src/index.ts",
   "scripts": {
