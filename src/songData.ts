@@ -5,6 +5,7 @@ import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
 import { clamp, Stringifiable } from "svcorelib";
 import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
+import { getAxiosAuthConfig } from "./utils";
 
 const defaultFuzzyThreshold = 0.65;
 
@@ -20,13 +21,15 @@ export async function getMeta({
     preferLang,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
-    const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
-
     const query = q ? q : `${artist} ${song}`;
 
-    const { data: { response }, status } = await axios.get<ApiSearchResult>(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
-        headers: { "Authorization": `Bearer ${accessToken}` },
-    });
+    const {
+        data: { response },
+        status,
+    } = await axios.get<ApiSearchResult>(
+        `https://api.genius.com/search?q=${encodeURIComponent(query)}`,
+        getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+    );
 
     if(threshold === undefined || isNaN(threshold))
         threshold = defaultFuzzyThreshold;
@@ -164,11 +167,10 @@ export async function getMeta({
  */
 export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null> {
     try {
-        const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
-
-        const { data, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
-            headers: { "Authorization": `Bearer ${accessToken}` },
-        });
+        const { data, status } = await axios.get<ApiSongResult>(
+            `https://api.genius.com/songs/${songId}`,
+            getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+        );
 
         if(status >= 200 && status < 300 && Array.isArray(data?.response?.song?.translation_songs))
         {
@@ -197,11 +199,10 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
 
 export async function getAlbum(songId: number): Promise<Album | null> {
     try {
-        const accessToken = process.env.GENIUS_ACCESS_TOKEN ?? "ERR_NO_ENV";
-
-        const { data, status } = await axios.get<ApiSongResult>(`https://api.genius.com/songs/${songId}`, {
-            headers: { "Authorization": `Bearer ${accessToken}` },
-        });
+        const { data, status } = await axios.get<ApiSongResult>(
+            `https://api.genius.com/songs/${songId}`,
+            getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+        );
 
         if(status >= 200 && status < 300 && data?.response?.song?.album?.id)
         {

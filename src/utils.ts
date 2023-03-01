@@ -70,3 +70,9 @@ export function respond(res: Response, type: ResponseType | number, data: String
     res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
     res.status(statusCode).send(finalData);
 }
+
+export function getAxiosAuthConfig(authToken?: string) {
+    return authToken ? {
+        headers: { "Authorization": `Bearer ${authToken}` },
+    } : {};
+}
