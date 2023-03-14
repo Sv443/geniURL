@@ -4,9 +4,10 @@ export const langCodes = new Set<string>(["aa","ab","ae","af","ak","am","an","ar
 /** Map of regex and replacement char to normalize fields before fuzzy filtering them */
 export const charReplacements = new Map<RegExp, string>([
     ["`´’︐︑ʻ", "'"],
-    ["，", ","],
-    ["—─", "-"],
     ["“”", "\""],
+    ["，", ","],
+    ["—─ ", "-"],
+    ["    ", " "],
 ].map(
     ([k, v]) => ([new RegExp(`[${k!}]`, "g"), v!])
 ));
