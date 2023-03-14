@@ -7,5 +7,5 @@ export const charReplacements = new Map<string, string>([
     ["“”", "\""],
     ["，", ","],
     ["—─ ", "-"],
-    ["    ", " "],
+    ["     ", " "],
 ]);
