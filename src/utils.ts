@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { Stringifiable } from "svcorelib";
-import jsonToXml from "js2xmlparser";
+import { parse as jsonToXml } from "js2xmlparser";
 import { ResponseType } from "./types";
 
 /** Checks if the value of a passed URL parameter is valid */
@@ -65,14 +65,8 @@ export function respond(res: Response, type: ResponseType | number, data: String
         timestamp: Date.now(),
     };
 
-    const finalData = format === "xml" ? jsonToXml.parse("data", resData) : resData;
+    const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
 
     res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
     res.status(statusCode).send(finalData);
-}
-
-export function getAxiosAuthConfig(authToken?: string) {
-    return authToken ? {
-        headers: { "Authorization": `Bearer ${authToken}` },
-    } : {};
 }
