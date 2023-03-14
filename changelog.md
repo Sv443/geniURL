@@ -1,5 +1,6 @@
 ## Version History:
-- [**1.2.0**](#v120)
+- [**1.3.0**](#v130)
+- [1.2.0](#v120)
 - [1.1.1](#v111)
 - [1.1.0](#v110)
 - [1.0.0](#v100)
@@ -7,6 +8,14 @@
 - [0.1.0](#v010)
 
 <br><br>
+
+### v1.3.0
+- Added route `/translations/:songId` to receive info about a song's translation pages
+- Added route `/album/:songId` to get info about the album that the provided song is in
+- Added parameter `?preferLang=en` to always rank results of a certain language higher than the rest
+- geniURL will now replace inconsistent unicode characters in the properties `title`, `fullTitle`, and `artists` ([#15](https://github.com/Sv443/geniURL/issues/15))
+
+<br>
 
 ### v1.2.0
 - Added `?threshold` parameter to change the fuzzy search threshold from its default of 0.6 ([#7](https://github.com/Sv443/geniURL/issues/7))
