@@ -2,6 +2,8 @@
 Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on [genius.com](https://genius.com/)  
 Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
 Obtaining actual lyrics sadly isn't possible.  
+  
+Like geniURL? Please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)
 
 <br><br>
 
@@ -18,8 +20,7 @@ https://api.sv443.net/geniurl/
 ```
 
 <sub>
-Note that this instance is rate limited to 5 requests within 10 seconds.<br>
-If you want to host your own and increase the values, look at the top of `src/server.ts`
+Note that this instance is rate limited to 10 requests within 30 seconds per unique client.
 </sub>
 
 <br><br>
@@ -45,13 +46,13 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name. For best result artist name should come first, separate with a whitespace or hyphen.  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
+> If you want to search for a remix (like `?q=Artist - Song (Artist2 Remix)`), this parameter will yield better results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 > 
 > **OR**
 > 
 > `?artist=name` and `?song=name`  
-> Instead of `?q`, you can use `?artist` and `?song` to help geniURL filter the search results a little better.  
+> Instead of `?q`, you can also use `?artist` and `?song`.  
 > Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
 > 
 > <br>
@@ -60,7 +61,7 @@ All routes support gzip and deflate compression.
 > `?preferLang=en`  
 > Sometimes the genius API and geniURL's filtering will rank song translations or remixes higher than the original song. This optional parameter can help with that.  
 > Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Results of other languages will still be returned.
+> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
 >   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
@@ -166,13 +167,13 @@ All routes support gzip and deflate compression.
 > `?q=search%20query`  
 > This parameter should contain both the song and artist name. For best result artist name should come first, separate with a whitespace or hyphen.  
 > Sometimes the song name alone might be enough but the results vary greatly.  
-> Using this parameter instead of `?artist` and `?song` means you will get slightly less accurate results.  
+> If you want to search for a remix (like `?q=Artist - Song (Artist2 Remix)`), this parameter will yield better results.  
 > Make sure the search query is [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)  
 > 
 > **OR**
 > 
 > `?artist=name` and `?song=name`  
-> Instead of `?q`, you can use `?artist` and `?song` to help geniURL filter the search results a little better.  
+> Instead of `?q`, you can also use `?artist` and `?song`.  
 > Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/wiki/Percent-encoding)
 > 
 > <br><br>
@@ -181,7 +182,7 @@ All routes support gzip and deflate compression.
 > `?preferLang=en`  
 > Sometimes the genius API and geniURL's filtering will rank song translations or remixes higher than the original song. This optional parameter can help with that.  
 > Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Results of other languages will still be returned.
+> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
 >   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
@@ -281,7 +282,7 @@ All routes support gzip and deflate compression.
 > `?preferLang=en`  
 > The filtering done by the genius API and geniURL will sometimes produce results that are ranked inconsistently. This optional parameter can help with that.  
 > Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Results of other languages will still be returned.
+> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
 >   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
