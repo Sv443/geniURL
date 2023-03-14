@@ -21,8 +21,8 @@ app.use(compression());
 app.disable("x-powered-by");
 
 const rateLimiter = new RateLimiterMemory({
-    points: 5,
-    duration: 10,
+    points: 10,
+    duration: 30,
 });
 
 const authTokens = getAuthTokens();

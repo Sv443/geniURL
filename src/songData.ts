@@ -1,11 +1,12 @@
 /* eslint-disable no-control-regex */
 
-import { axios } from "./axios";
 import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
-import { clamp, Stringifiable } from "svcorelib";
+import { clamp } from "svcorelib";
+
+import { axios, getAxiosAuthConfig } from "./axios";
+import { charReplacements } from "./constants";
 import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
-import { getAxiosAuthConfig } from "./utils";
 
 const defaultFuzzyThreshold = 0.65;
 
@@ -33,7 +34,8 @@ export async function getMeta({
 
     if(threshold === undefined || isNaN(threshold))
         threshold = defaultFuzzyThreshold;
-    threshold = clamp(threshold, 0.0, 1.0);
+    else
+        threshold = clamp(threshold, 0.0, 1.0);
 
     if(status >= 200 && status < 300 && Array.isArray(response?.hits))
     {
@@ -47,18 +49,18 @@ export async function getMeta({
                 path: result.path,
                 language: result.language ?? null,
                 meta: {
-                    title: formatStr(result.title),
-                    fullTitle: formatStr(result.full_title),
-                    artists: formatStr(result.artist_names),
+                    title: normalize(result.title),
+                    fullTitle: normalize(result.full_title),
+                    artists: normalize(result.artist_names),
                     primaryArtist: {
-                        name: result.primary_artist.name ? formatStr(result.primary_artist.name) : null,
-                        url: result.primary_artist.url ?? null,
-                        headerImage: result.primary_artist.header_image_url ?? null,
-                        image: result.primary_artist.image_url ?? null,
+                        name: result.primary_artist?.name ?? null,
+                        url: result.primary_artist?.url ?? null,
+                        headerImage: result.primary_artist?.header_image_url ?? null,
+                        image: result.primary_artist?.image_url ?? null,
                     },
                     featuredArtists: Array.isArray(result.featured_artists) && result.featured_artists.length > 0
                         ? result.featured_artists.map((a) => ({
-                            name: a.name ? formatStr(a.name) : null,
+                            name: a.name ?? null,
                             url: a.url ?? null,
                             headerImage: a.header_image_url ?? null,
                             image: a.image_url ?? null,
@@ -229,16 +231,15 @@ export async function getAlbum(songId: number): Promise<Album | null> {
     }
 }
 
-/**
- * Removes invisible characters and control characters from a string  
- * @throws Throws TypeError if the input is not a string
- */
-function formatStr(str: Stringifiable): string
+/** Removes invisible characters and control characters from a string and replaces weird unicode variants with the regular ASCII characters */
+function normalize(str: string): string
 {
-    if(!str || !str.toString || typeof str !== "string")
-        throw new TypeError("formatStr(): input is not a string");
+    charReplacements.forEach((val, regex) => {
+        if(str.match(regex))
+            str = str.replace(regex, val);
+    });
 
-    return str.toString()
+    return str
         .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters
         .replace(/\u00A0/g, " "); // non-standard 1-width spaces
 }
