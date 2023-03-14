@@ -231,13 +231,21 @@ export async function getAlbum(songId: number): Promise<Album | null> {
     }
 }
 
+const allReplaceCharsRegex = new RegExp(`[${
+    [...charReplacements.entries()].reduce((a, [chars]) => a + chars, "")
+}]`);
+
+const charReplacementRegexes = [...charReplacements.entries()]
+    .map(([chars, repl]) => ([new RegExp(`[${chars}]`, "g"), repl])) as [RegExp, string][];
+
 /** Removes invisible characters and control characters from a string and replaces weird unicode variants with the regular ASCII characters */
 function normalize(str: string): string
 {
-    charReplacements.forEach((val, regex) => {
-        if(str.match(regex))
+    if(str.match(allReplaceCharsRegex)) {
+        charReplacementRegexes.forEach(([regex, val]) => {
             str = str.replace(regex, val);
-    });
+        });
+    }
 
     return str
         .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters

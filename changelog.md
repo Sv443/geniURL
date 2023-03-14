@@ -13,7 +13,7 @@
 - Added route `/translations/:songId` to receive info about a song's translation pages
 - Added route `/album/:songId` to get info about the album that the provided song is in
 - Added parameter `?preferLang=en` to always rank results of a certain language higher than the rest
-- geniURL will now replace inconsistent unicode characters with ASCII ones ([#15](https://github.com/Sv443/geniURL/issues/15))
+- geniURL will now replace inconsistent unicode characters in the properties `title`, `fullTitle`, and `artists` ([#15](https://github.com/Sv443/geniURL/issues/15))
 
 <br>
 
