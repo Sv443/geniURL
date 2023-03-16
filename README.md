@@ -28,7 +28,7 @@ Note that this instance is rate limited to 5 requests within 15 seconds per uniq
 ## Routes:
 All routes support gzip and deflate compression.  
   
-Also all routes always return an `error` and `matches` property.  
+Also all routes always return the properties `error` and `matches`.  
 They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
   
 These are the available routes:
