@@ -41,7 +41,7 @@ These are the available routes:
 
 > ### GET `/search`
 >
-> This endpoint gives you up to 10 results for a search query specified by `search_text`  
+> This route gives you up to 10 results for a search query specified by `search_text`  
 > The returned payload contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
 >
 > <br>
@@ -159,7 +159,7 @@ These are the available routes:
 
 > ### GET `/search/top`
 >
-> This endpoint is similar to `/search`, but it only gives the top result.  
+> This route is similar to `/search`, but it only gives the top result.  
 > Use this if you are only interested in the top result and want to reduce traffic.
 >
 > <br>
@@ -270,8 +270,8 @@ These are the available routes:
 
 > ### GET `/translations/:songId`
 >
-> This endpoint returns all translations of a certain song.  
-> Specify the song ID, gotten from the /search/ endpoints, in the URL path.  
+> This route returns all translations of a certain song.  
+> Get the song ID from one of the [search routes.](#routes)  
 > Example: `/translations/3093344`
 > 
 > <br>
@@ -338,7 +338,8 @@ These are the available routes:
 
 > ### GET `/album/:songId`
 >
-> This endpoint returns any associated album for a specified song.  
+> This route returns any associated album for a specified song.  
+> Get the song ID from one of the [search routes.](#routes)  
 > Example: `/translations/3093344`
 > 
 > <br>
