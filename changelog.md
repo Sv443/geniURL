@@ -1,5 +1,6 @@
 ## Version History:
-- [**1.3.0**](#v130)
+- [**1.3.1**](#v131)
+- [1.3.0](#v130)
 - [1.2.0](#v120)
 - [1.1.1](#v111)
 - [1.1.0](#v110)
@@ -8,6 +9,15 @@
 - [0.1.0](#v010)
 
 <br><br>
+
+### v1.3.1
+- Fixed inconsistent `error` property when no translations are found
+- Added support for preflight through an OPTIONS request
+- Improved rate-limit header consistency
+- Removed timestamp property to allow for better caching
+- Made documentation more clear
+
+<br>
 
 ### v1.3.0
 - Added route `/translations/:songId` to receive info about a song's translation pages

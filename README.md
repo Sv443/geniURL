@@ -20,20 +20,24 @@ https://api.sv443.net/geniurl/
 ```
 
 <sub>
-Note that this instance is rate limited to 10 requests within 30 seconds per unique client.
+Note that this instance is rate limited to 5 requests within 15 seconds per unique client.
 </sub>
 
 <br><br>
 
 ## Routes:
-All routes support gzip and deflate compression.
-
+All routes support gzip and deflate compression.  
+  
+Also all routes always return an `error` and `matches` property.  
+They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
+  
+These are the available routes:
 - [Search](#get-search)
     - [Search (only top result)](#get-searchtop)
 - [Translations](#get-translationssongid)
 - [Associated Album](#get-albumsongid)
 
-<br>
+<br><br>
 
 > ### GET `/search`
 >
@@ -121,8 +125,7 @@ All routes support gzip and deflate compression.
 >         // This array contains up to 10 objects with the same structure as 'top', sorted best match first
 >         // The amount of objects in here is the same as the 'matches' property
 >         // The first object of this array is exactly the same as 'top'
->     ],
->     "timestamp": 1234567890123
+>     ]
 > }
 > ```
 >
@@ -134,8 +137,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -147,8 +149,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Found no results matching your search query",
->     "timestamp": 1234567890123
+>     "message": "Found no results matching your search query"
 > }
 > ```
 >
@@ -235,8 +236,7 @@ All routes support gzip and deflate compression.
 >         "image": "https://images.genius.com/..."
 >     },
 >     "lyricsState": "complete",
->     "id": 42069,
->     "timestamp": 1234567890123
+>     "id": 42069
 > }
 > ```
 >
@@ -248,8 +248,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -261,8 +260,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Found no results matching your search query",
->     "timestamp": 1234567890123
+>     "message": "Found no results matching your search query"
 > }
 > ```
 >
@@ -306,8 +304,7 @@ All routes support gzip and deflate compression.
 >             "path": "/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
 >             "id": 6942
 >         }
->     ],
->     "timestamp": 1234567890123
+>     ]
 > }
 > ```
 >
@@ -319,8 +316,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -330,10 +326,9 @@ All routes support gzip and deflate compression.
 >
 > ```json
 > {
->     "error": false,
+>     "error": true,
 >     "matches": 0,
->     "translations": [],
->     "timestamp": 1234567890123
+>     "translations": []
 > }
 > ```
 >
@@ -375,8 +370,7 @@ All routes support gzip and deflate compression.
 >             "image": "https://images.genius.com/...",
 >             "headerImage": "https://images.genius.com/..."
 >         }
->     },
->     "timestamp": 1234567890123
+>     }
 > }
 > ```
 >
@@ -388,8 +382,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -401,8 +394,7 @@ All routes support gzip and deflate compression.
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Couldn't find any associated album for this song",
->     "timestamp": 1234567890123
+>     "message": "Couldn't find any associated album for this song"
 > }
 > ```
 >

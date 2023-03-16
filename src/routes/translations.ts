@@ -24,7 +24,7 @@ export function initTranslationsRoutes(router: Router) {
 
             const translations = await getTranslations(Number(songId), { preferLang });
 
-            if(!translations)
+            if(!translations || translations.length === 0)
                 return respond(res, "clientError", "Couldn't find translations for this song", format, 0);
 
             return respond(res, "success", { translations }, format, translations.length);
