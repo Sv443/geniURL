@@ -14,12 +14,17 @@ import { respond } from "./utils";
 const { env } = process;
 const app = express();
 
-app.use(cors({ methods: "GET,HEAD,OPTIONS", origin: "*" }));
+app.use(cors({
+    methods: "GET,HEAD,OPTIONS",
+    origin: "*",
+}));
 app.use(helmet({ 
     dnsPrefetchControl: true,
 }));
+app.use(compression({
+    threshold: 256
+}));
 app.use(express.json());
-app.use(compression({ threshold: 256 }));
 
 if(env.NODE_ENV?.toLowerCase() === "production")
     app.enable("trust proxy");
