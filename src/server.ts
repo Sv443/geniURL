@@ -11,26 +11,30 @@ import { error } from "./error";
 import { initRouter } from "./routes";
 import { respond } from "./utils";
 
+const { env } = process;
 const app = express();
 
 app.use(cors({ methods: "GET,HEAD,OPTIONS", origin: "*" }));
 app.use(helmet());
 app.use(express.json());
-app.use(compression());
+app.use(compression({ threshold: 256 }));
+
+if(env.NODE_ENV?.toLowerCase() === "production")
+    app.enable("trust proxy");
 
 app.disable("x-powered-by");
 
 const rateLimiter = new RateLimiterMemory({
-    points: 10,
-    duration: 30,
+    points: 5,
+    duration: 15,
 });
 
 const authTokens = getAuthTokens();
 
 export async function init()
 {
-    const port = parseInt(String(process.env.HTTP_PORT ?? "").trim());
-    const hostRaw = String(process.env.HTTP_HOST ?? "").trim();
+    const port = parseInt(String(env.HTTP_PORT ?? "").trim());
+    const hostRaw = String(env.HTTP_HOST ?? "").trim();
     const host = hostRaw.length < 1 ? "0.0.0.0" : hostRaw;
 
     if(await portUsed(port))
@@ -44,6 +48,9 @@ export async function init()
             return next();
     });
 
+    // preflight requests
+    app.options("*", cors());
+
     // rate limiting
     app.use(async (req, res, next) => {
         const fmt = req?.query?.format ? String(req.query.format) : undefined;
@@ -56,7 +63,8 @@ export async function init()
             return next();
 
         const setRateLimitHeaders = (rateLimiterRes: RateLimiterRes) => {
-            res.setHeader("Retry-After", rateLimiterRes.msBeforeNext / 1000);
+            if(rateLimiterRes.remainingPoints === 0)
+                res.setHeader("Retry-After", Math.ceil(rateLimiterRes.msBeforeNext / 1000));
             res.setHeader("X-RateLimit-Limit", rateLimiter.points);
             res.setHeader("X-RateLimit-Remaining", rateLimiterRes.remainingPoints);
             res.setHeader("X-RateLimit-Reset", new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
@@ -70,7 +78,7 @@ export async function init()
             .catch((err) => {
                 if(err instanceof RateLimiterRes) {
                     setRateLimitHeaders(err);
-                    return respond(res, 429, { message: "You are being rate limited. Please try again a little later." }, fmt);
+                    return respond(res, 429, { error: true, matches: null, message: "You are being rate limited. Refer to the Retry-After header for when to try again." }, fmt);
                 }
                 else return respond(res, 500, { message: "Encountered an internal error. Please try again a little later." }, fmt);
             });
