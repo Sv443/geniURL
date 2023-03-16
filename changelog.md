@@ -14,6 +14,7 @@
 - Fixed inconsistent `error` property when no translations are found
 - Added support for preflight through an OPTIONS request
 - Improved rate-limit header consistency
+- Removed timestamp property to allow for better caching
 - Made documentation more clear
 
 <br>

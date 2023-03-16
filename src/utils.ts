@@ -62,7 +62,6 @@ export function respond(res: Response, type: ResponseType | number, data: String
         error,
         ...(matches === undefined ? {} : { matches }),
         ...resData,
-        timestamp: Date.now(),
     };
 
     const finalData = format === "xml" ? jsonToXml("data", resData) : resData;

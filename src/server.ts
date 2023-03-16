@@ -15,7 +15,9 @@ const { env } = process;
 const app = express();
 
 app.use(cors({ methods: "GET,HEAD,OPTIONS", origin: "*" }));
-app.use(helmet());
+app.use(helmet({ 
+    dnsPrefetchControl: true,
+}));
 app.use(express.json());
 app.use(compression({ threshold: 256 }));
 

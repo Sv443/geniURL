@@ -125,8 +125,7 @@ These are the available routes:
 >         // This array contains up to 10 objects with the same structure as 'top', sorted best match first
 >         // The amount of objects in here is the same as the 'matches' property
 >         // The first object of this array is exactly the same as 'top'
->     ],
->     "timestamp": 1234567890123
+>     ]
 > }
 > ```
 >
@@ -138,8 +137,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -151,8 +149,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Found no results matching your search query",
->     "timestamp": 1234567890123
+>     "message": "Found no results matching your search query"
 > }
 > ```
 >
@@ -239,8 +236,7 @@ These are the available routes:
 >         "image": "https://images.genius.com/..."
 >     },
 >     "lyricsState": "complete",
->     "id": 42069,
->     "timestamp": 1234567890123
+>     "id": 42069
 > }
 > ```
 >
@@ -252,8 +248,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -265,8 +260,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Found no results matching your search query",
->     "timestamp": 1234567890123
+>     "message": "Found no results matching your search query"
 > }
 > ```
 >
@@ -310,8 +304,7 @@ These are the available routes:
 >             "path": "/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
 >             "id": 6942
 >         }
->     ],
->     "timestamp": 1234567890123
+>     ]
 > }
 > ```
 >
@@ -323,8 +316,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -336,8 +328,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": 0,
->     "translations": [],
->     "timestamp": 1234567890123
+>     "translations": []
 > }
 > ```
 >
@@ -379,8 +370,7 @@ These are the available routes:
 >             "image": "https://images.genius.com/...",
 >             "headerImage": "https://images.genius.com/..."
 >         }
->     },
->     "timestamp": 1234567890123
+>     }
 > }
 > ```
 >
@@ -392,8 +382,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": null,
->     "message": "Something went wrong",
->     "timestamp": 1234567890123
+>     "message": "Something went wrong"
 > }
 > ```
 >
@@ -405,8 +394,7 @@ These are the available routes:
 > {
 >     "error": true,
 >     "matches": 0,
->     "message": "Couldn't find any associated album for this song",
->     "timestamp": 1234567890123
+>     "message": "Couldn't find any associated album for this song"
 > }
 > ```
 >

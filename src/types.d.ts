@@ -5,14 +5,12 @@ export type ServerResponse<T> = SuccessResponse<T> | ErrorResponse;
 export type SuccessResponse<T> = {
     error: false;
     matches: number;
-    timestamp: number;
 } & T;
 
 export type ErrorResponse = {
     error: true;
     matches: 0 | null;
     message: string;
-    timestamp: number;
 }
 
 //#SECTION meta
