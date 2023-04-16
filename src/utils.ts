@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Stringifiable } from "svcorelib";
+import { Stringifiable, byteLength } from "svcorelib";
 import { parse as jsonToXml } from "js2xmlparser";
 import { ResponseType } from "./types";
 
@@ -33,7 +33,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
         error = false;
         matches = matchesAmt;
         statusCode = 200;
-        resData = typeof data === "string" ? data : { ...data };
+        resData = data;
         break;
     case "clientError":
         error = true;
@@ -53,7 +53,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
             error = false;
             matches = matchesAmt ?? 0;
             statusCode = type;
-            resData = typeof data === "string" ? data : { ...data };
+            resData = data;
         }
         break;
     }
@@ -65,7 +65,9 @@ export function respond(res: Response, type: ResponseType | number, data: String
     };
 
     const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
+    const contentLen = byteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
 
     res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
+    contentLen > -1 && res.setHeader("Content-Length", contentLen);
     res.status(statusCode).send(finalData);
 }
