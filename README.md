@@ -41,7 +41,7 @@ These are the available routes:
 
 > ### GET `/search`
 >
-> This route gives you up to 10 results for a search query specified by `search_text`  
+> This route gives you up to 10 results for a provided search query.  
 > The returned payload contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
 >
 > <br>
@@ -272,7 +272,7 @@ These are the available routes:
 >
 > This route returns all translations of a certain song.  
 > Get the song ID from one of the [search routes.](#routes)  
-> Example: `/translations/3093344`
+> Example: `/translations/1644`
 > 
 > <br>
 >
@@ -340,7 +340,7 @@ These are the available routes:
 >
 > This route returns any associated album for a specified song.  
 > Get the song ID from one of the [search routes.](#routes)  
-> Example: `/translations/3093344`
+> Example: `/album/1644`
 > 
 > <br>
 >
