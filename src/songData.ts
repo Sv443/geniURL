@@ -117,6 +117,7 @@ export async function getMeta({
             if(query.match(/\s-\s/))
                 queryParts = query.split(/\s-\s/);
 
+            queryParts = queryParts.slice(0, 5);
             for(const part of queryParts)
                 addScores(queryFuse.search(part.trim()));
         }
