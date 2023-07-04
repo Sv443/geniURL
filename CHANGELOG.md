@@ -1,5 +1,6 @@
 ## Version History:
-- **[1.3.1](#v131)**
+- **[1.3.2](#v132)**
+- [1.3.1](#v131)
 - [1.3.0](#v130)
 - [1.2.0](#v120)
 - [1.1.1](#v111)
@@ -9,6 +10,11 @@
 - [0.1.0](#v010)
 
 <br><br>
+
+### v1.3.2
+- Increased ratelimit budget from 5 requests in 15 seconds to 25 requests in 30 seconds
+
+<br>
 
 ### v1.3.1
 - Fixed inconsistent `error` property when no translations are found

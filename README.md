@@ -14,13 +14,13 @@ To download it and test locally, hover over the collection, click the three-dot-
 <br><br>
 
 ## Base URL:
-I host a public instance on this URL:
+I host a public instance on this base URL:
 ```
 https://api.sv443.net/geniurl/
 ```
 
 <sub>
-Note that this instance is rate limited to 5 requests within 15 seconds per unique client.
+Note: this instance is rate limited to 25 requests within a 30 second timeframe.
 </sub>
 
 <br><br>

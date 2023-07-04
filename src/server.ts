@@ -10,6 +10,7 @@ import packageJson from "../package.json";
 import { error } from "./error";
 import { initRouter } from "./routes";
 import { respond } from "./utils";
+import { rateLimitOptions } from "./constants";
 
 const { env } = process;
 const app = express();
@@ -31,10 +32,7 @@ if(env.NODE_ENV?.toLowerCase() === "production")
 
 app.disable("x-powered-by");
 
-const rateLimiter = new RateLimiterMemory({
-    points: 5,
-    duration: 15,
-});
+const rateLimiter = new RateLimiterMemory(rateLimitOptions);
 
 const authTokens = getAuthTokens();
 
