@@ -88,6 +88,7 @@ export async function getMeta({
             threshold,
         };
 
+        // TODO:FIXME: this entire thing is unreliable af
         const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
             searchRes.forEach(({ item, score }) => {
                 if(!item.uuid || !score)
