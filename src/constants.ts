@@ -1,8 +1,8 @@
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
 
 export const rateLimitOptions: IRateLimiterOptions = {
-    points: 25,
-    duration: 30,
+  points: 25,
+  duration: 30,
 };
 
 /** Set of all supported [ISO 639-1 language codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) */
@@ -10,9 +10,9 @@ export const langCodes = new Set<string>(["aa","ab","ae","af","ak","am","an","ar
 
 /** Map of unicode variant characters and replacements used in normalizing fields before fuzzy filtering them */
 export const charReplacements = new Map<string, string>([
-    ["`´’︐︑ʻ", "'"],
-    ["“”", "\""],
-    ["，", ","],
-    ["—─ ", "-"],
-    ["     ", " "],
+  ["`´’︐︑ʻ", "'"],
+  ["“”", "\""],
+  ["，", ","],
+  ["—─ ", "-"],
+  ["     ", " "],
 ]);

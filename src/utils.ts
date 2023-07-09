@@ -5,7 +5,7 @@ import { ResponseType } from "./types";
 
 /** Checks if the value of a passed URL parameter is valid */
 export function paramValid(val: unknown): val is string {
-    return typeof val === "string" && val.length > 0;
+  return typeof val === "string" && val.length > 0;
 }
 
 /**
@@ -16,58 +16,58 @@ export function paramValid(val: unknown): val is string {
  */
 export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number)
 {
-    let statusCode = 500;
-    let error = true;
-    let matches = null;
+  let statusCode = 500;
+  let error = true;
+  let matches = null;
 
-    let resData = {};
+  let resData = {};
 
-    if(typeof format !== "string" || !["json", "xml"].includes(format.toLowerCase()))
-        format = "json";
+  if(typeof format !== "string" || !["json", "xml"].includes(format.toLowerCase()))
+    format = "json";
 
-    format = format.toLowerCase();
+  format = format.toLowerCase();
 
-    switch(type)
+  switch(type)
+  {
+  case "success":
+    error = false;
+    matches = matchesAmt;
+    statusCode = 200;
+    resData = data;
+    break;
+  case "clientError":
+    error = true;
+    matches = matchesAmt ?? null;
+    statusCode = 400;
+    resData = { message: data };
+    break;
+  case "serverError":
+    error = true;
+    matches = matchesAmt ?? null;
+    statusCode = 500;
+    resData = { message: data };
+    break;
+  default:
+    if(typeof type === "number")
     {
-    case "success":
-        error = false;
-        matches = matchesAmt;
-        statusCode = 200;
-        resData = data;
-        break;
-    case "clientError":
-        error = true;
-        matches = matchesAmt ?? null;
-        statusCode = 400;
-        resData = { message: data };
-        break;
-    case "serverError":
-        error = true;
-        matches = matchesAmt ?? null;
-        statusCode = 500;
-        resData = { message: data };
-        break;
-    default:
-        if(typeof type === "number")
-        {
-            error = false;
-            matches = matchesAmt ?? 0;
-            statusCode = type;
-            resData = data;
-        }
-        break;
+      error = false;
+      matches = matchesAmt ?? 0;
+      statusCode = type;
+      resData = data;
     }
+    break;
+  }
 
-    resData = {
-        error,
-        ...(matches === undefined ? {} : { matches }),
-        ...resData,
-    };
+  resData = {
+    error,
+    ...(matches === undefined ? {} : { matches }),
+    ...resData,
+  };
 
-    const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
-    const contentLen = byteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
+  const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
+  const contentLen = byteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
 
-    res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
-    contentLen > -1 && res.setHeader("Content-Length", contentLen);
-    res.status(statusCode).send(finalData);
+  res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
+  contentLen > -1 && res.setHeader("Content-Length", contentLen);
+  res.status(statusCode).send(finalData);
 }
