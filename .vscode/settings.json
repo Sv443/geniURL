@@ -1,11 +1,9 @@
 {
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-    },
-    "eslint.validate": [
-        "javascript",
-    ],
-    "files.associations": {
-        ".env.template": "dotenv",
-    },
+  "eslint.validate": [
+    "javascript",
+  ],
+  "files.associations": {
+    ".env": "dotenv",
+    ".env.template": "dotenv",
+  },
 }
