@@ -29,7 +29,7 @@ export async function getMeta({
     status,
   } = await axios.get<ApiSearchResult>(
     `https://api.genius.com/search?q=${encodeURIComponent(query)}`,
-    getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+    getAxiosAuthConfig()
   );
 
   if(threshold === undefined || isNaN(threshold))
@@ -173,7 +173,7 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
   try {
     const { data, status } = await axios.get<ApiSongResult>(
       `https://api.genius.com/songs/${songId}`,
-      getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+      getAxiosAuthConfig()
     );
 
     if(status >= 200 && status < 300 && Array.isArray(data?.response?.song?.translation_songs))
@@ -205,7 +205,7 @@ export async function getAlbum(songId: number): Promise<Album | null> {
   try {
     const { data, status } = await axios.get<ApiSongResult>(
       `https://api.genius.com/songs/${songId}`,
-      getAxiosAuthConfig(process.env.GENIUS_ACCESS_TOKEN)
+      getAxiosAuthConfig()
     );
 
     if(status >= 200 && status < 300 && data?.response?.song?.album?.id)

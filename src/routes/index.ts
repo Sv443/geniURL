@@ -1,9 +1,9 @@
 import { Application, Router } from "express";
 import packageJson from "../../package.json";
-import { initAlbumRoutes } from "./album";
 
 import { initSearchRoutes } from "./search";
 import { initTranslationsRoutes } from "./translations";
+import { initAlbumRoutes } from "./album";
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,

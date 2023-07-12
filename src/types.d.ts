@@ -57,6 +57,13 @@ export interface GetMetaArgs {
   preferLang?: string;
 }
 
+export type SearchFilterArgs = GetMetaArgs;
+
+export type ScoredResults<T> = {
+  score: number;
+  result: T;
+};
+
 export interface GetMetaResult {
   top: SongMeta;
   all: SongMeta[];
