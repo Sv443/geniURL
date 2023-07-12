@@ -3,7 +3,7 @@ import { Stringifiable, byteLength } from "svcorelib";
 import { parse as jsonToXml } from "js2xmlparser";
 import { ResponseType } from "./types";
 
-/** Checks if the value of a passed URL parameter is valid */
+/** Checks if the value of a passed URL parameter is a string with length > 0 */
 export function paramValid(val: unknown): val is string {
   return typeof val === "string" && val.length > 0;
 }

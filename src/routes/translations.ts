@@ -11,11 +11,12 @@ export function initTranslationsRoutes(router: Router) {
   });
 
   router.get("/translations/:songId", async (req, res) => {
+    const { format: fmt, preferLang: prLang } = req.query;
+    const format: string = fmt ? String(fmt) : "json";
+
     try {
       const { songId } = req.params;
-      const { format: fmt, preferLang: prLang } = req.query;
 
-      const format: string = fmt ? String(fmt) : "json";
       const preferLang = paramValid(prLang) && langCodes.has(prLang.toLowerCase()) ? prLang.toLowerCase() : undefined;
 
       if(!paramValid(songId) || isNaN(Number(songId)))
