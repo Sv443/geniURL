@@ -30,7 +30,7 @@ export function initTranslationsRoutes(router: Router) {
       return respond(res, "success", { translations }, format, translations.length);
     }
     catch(err) {
-      return respond(res, "serverError", `Encountered an internal server error: ${err instanceof Error ? err.message : ""}`, "json");
+      return respond(res, "serverError", `Encountered an internal server error: ${err instanceof Error ? err.message : ""}`, format);
     }
   });
 }
