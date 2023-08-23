@@ -4,7 +4,7 @@ import Fuse from "fuse.js";
 import { nanoid } from "nanoid";
 import { clamp } from "svcorelib";
 
-import { axios, getAxiosAuthConfig } from "./axios";
+import { axios, baseAxiosOpts } from "./axios";
 import { charReplacements } from "./constants";
 import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
 
@@ -29,7 +29,7 @@ export async function getMeta({
     status,
   } = await axios.get<ApiSearchResult>(
     `https://api.genius.com/search?q=${encodeURIComponent(query)}`,
-    getAxiosAuthConfig()
+    baseAxiosOpts()
   );
 
   if(threshold === undefined || isNaN(threshold))
@@ -37,8 +37,7 @@ export async function getMeta({
   else
     threshold = clamp(threshold, 0.0, 1.0);
 
-  if(status >= 200 && status < 300 && Array.isArray(response?.hits))
-  {
+  if(status >= 200 && status < 300 && Array.isArray(response?.hits)) {
     if(response.hits.length === 0)
       return null;
 
@@ -168,16 +167,19 @@ export async function getMeta({
  * Returns translations for a song with the specified ID
  * @param songId Song ID gotten from the /search endpoints
  * @param param1 URL parameters
+ * @returns An array of translation objects, null if the song doesn't have any or undefined if an error occurred (like the song doesn't exist)
  */
-export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null> {
+export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null | undefined> {
   try {
     const { data, status } = await axios.get<ApiSongResult>(
       `https://api.genius.com/songs/${songId}`,
-      getAxiosAuthConfig()
+      baseAxiosOpts()
     );
 
-    if(status >= 200 && status < 300 && Array.isArray(data?.response?.song?.translation_songs))
-    {
+    if(status >= 200 && status < 300 && Array.isArray(data?.response?.song?.translation_songs)) {
+      if(data.response.song.translation_songs.length === 0)
+        return null;
+
       const { response: { song } } = data;
       const results = song.translation_songs
         .map(({ language, id, path, title, url }) => ({ language, title, url, path, id }));
@@ -197,7 +199,7 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
     return null;
   }
   catch(e) {
-    return null;
+    return undefined;
   }
 }
 
@@ -205,11 +207,10 @@ export async function getAlbum(songId: number): Promise<Album | null> {
   try {
     const { data, status } = await axios.get<ApiSongResult>(
       `https://api.genius.com/songs/${songId}`,
-      getAxiosAuthConfig()
+      baseAxiosOpts()
     );
 
-    if(status >= 200 && status < 300 && data?.response?.song?.album?.id)
-    {
+    if(status >= 200 && status < 300 && data?.response?.song?.album?.id) {
       const { response: { song: { album } } } = data;
 
       return {
@@ -241,8 +242,7 @@ const charReplacementRegexes = [...charReplacements.entries()]
   .map(([chars, repl]) => ([new RegExp(`[${chars}]`, "g"), repl])) as [RegExp, string][];
 
 /** Removes invisible characters and control characters from a string and replaces weird unicode variants with the regular ASCII characters */
-function normalize(str: string): string
-{
+function normalize(str: string): string {
   if(str.match(allReplaceCharsRegex)) {
     charReplacementRegexes.forEach(([regex, val]) => {
       str = str.replace(regex, val);

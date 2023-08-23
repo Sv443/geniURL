@@ -1,7 +1,7 @@
 import k from "kleur";
 
 /**
- * Handles an error
+ * Logs an internal error
  * @param msg Short error message
  * @param err Error instance that caused the error
  * @param fatal Exits with code 1 if set to true
