@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "tsc && node --enable-source-maps out/src/index.js",
-    "watch": "nodemon -e \"ts,d.ts\" -x \"npm start\""
+    "dev": "nodemon -e \"ts,d.ts\" -x \"npm start\""
   },
   "repository": {
     "type": "git",
