@@ -25,7 +25,7 @@ export function initTranslationsRoutes(router: Router) {
         return respond(res, "clientError", "Couldn't find translations for this song", format, 0);
 
       if(translations === undefined)
-        return respond(res, "clientError", "Couldn't find a song with the provided ID", format, 0);
+        return respond(res, "clientError", "Couldn't find a song with the provided ID", format, undefined);
 
       return respond(res, "success", { translations }, format, translations.length);
     }
