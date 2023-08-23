@@ -4,7 +4,7 @@ export const axios = _axios.create({
   timeout: 1000 * 15,
 });
 
-export function getAxiosAuthConfig() {
+export function baseAxiosOpts() {
   const authToken = process.env.GENIUS_ACCESS_TOKEN;
   return authToken && authToken.length > 0 ? {
     headers: {
