@@ -3,7 +3,9 @@ Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyr
 Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
 Obtaining actual lyrics sadly isn't possible.  
   
-Like geniURL? Please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)
+Like geniURL? Please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)  
+  
+Disclaimer: this project is not affiliated with or endorsed by Genius.
 
 <br><br>
 
