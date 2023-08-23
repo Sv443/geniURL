@@ -64,11 +64,6 @@ These are the available routes:
 > <br>
 > 
 > **Optional URL Parameters:**  
-> `?preferLang=en`  
-> Sometimes the genius API and geniURL's filtering will rank song translations or remixes higher than the original song. This optional parameter can help with that.  
-> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
->   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
@@ -182,11 +177,6 @@ These are the available routes:
 > <br><br>
 > 
 > **Optional URL Parameters:**  
-> `?preferLang=en`  
-> Sometimes the genius API and geniURL's filtering will rank song translations or remixes higher than the original song. This optional parameter can help with that.  
-> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
->   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.
@@ -279,11 +269,6 @@ These are the available routes:
 > <br>
 >
 > **Optional URL Parameters:**  
-> `?preferLang=en`  
-> The filtering done by the genius API and geniURL will sometimes produce results that are ranked inconsistently. This optional parameter can help with that.  
-> Specify a [two-character ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) here to tell geniURL to prefer results of that language.  
-> Note that this only changes the ranking. Filtering will stay the same and results of other languages will still be returned.
->   
 > `?format=json/xml`  
 > Use this optional parameter to change the response format from the default (`json`) to `xml`  
 > The structure of the XML data is similar to the shown JSON data.

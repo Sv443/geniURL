@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { paramValid, respond } from "../utils";
 import { getTranslations } from "../songData";
-import { langCodes } from "../constants";
 
 export function initTranslationsRoutes(router: Router) {
   router.get("/translations", (req, res) => {
@@ -11,18 +10,16 @@ export function initTranslationsRoutes(router: Router) {
   });
 
   router.get("/translations/:songId", async (req, res) => {
-    const { format: fmt, preferLang: prLang } = req.query;
+    const { format: fmt } = req.query;
     const format: string = fmt ? String(fmt) : "json";
 
     try {
       const { songId } = req.params;
 
-      const preferLang = paramValid(prLang) && langCodes.has(prLang.toLowerCase()) ? prLang.toLowerCase() : undefined;
-
       if(!paramValid(songId) || isNaN(Number(songId)))
         return respond(res, "clientError", "Provided song ID is invalid", format);
 
-      const translations = await getTranslations(Number(songId), { preferLang });
+      const translations = await getTranslations(Number(songId));
 
       if(translations === null || (Array.isArray(translations) && translations.length === 0))
         return respond(res, "clientError", "Couldn't find translations for this song", format, 0);

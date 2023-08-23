@@ -26,7 +26,6 @@ interface Artist {
 export interface SongMeta {
   url: string;
   path: string;
-  language: string | null;
   meta: {
     title: string;
     fullTitle: string;
@@ -54,7 +53,6 @@ export interface GetMetaArgs {
   artist?: string;
   song?: string;
   threshold?: number;
-  preferLang?: string;
 }
 
 export type SearchFilterArgs = GetMetaArgs;
@@ -77,10 +75,6 @@ export interface SongTranslation {
   path: string;
   title: string;
   url: string;
-}
-
-export interface GetTranslationsArgs {
-  preferLang?: string;
 }
 
 //#SECTION server

@@ -6,7 +6,7 @@ import { clamp } from "svcorelib";
 
 import { axios, baseAxiosOpts } from "./axios";
 import { charReplacements } from "./constants";
-import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, GetTranslationsArgs, MetaSearchHit, SongMeta, SongTranslation } from "./types";
+import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongMeta, SongTranslation } from "./types";
 
 const defaultFuzzyThreshold = 0.65;
 
@@ -19,7 +19,6 @@ export async function getMeta({
   artist,
   song,
   threshold,
-  preferLang,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
   const query = q ? q : `${artist} ${song}`;
@@ -46,7 +45,6 @@ export async function getMeta({
       .map(({ result }) => ({
         url: result.url,
         path: result.path,
-        language: result.language ?? null,
         meta: {
           title: normalize(result.title),
           fullTitle: normalize(result.full_title),
@@ -142,21 +140,9 @@ export async function getMeta({
     if(hits.length === 0)
       return null;
 
-    // splice out preferredLang results and move them to the beginning of the array, while keeping their original order:
-    const preferredBestMatches: MetaSearchHit[] = [];
-
-    if(preferLang) {
-      hits.forEach((hit, i) => {
-        if(hit.language === preferLang.toLowerCase())
-          preferredBestMatches.push(hits.splice(i, 1)[0]!);
-      });
-    }
-
-    const reorderedHits = preferredBestMatches.concat(hits);
-
     return {
-      top: reorderedHits[0]!,
-      all: reorderedHits.slice(0, 10),
+      top: hits[0]!,
+      all: hits.slice(0, 10),
     };
   }
 
@@ -169,7 +155,7 @@ export async function getMeta({
  * @param param1 URL parameters
  * @returns An array of translation objects, null if the song doesn't have any or undefined if an error occurred (like the song doesn't exist)
  */
-export async function getTranslations(songId: number, { preferLang }: GetTranslationsArgs): Promise<SongTranslation[] | null | undefined> {
+export async function getTranslations(songId: number): Promise<SongTranslation[] | null | undefined> {
   try {
     const { data, status } = await axios.get<ApiSongResult>(
       `https://api.genius.com/songs/${songId}`,
@@ -184,17 +170,7 @@ export async function getTranslations(songId: number, { preferLang }: GetTransla
       const results = song.translation_songs
         .map(({ language, id, path, title, url }) => ({ language, title, url, path, id }));
 
-      // splice out preferredLang results and move them to the beginning of the array, while keeping their original order:
-      const preferredResults: SongTranslation[] = [];
-
-      if(preferLang) {
-        results.forEach((res, i) => {
-          if(res.language === preferLang.toLowerCase())
-            preferredResults.push(results.splice(i, 1)[0]!);
-        });
-      }
-
-      return preferredResults.concat(results);
+      return results;
     }
     return null;
   }

@@ -1,16 +1,14 @@
 import { Router } from "express";
 import { paramValid, respond } from "../utils";
 import { getMeta } from "../songData";
-import { langCodes } from "../constants";
 
 export function initSearchRoutes(router: Router) {
   router.get("/search", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, preferLang: prLang } = req.query;
+      const { q, artist, song, format: fmt, threshold: thr } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
       const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
-      const preferLang = paramValid(prLang) && langCodes.has(prLang.toLowerCase()) ? prLang.toLowerCase() : undefined;
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
@@ -21,7 +19,6 @@ export function initSearchRoutes(router: Router) {
             song: String(song),
           }),
           threshold,
-          preferLang,
         });
 
         if(!meta || meta.all.length < 1)
@@ -42,11 +39,10 @@ export function initSearchRoutes(router: Router) {
 
   router.get("/search/top", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, preferLang: prLang } = req.query;
+      const { q, artist, song, format: fmt, threshold: thr } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
       const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
-      const preferLang = paramValid(prLang) && langCodes.has(prLang.toLowerCase()) ? prLang.toLowerCase() : undefined;
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
@@ -57,7 +53,6 @@ export function initSearchRoutes(router: Router) {
             song: String(song),
           }),
           threshold,
-          preferLang,
         });
 
         if(!meta || !meta.top)
