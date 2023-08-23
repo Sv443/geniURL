@@ -11,6 +11,16 @@
 
 <br><br>
 
+### v1.4.0
+**Breaking changes:**
+- Removed `?preferLang` parameter due to genius API not returning a song language anymore ([#20](https://github.com/Sv443/geniURL/issues/20))
+
+**Fixes:**
+- TODO: Fuzzy filtering is now much more accurate and direct matches will be preferred ([#17](https://github.com/Sv443/geniURL/issues/17))
+- Fixed errored response for /translations/:songId - it now sets matches to null and gives a different error message if the provided song ID is invalid ([#18](https://github.com/Sv443/geniURL/issues/18))
+
+<br>
+
 ### v1.3.2
 - Increased ratelimit budget from 5 requests in 15 seconds to 25 requests in 30 seconds
 
