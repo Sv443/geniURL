@@ -5,7 +5,7 @@ import { getMeta } from "../songData";
 export function initSearchRoutes(router: Router) {
   router.get("/search", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr } = req.query;
+      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
       const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
@@ -19,6 +19,7 @@ export function initSearchRoutes(router: Router) {
             song: String(song),
           }),
           threshold,
+          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || meta.all.length < 1)
@@ -39,7 +40,7 @@ export function initSearchRoutes(router: Router) {
 
   router.get("/search/top", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr } = req.query;
+      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
       const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
@@ -53,6 +54,7 @@ export function initSearchRoutes(router: Router) {
             song: String(song),
           }),
           threshold,
+          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || !meta.top)

@@ -19,6 +19,7 @@ export async function getMeta({
   artist,
   song,
   threshold,
+  disableFuzzy,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
   const query = q ? q : `${artist} ${song}`;
@@ -72,6 +73,16 @@ export async function getMeta({
         lyricsState: result.lyrics_state ?? null,
         id: result.id ?? null,
       }));
+
+    if(disableFuzzy === true) {
+      if(hits.length === 0)
+        return null;
+
+      return {
+        top: hits[0]!,
+        all: hits.slice(0, 10),
+      };
+    }
 
     const scoreMap: Record<string, number> = {};
 
