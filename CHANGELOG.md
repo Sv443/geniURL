@@ -1,5 +1,6 @@
 ## Version History:
-- **[1.3.2](#v132)**
+- **[1.3.3](#v133)**
+- [1.3.2](#v132)
 - [1.3.1](#v131)
 - [1.3.0](#v130)
 - [1.2.0](#v120)
@@ -11,12 +12,21 @@
 
 <br><br>
 
-### v1.4.0
+<!-- ### v1.4.0
 **Breaking changes:**
 - Removed `?preferLang` parameter due to genius API not returning a song language anymore ([#20](https://github.com/Sv443/geniURL/issues/20))
 
 **Fixes:**
 - TODO: Fuzzy filtering is now much more accurate and direct matches will be preferred ([#17](https://github.com/Sv443/geniURL/issues/17))
+
+<br> -->
+
+### v1.3.3
+**Changes:**
+- Removed `?preferLang` parameter due to genius API not returning a song language anymore ([#20](https://github.com/Sv443/geniURL/issues/20))
+- Added temporary `?disableFuzzy` parameter to optionally disable fuzzy filtering since it's not as accurate as it should be
+
+**Fixes:**
 - Fixed errored response for /translations/:songId - it now sets matches to null and gives a different error message if the provided song ID is invalid ([#18](https://github.com/Sv443/geniURL/issues/18))
 
 <br>
@@ -29,7 +39,7 @@
 ### v1.3.1
 - Fixed inconsistent `error` property when no translations are found
 - Added support for preflight through an OPTIONS request
-- Improved rate-limit header consistency
+- Improved ratelimit header consistency
 - Removed timestamp property to allow for better caching
 - Made documentation more clear
 
