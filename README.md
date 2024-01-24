@@ -28,7 +28,7 @@ To always know how many requests you are able to send, refer to the response hea
 <br><br>
 
 ## Routes:
-All routes support gzip and deflate compression.  
+All routes support gzip, deflate and brotli compression.  
   
 Also all routes always return the properties `error` and `matches`.  
 They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
