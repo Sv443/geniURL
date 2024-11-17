@@ -32,7 +32,7 @@ To download it and test locally, hover over the collection, click the three-dot-
 ## Base URL:
 I host a public instance on this base URL:
 ```
-https://api.sv443.net/geniurl/
+https://api.sv443.net/geniurl/v2/
 ```
 
 Note: this instance is rate limited to 20 requests within a 30 second timeframe.  
