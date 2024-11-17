@@ -52,8 +52,6 @@ export interface GetMetaArgs {
   q?: string;
   artist?: string;
   song?: string;
-  threshold?: number;
-  disableFuzzy?: boolean;
 }
 
 export type SearchFilterArgs = GetMetaArgs;

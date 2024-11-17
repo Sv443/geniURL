@@ -1,7 +1,6 @@
 # geniURL
 Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on [genius.com](https://genius.com/)  
-Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
-Obtaining actual lyrics sadly isn't possible.  
+Authorization is not required. Obtaining actual lyrics sadly isn't possible.  
   
 Disclaimer: this project is not affiliated with or endorsed by Genius.  
   
@@ -82,15 +81,6 @@ Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/w
 `?format=json/xml`  
 Use this optional parameter to change the response format from the default (`json`) to `xml`  
 The structure of the XML data is similar to the shown JSON data.
-  
-`?threshold=0.65`  
-This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
-It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-0.65 is a good middle ground but depending on your use-case you might want to play around with this.
-  
-`?disableFuzzy`  
-This optional and value-less parameter can be used to disable the fuzzy search entirely.  
-Because the current fuzzy search implementation is not as accurate as it should be, your application might need the search results as they come from the genius API.
 
 <br>
 
@@ -199,15 +189,6 @@ Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/w
 `?format=json/xml`  
 Use this optional parameter to change the response format from the default (`json`) to `xml`  
 The structure of the XML data is similar to the shown JSON data.
-  
-`?threshold=0.65`  
-This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
-It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-0.65 is a good middle ground but depending on your use-case you might want to play around with this.
-  
-`?disableFuzzy`  
-This optional and value-less parameter can be used to disable the fuzzy search entirely.  
-Because the current fuzzy search implementation is not as accurate as it should be, your application might need the search results as they come from the genius API.
 
 <br>
 

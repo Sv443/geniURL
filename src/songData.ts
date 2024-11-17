@@ -1,14 +1,6 @@
-/* eslint-disable no-control-regex */
-
-import Fuse from "fuse.js";
-import { nanoid } from "nanoid";
-import { clamp } from "svcorelib";
-
 import { axios, baseAxiosOpts } from "./axios";
 import { charReplacements } from "./constants";
 import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongMeta, SongTranslation } from "./types";
-
-const defaultFuzzyThreshold = 0.65;
 
 /**
  * Returns meta information about the top results of a search using the genius API
@@ -18,8 +10,6 @@ export async function getMeta({
   q,
   artist,
   song,
-  threshold,
-  disableFuzzy,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
   const query = q ? q : `${artist} ${song}`;
@@ -31,11 +21,6 @@ export async function getMeta({
     `https://api.genius.com/search?q=${encodeURIComponent(query)}`,
     baseAxiosOpts()
   );
-
-  if(threshold === undefined || isNaN(threshold))
-    threshold = defaultFuzzyThreshold;
-  else
-    threshold = clamp(threshold, 0.0, 1.0);
 
   if(status >= 200 && status < 300 && Array.isArray(response?.hits)) {
     if(response.hits.length === 0)
@@ -74,80 +59,6 @@ export async function getMeta({
         id: result.id ?? null,
       }));
 
-    if(disableFuzzy === true) {
-      if(hits.length === 0)
-        return null;
-
-      return {
-        top: hits[0]!,
-        all: hits.slice(0, 10),
-      };
-    }
-
-    const scoreMap: Record<string, number> = {};
-
-    hits = hits.map(h => {
-      h.uuid = nanoid();
-      return h;
-    }) as (SongMeta & { uuid: string })[];
-
-    const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
-      includeScore: true,
-      threshold,
-    };
-
-    // TODO:FIXME: this entire thing is unreliable af
-    const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
-      searchRes.forEach(({ item, score }) => {
-        if(!item.uuid || !score)
-          return;
-
-        if(!scoreMap[item.uuid])
-          scoreMap[item.uuid] = score;
-        else if(typeof scoreMap[item.uuid] === "number") // @ts-ignore
-          scoreMap[item.uuid] += score;
-      });
-
-    if(song && artist) {
-      const titleFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.title" ] });
-      const artistFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.primaryArtist.name" ] });
-
-      addScores(titleFuse.search(song));
-      addScores(artistFuse.search(artist));
-    }
-    else {
-      const queryFuse = new Fuse(hits, {
-        ...fuseOpts,
-        ignoreLocation: true,
-        keys: [ "meta.title", "meta.primaryArtist.name" ],
-      });
-
-      let queryParts = [query];
-      if(query.match(/\s-\s/))
-        queryParts = query.split(/\s-\s/);
-
-      queryParts = queryParts.slice(0, 5);
-      for(const part of queryParts)
-        addScores(queryFuse.search(part.trim()));
-    }
-
-    // TODO: reduce the amount of remapping cause it takes long
-
-    const bestMatches = Object.entries(scoreMap)
-      .sort(([, valA], [, valB]) => valA > valB ? 1 : -1)
-      .map(e => e[0]);
-
-    const oldHits = [...hits];
-
-    hits = bestMatches
-      .map(uuid => oldHits.find(h => h.uuid === uuid))
-      .map(hit => {
-        if(!hit) return undefined;
-        delete hit.uuid;
-        return hit;
-      })
-      .filter(h => h !== undefined) as MetaSearchHit[];
-
     if(hits.length === 0)
       return null;
 
@@ -156,7 +67,6 @@ export async function getMeta({
       all: hits.slice(0, 10),
     };
   }
-
   return null;
 }
 
