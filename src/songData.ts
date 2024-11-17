@@ -104,7 +104,7 @@ export async function getMeta({
 
         if(!scoreMap[item.uuid])
           scoreMap[item.uuid] = score;
-        else
+        else if(typeof scoreMap[item.uuid] === "number") // @ts-ignore
           scoreMap[item.uuid] += score;
       });
 

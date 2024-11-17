@@ -3,9 +3,24 @@ Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyr
 Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
 Obtaining actual lyrics sadly isn't possible.  
   
-Like geniURL? Please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)  
+Disclaimer: this project is not affiliated with or endorsed by Genius.  
   
-Disclaimer: this project is not affiliated with or endorsed by Genius.
+> [!NOTE]  
+> Like using geniURL for free?  
+> It's entirely reliant on donations so please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)  
+
+<br>
+
+## Table of contents:
+- [Try it out](#try-it-out)
+- [Base URL](#base-url)
+- [Routes](#routes)
+    - [Search](#get-search)
+        - [Search (only top result)](#get-searchtop)
+    - [Translations](#get-translationssongid)
+    - [Associated Album](#get-albumsongid)
+- [Local setup](#local-setup)
+- [Legal stuff](#legal-stuff)
 
 <br><br>
 
@@ -21,7 +36,7 @@ I host a public instance on this base URL:
 https://api.sv443.net/geniurl/
 ```
 
-Note: this instance is rate limited to 25 requests within a 30 second timeframe.  
+Note: this instance is rate limited to 20 requests within a 30 second timeframe.  
 To always know how many requests you are able to send, refer to the response headers `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset`
 
 
@@ -396,11 +411,33 @@ The structure of the XML data is similar to the shown JSON data.
 
 </details><br>
 
+<br><br>
+
+## Local setup:
+To set up geniURL locally, follow these steps:
+1. Have [Node.js](https://nodejs.org/) (current version) and npm installed
+2. Clone or download and extract this repository
+3. Run the command `npm i` in the project directory
+4. Copy `.env.template` to `.env` and fill in the required values  
+  The genius.com key can be obtained by [creating an API client here](https://genius.com/api-clients)
+5. Run the command `npm start` to start the server  
+  Alternatively, run `npm run dev` to start the server with nodemon for automatic restarts when the code is changed
+
+I recommend using a process manager like [PM2](https://pm2.keymetrics.io/) to keep the server running in the background, make it automatically restart on crashes and start on system boot.
+
+<br><br>
+
+## Legal stuff:
+This project is licensed under the [MIT License](./LICENSE.txt)  
+  
+The genius.com API is used to get the search results and song metadata. No actual lyrics are obtained.  
+This project is not affiliated with, sponsored or endorsed by genius.com.
+
 <br><br><br>
 
 <div align="center" style="text-align:center;">
 
 Made with ❤️ by [Sv443](https://sv443.net/)  
-If you like geniURL, please consider [supporting the development](https://github.com/sponsors/Sv443)
+If you like geniURL, please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)
 
 </div>

@@ -1,25 +1,11 @@
-## Version History:
-- **[1.3.3](#v133)**
-- [1.3.2](#v132)
-- [1.3.1](#v131)
-- [1.3.0](#v130)
-- [1.2.0](#v120)
-- [1.1.1](#v111)
-- [1.1.0](#v110)
-- [1.0.0](#v100)
-- [0.2.0](#v020)
-- [0.1.0](#v010)
+### v2.0.0
+**Features:**
+- Added `?redirect` parameter for automatic HTTP redirection instead of returning a JSON response ([#22](https://github.com/Sv443/geniURL/issues/22))
+**Changes:**
+- Removed fuzzy filtering and `?disableFuzzy` parameter altogether (to maybe be added back in the future as an opt-in feature) ([#24](https://github.com/Sv443/geniURL/issues/24))
+- Reduced ratelimit budget from 25 requests every 30 seconds to 20 requests
 
-<br><br>
-
-<!-- ### v1.4.0
-**Breaking changes:**
-- Removed `?preferLang` parameter due to genius API not returning a song language anymore ([#20](https://github.com/Sv443/geniURL/issues/20))
-
-**Fixes:**
-- TODO: Fuzzy filtering is now much more accurate and direct matches will be preferred ([#17](https://github.com/Sv443/geniURL/issues/17))
-
-<br> -->
+<br>
 
 ### v1.3.3
 **Changes:**
