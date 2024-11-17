@@ -396,13 +396,14 @@ The structure of the XML data is similar to the shown JSON data.
 
 ## Local setup:
 To set up geniURL locally, follow these steps:
-1. Have [Node.js](https://nodejs.org/) (current version) and npm installed
-2. Clone or download and extract this repository
-3. Run the command `npm i` in the project directory
-4. Copy `.env.template` to `.env` and fill in the required values  
-  The genius.com key can be obtained by [creating an API client here](https://genius.com/api-clients)
-5. Run the command `npm start` to start the server  
-  Alternatively, run `npm run dev` to start the server with nodemon for automatic restarts when the code is changed
+1. [Install Node.js](https://nodejs.org/en/download) (current or LTS) and make sure npm is installed by running `npm -v`
+2. [Install pnpm](https://pnpm.io/installation) (can be done by running `npm i -g pnpm`)
+3. Clone or download and extract this repository
+4. Run `pnpm i` in the project directory to install dependencies
+5. Copy `.env.template` to `.env` and fill in the required values  
+  The genius.com API key can be obtained by [creating an API client here](https://genius.com/api-clients)
+6. Run `pnpm start` to start the server  
+  Alternatively, run `pnpm run dev` to start the server and automatically recompile and restart when the code is changed
 
 I recommend using a process manager like [PM2](https://pm2.keymetrics.io/) to keep the server running in the background, make it automatically restart on crashes and start on system boot.
 
