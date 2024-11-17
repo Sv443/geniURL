@@ -35,6 +35,9 @@ importers:
       rate-limiter-flexible:
         specifier: ^2.4.2
         version: 2.4.2
+      request-ip:
+        specifier: ^3.3.0
+        version: 3.3.0
       svcorelib:
         specifier: ^1.18.2
         version: 1.18.2
@@ -54,6 +57,9 @@ importers:
       '@types/node':
         specifier: ^20.17.6
         version: 20.17.6
+      '@types/request-ip':
+        specifier: ^0.0.41
+        version: 0.0.41
       '@types/tcp-port-used':
         specifier: ^1.0.4
         version: 1.0.4
@@ -477,6 +483,9 @@ packages:
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/request-ip@0.0.41':
+    resolution: {integrity: sha512-Qzz0PM2nSZej4lsLzzNfADIORZhhxO7PED0fXpg4FjXiHuJ/lMyUg+YFF5q8x9HPZH3Gl6N+NOM8QZjItNgGKg==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -1756,6 +1765,9 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
+  request-ip@3.3.0:
+    resolution: {integrity: sha512-cA6Xh6e0fDBBBwH77SLJaJPBmD3nWVAcF9/XAcsrIHdjhFzFiB5aNQFytdjCGPezU3ROwrR11IddKAM08vohxA==}
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -2619,6 +2631,10 @@ snapshots:
   '@types/qs@6.9.17': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/request-ip@0.0.41':
+    dependencies:
+      '@types/node': 20.17.6
 
   '@types/semver@7.5.8': {}
 
@@ -4126,6 +4142,8 @@ snapshots:
   readdirp@3.6.0:
     dependencies:
       picomatch: 2.3.1
+
+  request-ip@3.3.0: {}
 
   require-directory@2.1.1: {}
 

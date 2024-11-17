@@ -5,11 +5,12 @@ import helmet from "helmet";
 import { RateLimiterMemory, RateLimiterRes } from "rate-limiter-flexible";
 import k from "kleur";
 import cors from "cors";
+import { getClientIp } from "request-ip";
 
 import packageJson from "../package.json";
 import { error } from "./error";
 import { initRouter } from "./routes";
-import { respond } from "./utils";
+import { hashStr, respond } from "./utils";
 import { rateLimitOptions } from "./constants";
 
 const { env } = process;
@@ -74,7 +75,9 @@ export async function init() {
       res.setHeader("X-RateLimit-Reset", new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
     };
 
-    rateLimiter.consume(req.ip)
+    const ipHash = await hashStr(getClientIp(req) ?? "IP_RESOLUTION_ERROR");
+
+    rateLimiter.consume(ipHash)
       .then((rateLimiterRes: RateLimiterRes) => {
         setRateLimitHeaders(rateLimiterRes);
         return next();

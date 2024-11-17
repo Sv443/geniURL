@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { Response } from "express";
 import { Stringifiable, byteLength } from "svcorelib";
 import { parse as jsonToXml } from "js2xmlparser";
@@ -14,8 +15,7 @@ export function paramValid(val: unknown): val is string {
  * @param data The data to send in the response body
  * @param format json / xml
  */
-export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number)
-{
+export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number) {
   let statusCode = 500;
   let error = true;
   let matches = null;
@@ -70,4 +70,17 @@ export function respond(res: Response, type: ResponseType | number, data: String
   res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
   contentLen > -1 && res.setHeader("Content-Length", contentLen);
   res.status(statusCode).send(finalData);
+}
+
+export function hashStr(str: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      const hash = createHash("sha512");
+      hash.update(str);
+      resolve(hash.digest("hex"));
+    }
+    catch(e) {
+      reject(e);
+    }
+  });
 }
