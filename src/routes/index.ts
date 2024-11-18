@@ -4,11 +4,13 @@ import packageJson from "../../package.json";
 import { initSearchRoutes } from "./search";
 import { initTranslationsRoutes } from "./translations";
 import { initAlbumRoutes } from "./album";
+import { initManualSearchRoutes } from "./manualSearch";
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
   initTranslationsRoutes,
   initAlbumRoutes,
+  initManualSearchRoutes,
 ];
 
 const router = Router();
