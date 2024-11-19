@@ -3,6 +3,7 @@ import { paramValid, respond } from "../utils";
 import { getMeta } from "../songData";
 
 export function initSearchRoutes(router: Router) {
+  //#region /search
   router.get("/search", async (req, res) => {
     try {
       const { q, artist, song, format: fmt } = req.query;
@@ -35,6 +36,7 @@ export function initSearchRoutes(router: Router) {
     }
   });
 
+  //#region /search/top
   router.get("/search/top", async (req, res) => {
     try {
       const { q, artist, song, format: fmt } = req.query;
@@ -62,5 +64,17 @@ export function initSearchRoutes(router: Router) {
     catch(err) {
       return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
     }
+  });
+
+  //#region /search/manual
+  router.get("/search/manual", (_req, res) => {
+    res.sendFile("index.html", {
+      root: "public",
+      dotfiles: "deny",
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+      },
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
   });
 }
