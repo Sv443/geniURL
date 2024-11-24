@@ -3,12 +3,14 @@ import { paramValid, respond } from "../utils";
 import { getTranslations } from "../songData";
 
 export function initTranslationsRoutes(router: Router) {
+  //#region /translations
   router.get("/translations", (req, res) => {
     const format: string = req.query.format ? String(req.query.format) : "json";
 
     return respond(res, "clientError", "No song ID provided", format);
   });
 
+  //#region /tr/:songId
   router.get("/translations/:songId", async (req, res) => {
     const { format: fmt } = req.query;
     const format: string = fmt ? String(fmt) : "json";

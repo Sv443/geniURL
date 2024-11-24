@@ -1,11 +1,25 @@
 # geniURL
 Simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on [genius.com](https://genius.com/)  
-Authorization is not required and geniURL implements a fuzzy search that will greatly improve search results over the genius.com API.  
-Obtaining actual lyrics sadly isn't possible.  
+Authorization is not required. Obtaining actual lyrics sadly isn't possible.  
   
-Like geniURL? Please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)  
+Disclaimer: this project is not affiliated with or endorsed by Genius.  
   
-Disclaimer: this project is not affiliated with or endorsed by Genius.
+> [!NOTE]  
+> Like using geniURL for free?  
+> It's entirely reliant on donations so please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)  
+
+<br>
+
+## Table of contents:
+- [Try it out](#try-it-out)
+- [Base URL](#base-url)
+- [Routes](#routes)
+    - [Search](#get-search)
+        - [Search (only top result)](#get-searchtop)
+    - [Translations](#get-translationssongid)
+    - [Associated Album](#get-albumsongid)
+- [Local setup](#local-setup)
+- [Legal stuff](#legal-stuff)
 
 <br><br>
 
@@ -18,10 +32,10 @@ To download it and test locally, hover over the collection, click the three-dot-
 ## Base URL:
 I host a public instance on this base URL:
 ```
-https://api.sv443.net/geniurl/
+https://api.sv443.net/geniurl/v2/
 ```
 
-Note: this instance is rate limited to 25 requests within a 30 second timeframe.  
+Note: this instance is rate limited to 20 requests within a 30 second timeframe.  
 To always know how many requests you are able to send, refer to the response headers `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset`
 
 
@@ -67,15 +81,6 @@ Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/w
 `?format=json/xml`  
 Use this optional parameter to change the response format from the default (`json`) to `xml`  
 The structure of the XML data is similar to the shown JSON data.
-  
-`?threshold=0.65`  
-This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
-It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-0.65 is a good middle ground but depending on your use-case you might want to play around with this.
-  
-`?disableFuzzy`  
-This optional and value-less parameter can be used to disable the fuzzy search entirely.  
-Because the current fuzzy search implementation is not as accurate as it should be, your application might need the search results as they come from the genius API.
 
 <br>
 
@@ -184,15 +189,6 @@ Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/w
 `?format=json/xml`  
 Use this optional parameter to change the response format from the default (`json`) to `xml`  
 The structure of the XML data is similar to the shown JSON data.
-  
-`?threshold=0.65`  
-This optional parameter can be used to change the fuzzy search threshold from the default of 0.65  
-It has to be between 0.0 and 1.0; the lower the number, the less results you'll get but the more accurate the top results will be.  
-0.65 is a good middle ground but depending on your use-case you might want to play around with this.
-  
-`?disableFuzzy`  
-This optional and value-less parameter can be used to disable the fuzzy search entirely.  
-Because the current fuzzy search implementation is not as accurate as it should be, your application might need the search results as they come from the genius API.
 
 <br>
 
@@ -396,11 +392,34 @@ The structure of the XML data is similar to the shown JSON data.
 
 </details><br>
 
+<br><br>
+
+## Local setup:
+To set up geniURL locally, follow these steps:
+1. [Install Node.js](https://nodejs.org/en/download) (current or LTS) and make sure npm is installed by running `npm -v`
+2. [Install pnpm](https://pnpm.io/installation) (can be done by running `npm i -g pnpm`)
+3. Clone or download and extract this repository
+4. Run `pnpm i` in the project directory to install dependencies
+5. Copy `.env.template` to `.env` and fill in the required values  
+  The genius.com API key can be obtained by [creating an API client here](https://genius.com/api-clients)
+6. Run `pnpm start` to start the server  
+  Alternatively, run `pnpm run dev` to start the server and automatically recompile and restart when the code is changed
+
+I recommend using a process manager like [PM2](https://pm2.keymetrics.io/) to keep the server running in the background, make it automatically restart on crashes and start on system boot.
+
+<br><br>
+
+## Legal stuff:
+This project is licensed under the [MIT License](./LICENSE.txt)  
+  
+The genius.com API is used to get the search results and song metadata. No actual lyrics are obtained.  
+This project is not affiliated with, sponsored or endorsed by genius.com.
+
 <br><br><br>
 
 <div align="center" style="text-align:center;">
 
 Made with ❤️ by [Sv443](https://sv443.net/)  
-If you like geniURL, please consider [supporting the development](https://github.com/sponsors/Sv443)
+If you like geniURL, please consider [supporting the development ❤️](https://github.com/sponsors/Sv443)
 
 </div>
