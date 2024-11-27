@@ -8,6 +8,7 @@
     "dev": "nodemon -e \"ts,d.ts\" -x \"pnpm start\"",
     "www-dev": "cd www && pnpm run dev",
     "www-build": "cd www && pnpm run build",
+    "lint": "eslint . && tsc --noEmit",
     "test": "start-server-and-test start http://localhost:8074 jest"
   },
   "repository": {
