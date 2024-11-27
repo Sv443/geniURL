@@ -3,31 +3,21 @@ home: true
 title: Home
 heroImage: https://vuejs.press/images/hero.png
 actions:
-  - text: Get Started
-    link: /getting-started.html
+  - text: Documentation
+    link: /docs/
     type: primary
 
-  - text: Introduction
-    link: https://vuejs.press/guide/introduction.html
+  - text: Manual search
+    link: /manual-search.html
     type: secondary
 
 features:
-  - title: Simplicity First
-    details: Minimal setup with markdown-centered project structure helps you focus on writing.
-  - title: Vue-Powered
-    details: Enjoy the dev experience of Vue, use Vue components in markdown, and develop custom themes with Vue.
-  - title: Performant
-    details: VuePress generates pre-rendered static HTML for each page, and runs as an SPA once a page is loaded.
-  - title: Themes
-    details: Providing a default theme out of the box. You can also choose a community theme or create your own one.
-  - title: Plugins
-    details: Flexible plugin API, allowing plugins to provide lots of plug-and-play features for your site.
-  - title: Bundlers
-    details: Default bundler is Vite, while Webpack is also supported. Choose the one you like!
+  - title: Format conversion
+    details: geniURL can convert the JSON data to XML if that is easier to use in your environment.
+  - title: Free and easy to use
+    details: The API is free to use and doesn't require authentication. You can use it for any purpose, even commercially. Note that rate limits apply.
+  - title: Open source
+    details: The source code for geniURL is available on GitHub. You can use it as a reference or contribute to the project.
 
-footer: MIT Licensed | Copyright © 2018-present VuePress Community
+footer: "MIT License | Copyright © 2024 Sv443"
 ---
-
-This is the content of home page. Check [Home Page Docs][default-theme-home] for more details.
-
-[default-theme-home]: https://vuejs.press/reference/default-theme/frontmatter.html#home-page
