@@ -3,12 +3,14 @@ import { paramValid, respond } from "../utils";
 import { getAlbum } from "../songData";
 
 export function initAlbumRoutes(router: Router) {
+  //#region /album
   router.get("/album", (req, res) => {
     const format: string = req.query.format ? String(req.query.format) : "json";
 
     return respond(res, "clientError", "No song ID provided", format);
   });
 
+  //#region /album/:songId
   router.get("/album/:songId", async (req, res) => {
     try {
       const { songId } = req.params;

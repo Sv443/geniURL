@@ -6,3 +6,7 @@ test.ts
 node_modules/
 *.log
 out/
+
+**/.vuepress/.temp
+**/.vuepress/.cache
+**/.vuepress/dist
