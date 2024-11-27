@@ -1,7 +1,7 @@
 import { baseUrl, defaultFetchOpts } from "./constants";
 import { checkAlbumProps, checkArtistProps } from "./hooks";
 
-describe(`GET /album/:id`, () => {
+describe("GET /album/:id", () => {
   //#region /album/:id
 
   it("Album details yields correct props", async () => {

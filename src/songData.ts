@@ -1,6 +1,6 @@
 import { axios, baseAxiosOpts } from "./axios";
 import { charReplacements } from "./constants";
-import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongMeta, SongTranslation } from "./types";
+import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongTranslation } from "./types";
 
 /**
  * Returns meta information about the top results of a search using the genius API
@@ -26,7 +26,7 @@ export async function getMeta({
     if(response.hits.length === 0)
       return null;
 
-    let hits: MetaSearchHit[] = response.hits
+    const hits: MetaSearchHit[] = response.hits
       .filter(h => h.type === "song")
       .map(({ result }) => ({
         url: result.url,
@@ -146,7 +146,7 @@ function normalize(str: string): string {
     });
   }
 
-  return str
+  return str // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters
     .replace(/\u00A0/g, " "); // non-standard 1-width spaces
 }

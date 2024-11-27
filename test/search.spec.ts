@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 import { baseUrl, defaultFetchOpts } from "./constants";
 import { checkSongProps } from "./hooks";
 
-describe(`GET /search/top`, () => {
+describe("GET /search/top", () => {
   //#region /search/top
 
   it("Top search yields expected props", async () => {
@@ -32,7 +32,7 @@ describe(`GET /search/top`, () => {
 
     expect(Array.isArray(body?.all)).toBe(true);
 
-    body?.all?.forEach((hit: any) => checkSongProps(hit));
+    body?.all?.forEach((hit: unknown) => checkSongProps(hit));
 
     expect(body?.all?.length).toEqual(body?.matches ?? -1);
   });
