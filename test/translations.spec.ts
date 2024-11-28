@@ -1,7 +1,7 @@
 import { baseUrl, defaultFetchOpts } from "./constants";
 import { checkTranslationProps } from "./hooks";
 
-describe("GET /translations/:id", () => {
+describe("Translation routes", () => {
   //#region /translations/:id
 
   it("Translation yields correct props", async () => {
