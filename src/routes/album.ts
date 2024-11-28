@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getAlbum } from "../songData";
+import { paramValid, respond } from "../utils.js";
+import { getAlbum } from "../songData.js";
 
 export function initAlbumRoutes(router: Router) {
   //#region /album

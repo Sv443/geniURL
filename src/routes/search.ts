@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getMeta } from "../songData";
+import { paramValid, respond } from "../utils.js";
+import { getMeta } from "../songData.js";
 
 export function initSearchRoutes(router: Router) {
   //#region /search

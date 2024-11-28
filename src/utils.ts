@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { Response } from "express";
 import { Stringifiable, byteLength } from "svcorelib";
 import { parse as jsonToXml } from "js2xmlparser";
-import { ResponseType } from "./types";
+import { ResponseType } from "./types.js";
 
 /** Checks if the value of a passed URL parameter is a string with length > 0 */
 export function paramValid(val: unknown): val is string {

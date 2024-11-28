@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getTranslations } from "../songData";
+import { paramValid, respond } from "../utils.js";
+import { getTranslations } from "../songData.js";
 
 export function initTranslationsRoutes(router: Router) {
   //#region /translations

@@ -7,11 +7,11 @@ import k from "kleur";
 import cors from "cors";
 import { getClientIp } from "request-ip";
 
-import packageJson from "../package.json";
-import { error } from "./error";
-import { initRouter } from "./routes";
-import { hashStr, respond } from "./utils";
-import { rateLimitOptions } from "./constants";
+import packageJson from "../package.json" with { type: "json" };
+import { error } from "./error.js";
+import { initRouter } from "./routes/index.js";
+import { hashStr, respond } from "./utils.js";
+import { rateLimitOptions } from "./constants.js";
 
 const { env } = process;
 const app = express();

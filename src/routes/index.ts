@@ -1,9 +1,11 @@
-import { Application, Router } from "express";
+import { resolve } from "node:path";
+import express, { Application, Router } from "express";
 import packageJson from "../../package.json";
 
-import { initSearchRoutes } from "./search";
-import { initTranslationsRoutes } from "./translations";
-import { initAlbumRoutes } from "./album";
+import { initSearchRoutes } from "./search.js";
+import { initTranslationsRoutes } from "./translations.js";
+import { initAlbumRoutes } from "./album.js";
+import { fileURLToPath } from "node:url";
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
@@ -20,5 +22,10 @@ export function initRouter(app: Application) {
   // redirect to GitHub page
   router.get("/", (_req, res) => res.redirect(packageJson.homepage));
 
+  // redirect to docs page
+  router.get("/docs", (_req, res) => res.redirect("/docs/"));
+
+  // host docs files
+  router.use("/docs", express.static(resolve(fileURLToPath(import.meta.url), "../../www/docs/.vuepress/dist")));
   app.use("/", router);
 }

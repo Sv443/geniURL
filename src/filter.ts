@@ -1,4 +1,4 @@
-import type { MetaSearchHit, ScoredResults, SearchFilterArgs } from "./types";
+import type { MetaSearchHit, ScoredResults, SearchFilterArgs } from "./types.js";
 
 export function filterSearchResults(_args: SearchFilterArgs, _results: MetaSearchHit[]): MetaSearchHit[] {
   const scored: ScoredResults<MetaSearchHit>[] = [];
