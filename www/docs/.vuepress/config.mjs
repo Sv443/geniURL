@@ -7,7 +7,7 @@ import rootPkgJson from "../../../package.json";
 
 export default defineUserConfig({
   lang: "en-US",
-  base: "/docs/v2/",
+  base: "/v2/docs/",
   title: "geniURL",
   description: "A simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on genius.com",
   theme: defaultTheme({

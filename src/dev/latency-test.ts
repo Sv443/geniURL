@@ -17,7 +17,7 @@ async function run() {
   console.log(`\n\n>>> Running latency test with ${settings.amount} requests...\n`);
   const startTs = Date.now();
 
-  const times = [];
+  const times = [] as number[];
   for(let i = 0; i < settings.amount; i++) {
     const start = Date.now();
     await axios.get(settings.url, {
