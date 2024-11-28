@@ -20,7 +20,7 @@ describe("Album routes", () => {
 
   //#region inv /album/:id
 
-  it("Invalid album yields error", async () => {
+  it("Invalid song ID yields error", async () => {
     const res = await fetch(`${baseUrl}/album/0`, defaultFetchOpts);
     const body = await res.json();
 
