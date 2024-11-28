@@ -4,7 +4,7 @@ describe("Misc", () => {
   //#region health check
 
   it("Health check", async () => {
-    const res = await fetch(baseUrl, {
+    const res = await fetch(`${baseUrl}/health`, {
       ...defaultFetchOpts,
       method: "HEAD",
     });
