@@ -20,7 +20,7 @@ describe("Translation routes", () => {
 
   //#region inv /translations/:id
 
-  it("Invalid album yields error", async () => {
+  it("Invalid song ID yields error", async () => {
     const res = await fetch(`${baseUrl}/translations/0`, defaultFetchOpts);
     const body = await res.json();
 
