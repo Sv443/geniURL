@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 import { baseUrl, defaultFetchOpts } from "./constants";
 import { checkSongProps } from "./hooks";
 
-describe("GET /search/top", () => {
+describe("Search routes", () => {
   //#region /search/top
 
   it("Top search yields expected props", async () => {
