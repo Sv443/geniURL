@@ -30,4 +30,17 @@ describe("GET /album/:id", () => {
     expect(body?.matches).toEqual(0);
     expect(body?.message).toBeDefined();
   });
+
+  //#region inv /album
+
+  it("Album path without ID yields error", async () => {
+    const res = await fetch(`${baseUrl}/album`, defaultFetchOpts);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+
+    expect(body?.error).toEqual(true);
+    expect(body?.matches).toEqual(null);
+    expect(body?.message).toBeDefined();
+  });
 });
