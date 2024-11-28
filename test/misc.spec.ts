@@ -10,6 +10,6 @@ describe("Misc", () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.headers.get("api-info")).toBeDefined();
+    expect(res.headers.get("api-info")).not.toBeNull();
   });
 });

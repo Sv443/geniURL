@@ -1,7 +1,7 @@
-import { createHash } from "node:crypto";
+import { createHash, type BinaryToTextEncoding } from "node:crypto";
 import { Response } from "express";
-import { Stringifiable, byteLength } from "svcorelib";
 import { parse as jsonToXml } from "js2xmlparser";
+import type { Stringifiable } from "svcorelib";
 import { ResponseType } from "./types.js";
 
 /** Checks if the value of a passed URL parameter is a string with length > 0 */
@@ -65,22 +65,31 @@ export function respond(res: Response, type: ResponseType | number, data: String
   };
 
   const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
-  const contentLen = byteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
+  const contentLen = getByteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
 
   res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
   contentLen > -1 && res.setHeader("Content-Length", contentLen);
   res.status(statusCode).send(finalData);
 }
 
-export function hashStr(str: string): Promise<string> {
+/** Hashes a string using SHA-512, encoded as "hex" by default */
+export function hashStr(str: string, encoding: BinaryToTextEncoding = "hex"): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
       const hash = createHash("sha512");
       hash.update(str);
-      resolve(hash.digest("hex"));
+      resolve(hash.digest(encoding));
     }
     catch(e) {
       reject(e);
     }
   });
+}
+
+/** Returns the length of the given data - returns -1 if the data couldn't be stringified */
+export function getByteLength(data: string | Record<string, unknown>) {
+  if(typeof data === "string" || "toString" in data)
+    return Buffer.byteLength(String(data), "utf8");
+
+  return -1;
 }

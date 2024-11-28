@@ -5,9 +5,11 @@ import { seoPlugin } from "@vuepress/plugin-seo";
 import { sitemapPlugin } from "@vuepress/plugin-sitemap";
 import rootPkgJson from "../../../package.json";
 
+const verMajor = Number(rootPkgJson.version.split(".")[0]);
+
 export default defineUserConfig({
   lang: "en-US",
-  base: "/v2/docs/",
+  base: `/v${verMajor}/docs/`,
   title: "geniURL",
   description: "A simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on genius.com",
   theme: defaultTheme({

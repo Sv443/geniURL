@@ -11,7 +11,7 @@ import packageJson from "../package.json" with { type: "json" };
 import { error } from "./error.js";
 import { initRouter } from "./routes/index.js";
 import { hashStr, respond } from "./utils.js";
-import { rateLimitOptions } from "./constants.js";
+import { rateLimitOptions, rlIgnorePaths } from "./constants.js";
 
 const { env } = process;
 const app = express();
@@ -67,41 +67,36 @@ export async function init() {
     if(authHeader && authTokens.has(authHeader))
       return next();
 
-    const setRateLimitHeaders = (rateLimiterRes: RateLimiterRes) => {
-      if(rateLimiterRes.remainingPoints === 0)
-        res.setHeader("Retry-After", Math.ceil(rateLimiterRes.msBeforeNext / 1000));
-      res.setHeader("X-RateLimit-Limit", rateLimiter.points);
-      res.setHeader("X-RateLimit-Remaining", rateLimiterRes.remainingPoints);
-      res.setHeader("X-RateLimit-Reset", new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
-    };
-
     const ipHash = await hashStr(getClientIp(req) ?? "IP_RESOLUTION_ERROR");
 
-    rateLimiter.consume(ipHash)
-      .then((rateLimiterRes: RateLimiterRes) => {
-        setRateLimitHeaders(rateLimiterRes);
-        return next();
-      })
-      .catch((err) => {
-        if(err instanceof RateLimiterRes) {
-          setRateLimitHeaders(err);
-          return respond(res, 429, { error: true, matches: null, message: "You are being rate limited. Refer to the Retry-After header for when to try again." }, fmt);
-        }
-        else return respond(res, 500, { message: "Encountered an internal error. Please try again a little later." }, fmt);
-      });
+    if(rlIgnorePaths.every((path) => !req.path.match(new RegExp(`^(/?v\\d+)?${path}`)))) {
+      rateLimiter.consume(ipHash)
+        .then((rateLimiterRes: RateLimiterRes) => {
+          setRateLimitHeaders(res, rateLimiterRes);
+          return next();
+        })
+        .catch((err) => {
+          if(err instanceof RateLimiterRes) {
+            setRateLimitHeaders(res, err);
+            return respond(res, 429, { error: true, matches: null, message: "You are being rate limited. Refer to the Retry-After header for when to try again." }, fmt);
+          }
+          else return respond(res, 500, { message: "Encountered an internal error. Please try again a little later." }, fmt);
+        });
+    }
+    else
+      return next();
   });
 
   const listener = app.listen(port, host, () => {
     registerRoutes();
 
-    console.log(k.green(`Listening on ${host}:${port}`));
+    console.log(k.green(`Listening on ${host}:${port}\n`));
   });
 
   listener.on("error", (err) => error("General server error", err, true));
 }
 
-function registerRoutes()
-{
+function registerRoutes() {
   try {
     initRouter(app);
   }
@@ -120,4 +115,12 @@ function getAuthTokens() {
     tokens = envVal.split(/,/g);
 
   return new Set<string>(tokens);
+}
+
+function setRateLimitHeaders (res: Response, rateLimiterRes: RateLimiterRes) {
+  if(rateLimiterRes.remainingPoints === 0)
+    res.setHeader("Retry-After", Math.ceil(rateLimiterRes.msBeforeNext / 1000));
+  res.setHeader("X-RateLimit-Limit", rateLimiter.points);
+  res.setHeader("X-RateLimit-Remaining", rateLimiterRes.remainingPoints);
+  res.setHeader("X-RateLimit-Reset", new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
 }

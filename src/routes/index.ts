@@ -1,11 +1,10 @@
 import { resolve } from "node:path";
 import express, { Application, Router } from "express";
-import packageJson from "../../package.json";
+import { verMajor } from "../constants.js";
 
 import { initSearchRoutes } from "./search.js";
 import { initTranslationsRoutes } from "./translations.js";
 import { initAlbumRoutes } from "./album.js";
-import { fileURLToPath } from "node:url";
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
@@ -19,13 +18,12 @@ export function initRouter(app: Application) {
   for(const initRoute of routeFuncs)
     initRoute(router);
 
-  // redirect to GitHub page
-  router.get("/", (_req, res) => res.redirect(packageJson.homepage));
+  // host docs files
+  router.use("/docs", express.static(resolve("./www/docs/.vuepress/dist")));
+
+  // mount router
+  app.use(`/v${verMajor}`, router);
 
   // redirect to docs page
-  router.get("/docs", (_req, res) => res.redirect("/docs/"));
-
-  // host docs files
-  router.use("/docs", express.static(resolve(fileURLToPath(import.meta.url), "../../www/docs/.vuepress/dist")));
-  app.use("/", router);
+  app.get("/docs", (_req, res) => res.redirect(`/v${verMajor}/docs/`));
 }

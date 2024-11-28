@@ -1,5 +1,12 @@
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
+import packageJson from "../package.json" with { type: "json" };
 
+/** The version from package.json, split into a tuple of major, minor, and patch number */
+export const splitVersion = packageJson.version.split(".").map(v => Number(v)) as [major: number, minor: number, patch: number];
+
+export const [verMajor, verMinor, verPatch] = splitVersion;
+
+/** Options for the rate limiter */
 export const rateLimitOptions: IRateLimiterOptions = {
   points: 20,
   duration: 30,
@@ -16,3 +23,8 @@ export const charReplacements = new Map<string, string>([
   ["—─ ", "-"],
   ["     ", " "],
 ]);
+
+/** Any requests to paths starting with one of these will not be subject to rate limiting */
+export const rlIgnorePaths = [
+  "/docs",
+];

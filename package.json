@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon -e \"ts,d.ts\" -x \"pnpm start\"",
-    "start": "tsc && node --enable-source-maps out/src/index.js",
+    "start": "tsx src/index.ts",
     "dev-www": "cd www && pnpm run dev",
     "build-www": "cd www && pnpm run build",
     "dev-all": "concurrently \"pnpm dev\" \"pnpm dev-www\"",
@@ -50,6 +50,7 @@
     "request-ip": "^3.3.0",
     "svcorelib": "^1.18.2",
     "tcp-port-used": "^1.0.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
   "devDependencies": {
@@ -73,7 +74,6 @@
     "pnpm": "^9.14.2",
     "start-server-and-test": "^2.0.8",
     "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
     "tslib": "^2.8.1"
   }
 }
