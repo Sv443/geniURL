@@ -1,5 +1,14 @@
 {
   "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2021",
+    "lib": [
+      "ES5",
+      "ES6",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
@@ -7,8 +16,6 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "noUncheckedIndexedAccess": true,
     "outDir": "./out/",
     "resolveJsonModule": true,
@@ -16,7 +23,21 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2022",
     "useDefineForClassFields": true,
-  }
+    "noImplicitThis": false,
+  },
+  "ts-node": {
+    "esm": true,
+    "preferTsExts": true,
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "www/**/*.ts",
+    "www/**/*.d.ts",
+  ],
+  "exclude": [
+    "**/dist/**",
+    "**/dev/**",
+  ],
 }
