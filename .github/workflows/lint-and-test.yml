@@ -22,8 +22,6 @@ jobs:
       STORE_PATH: ""
       PNPM_VERSION: 9
 
-    environment: "Unit Tests"
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
