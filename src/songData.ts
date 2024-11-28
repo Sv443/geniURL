@@ -95,7 +95,7 @@ export async function getTranslations(songId: number): Promise<SongTranslation[]
     }
     return null;
   }
-  catch(e) {
+  catch {
     return undefined;
   }
 }
@@ -126,7 +126,7 @@ export async function getAlbum(songId: number): Promise<Album | null> {
     }
     return null;
   }
-  catch(e) {
+  catch {
     return null;
   }
 }
