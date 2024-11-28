@@ -11,7 +11,7 @@
     "build-www": "cd www && pnpm run build",
     "dev-all": "concurrently \"pnpm dev\" \"pnpm dev-www\"",
     "lint": "eslint . && tsc --noEmit",
-    "test": "start-server-and-test start http://127.0.0.1:8074 jest"
+    "test": "start-server-and-test start http://127.0.0.1:8074/v2/health jest"
   },
   "repository": {
     "type": "git",

@@ -25,9 +25,12 @@ export function initRouter(app: Application) {
   // redirect to docs page
   router.get("/", (_req, res) => redirectToDocs(res));
 
-  // mount router
-  app.use(`/v${verMajor}`, router);
+  // healthcheck
+  router.get("/health", (_req, res) => res.status(200).send("Hello, World!"));
 
   // redirect to docs page
   app.get("/docs", (_req, res) => redirectToDocs(res));
+
+  // mount router
+  app.use(`/v${verMajor}`, router);
 }
