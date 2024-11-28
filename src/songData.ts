@@ -1,6 +1,6 @@
-import { axios, baseAxiosOpts } from "./axios.js";
-import { charReplacements } from "./constants.js";
-import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongTranslation } from "./types.js";
+import { axios, baseAxiosOpts } from "@src/axios.js";
+import { charReplacements } from "@src/constants.js";
+import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongTranslation } from "@src/types.js";
 
 /**
  * Returns meta information about the top results of a search using the genius API

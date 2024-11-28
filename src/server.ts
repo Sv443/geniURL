@@ -8,10 +8,10 @@ import cors from "cors";
 import { getClientIp } from "request-ip";
 
 import packageJson from "../package.json" with { type: "json" };
-import { error } from "./error.js";
-import { initRouter } from "./routes/index.js";
-import { hashStr, respond } from "./utils.js";
-import { rateLimitOptions, rlIgnorePaths } from "./constants.js";
+import { error } from "@src/error.js";
+import { hashStr, respond } from "@src/utils.js";
+import { rateLimitOptions, rlIgnorePaths } from "@src/constants.js";
+import { initRouter } from "@routes/index.js";
 
 const { env } = process;
 const app = express();

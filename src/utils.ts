@@ -2,7 +2,8 @@ import { createHash, type BinaryToTextEncoding } from "node:crypto";
 import { Response } from "express";
 import { parse as jsonToXml } from "js2xmlparser";
 import type { Stringifiable } from "svcorelib";
-import { ResponseType } from "./types.js";
+import { verMajor } from "@src/constants.js";
+import type { ResponseType } from "@src/types.js";
 
 /** Checks if the value of a passed URL parameter is a string with length > 0 */
 export function paramValid(val: unknown): val is string {
@@ -70,6 +71,10 @@ export function respond(res: Response, type: ResponseType | number, data: String
   res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
   contentLen > -1 && res.setHeader("Content-Length", contentLen);
   res.status(statusCode).send(finalData);
+}
+
+export function redirectToDocs(res: Response) {
+  res.redirect(`/v${verMajor}/docs/`);
 }
 
 /** Hashes a string using SHA-512, encoded as "hex" by default */

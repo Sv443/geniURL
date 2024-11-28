@@ -25,6 +25,12 @@
     "strict": true,
     "useDefineForClassFields": true,
     "noImplicitThis": false,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@routes/*": ["src/routes/*"],
+      "@www/*": ["www/*"],
+      "@root/*": ["."],
+    }
   },
   "ts-node": {
     "esm": true,
