@@ -25,11 +25,12 @@
     "strict": true,
     "useDefineForClassFields": true,
     "noImplicitThis": false,
+    "allowImportingTsExtensions": false,
     "paths": {
       "@src/*": ["src/*"],
       "@routes/*": ["src/routes/*"],
       "@www/*": ["www/*"],
-      "@root/*": ["."],
+      "@root/*": ["*"],
     }
   },
   "ts-node": {
@@ -37,13 +38,12 @@
     "preferTsExts": true,
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "www/**/*.ts",
-    "www/**/*.d.ts",
+    "src/**/*",
+    "www/**/*",
   ],
   "exclude": [
-    "**/dist/**",
-    "**/dev/**",
+    "**/node_modules/**/*",
+    "**/dist/**/*",
+    "**/dev/**/*",
   ],
 }

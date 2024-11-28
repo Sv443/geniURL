@@ -6,12 +6,12 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon -e \"ts,d.ts,json\" -x \"pnpm start\"",
-    "start": "tsc && node --no-warnings=ExperimentalWarning --enable-source-maps out/src/index.js",
+    "start": "tsx src/index.ts",
     "dev-www": "cd www && pnpm run dev",
     "build-www": "cd www && pnpm run build",
     "dev-all": "concurrently \"pnpm dev\" \"pnpm dev-www\"",
     "lint": "eslint . && tsc --noEmit",
-    "test": "start-server-and-test start http://localhost:8074 jest"
+    "test": "start-server-and-test start http://127.0.0.1:8074 jest"
   },
   "repository": {
     "type": "git",
@@ -74,6 +74,7 @@
     "pnpm": "^9.14.2",
     "start-server-and-test": "^2.0.8",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "tslib": "^2.8.1"
   },
   "nodemonConfig": {
