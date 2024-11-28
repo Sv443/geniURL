@@ -1,4 +1,5 @@
 import { randomBytes } from "crypto";
+import { XMLParser } from "fast-xml-parser";
 import { baseUrl, defaultFetchOpts } from "./constants";
 import { checkSongProps } from "./hooks";
 
@@ -15,6 +16,24 @@ describe("Search routes", () => {
     expect(body?.matches).toEqual(1);
 
     checkSongProps(body);
+  });
+
+  //#region /search/top xml
+
+  it("Top search with format=xml yields valid XML", async () => {
+    const res = await fetch(`${baseUrl}/search/top?format=xml&q=Lil Nas X - LIGHT AGAIN!`, defaultFetchOpts);
+    const body = await res.text();
+
+    expect(res.status).toBe(200);
+
+    const parsed = new XMLParser().parse(body);
+
+    expect(typeof parsed?.data).toBe("object");
+
+    expect(parsed?.data?.error).toEqual(false);
+    expect(parsed?.data?.matches).toEqual(1);
+
+    checkSongProps(parsed?.data);
   });
 
   //#region /search
