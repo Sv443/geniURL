@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -e \"ts,d.ts\" -x \"pnpm start\"",
-    "start": "tsx src/index.ts",
+    "dev": "nodemon -e \"ts,d.ts,json\" -x \"pnpm start\"",
+    "start": "tsc && node --no-warnings=ExperimentalWarning --enable-source-maps out/src/index.js",
     "dev-www": "cd www && pnpm run dev",
     "build-www": "cd www && pnpm run build",
     "dev-all": "concurrently \"pnpm dev\" \"pnpm dev-www\"",
@@ -75,5 +75,19 @@
     "start-server-and-test": "^2.0.8",
     "ts-jest": "^29.2.5",
     "tslib": "^2.8.1"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src/**",
+      "www/**",
+      ".env",
+      "package.json"
+    ],
+    "ext": "ts,mts,js,jsx,mjs,json,html,css,svg,png",
+    "ignore": [
+      "*/dist/*",
+      "*/dev/*",
+      "*/out/*"
+    ]
   }
 }
