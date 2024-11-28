@@ -3,7 +3,7 @@ import { defaultTheme } from "@vuepress/theme-default";
 import { viteBundler } from "@vuepress/bundler-vite";
 import { seoPlugin } from "@vuepress/plugin-seo";
 import { sitemapPlugin } from "@vuepress/plugin-sitemap";
-import rootPkgJson from "../../../package.json";
+import rootPkgJson from "../../package.json";
 
 const verMajor = Number(rootPkgJson.version.split(".")[0]);
 

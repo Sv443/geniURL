@@ -19,7 +19,7 @@ export function initRouter(app: Application) {
     initRoute(router);
 
   // host docs files
-  router.use("/docs", express.static(resolve("./www/docs/.vuepress/dist")));
+  router.use("/docs", express.static(resolve("./www/.vuepress/dist")));
 
   // mount router
   app.use(`/v${verMajor}`, router);
