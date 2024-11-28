@@ -7,6 +7,8 @@ import { initSearchRoutes } from "@routes/search.js";
 import { initTranslationsRoutes } from "@routes/translations.js";
 import { initAlbumRoutes } from "@routes/album.js";
 
+const hostHomepage = process.env.HOST_HOMEPAGE?.toLowerCase() !== "false";
+
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
   initTranslationsRoutes,
@@ -19,18 +21,18 @@ export function initRouter(app: Application) {
   for(const initRoute of routeFuncs)
     initRoute(router);
 
-  // host docs files
-  router.use("/docs", express.static(resolve("./www/.vuepress/dist")));
+  // mount API router at versioned path
+  app.use(`/v${verMajor}`, router);
 
-  // redirect to docs page
-  router.get("/", (_req, res) => redirectToDocs(res));
-
-  // healthcheck
+  // health check
   router.get("/health", (_req, res) => res.status(200).send("Hello, World!"));
 
-  // redirect to docs page
-  app.get("/docs", (_req, res) => redirectToDocs(res));
+  if(hostHomepage) {
+    // host docs files
+    router.use("/docs", express.static(resolve("./www/.vuepress/dist")));
 
-  // mount router
-  app.use(`/v${verMajor}`, router);
+    // redirect to docs page
+    router.get("/", (_req, res) => redirectToDocs(res));
+    app.get("/docs", (_req, res) => redirectToDocs(res));
+  }
 }
