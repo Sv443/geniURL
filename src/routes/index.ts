@@ -1,6 +1,5 @@
-import { resolve } from "node:path";
 import express, { Application, Router } from "express";
-import { verMajor } from "@src/constants.js";
+import { docsPath, verMajor } from "@src/constants.js";
 import { redirectToDocs } from "@src/utils.js";
 
 import { initSearchRoutes } from "@routes/search.js";
@@ -29,7 +28,9 @@ export function initRouter(app: Application) {
 
   if(hostHomepage) {
     // host docs files
-    router.use("/docs", express.static(resolve("./www/.vuepress/dist")));
+    router.use("/docs", express.static(docsPath, {
+      index: "index.html",
+    }));
 
     // redirect to docs page
     router.get("/", (_req, res) => redirectToDocs(res));

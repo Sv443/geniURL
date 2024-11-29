@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
 import packageJson from "../package.json" with { type: "json" };
 
@@ -28,3 +29,5 @@ export const charReplacements = new Map<string, string>([
 export const rlIgnorePaths = [
   "/docs",
 ];
+
+export const docsPath = resolve("./www/.vuepress/dist");
