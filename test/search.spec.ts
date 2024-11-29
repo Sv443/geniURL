@@ -1,16 +1,15 @@
 import { randomBytes } from "crypto";
 import { XMLParser } from "fast-xml-parser";
-import { baseUrl, defaultFetchOpts } from "./constants";
-import { checkSongProps } from "./hooks";
+import { checkSongProps, sendReq } from "./hooks";
 
 describe("Search routes", () => {
   //#region /search/top
 
   it("Top search yields expected props", async () => {
-    const res = await fetch(`${baseUrl}/search/top?q=Lil Nas X - LIGHT AGAIN!`, defaultFetchOpts);
+    const { res, status } = await sendReq("/search/top?q=Lil Nas X - LIGHT AGAIN!");
     const body = await res.json();
 
-    expect(res.status).toBe(200);
+    expect(status).toBe(200);
 
     expect(body?.error).toEqual(false);
     expect(body?.matches).toEqual(1);
@@ -21,10 +20,10 @@ describe("Search routes", () => {
   //#region /search/top xml
 
   it("Top search with format=xml yields valid XML", async () => {
-    const res = await fetch(`${baseUrl}/search/top?format=xml&q=Lil Nas X - LIGHT AGAIN!`, defaultFetchOpts);
+    const { res, status } = await sendReq("/search/top?format=xml&q=Lil Nas X - LIGHT AGAIN!");
     const body = await res.text();
 
-    expect(res.status).toBe(200);
+    expect(status).toBe(200);
 
     const parsed = new XMLParser().parse(body);
 
@@ -39,10 +38,10 @@ describe("Search routes", () => {
   //#region /search
 
   it("Regular search yields <=10 results", async () => {
-    const res = await fetch(`${baseUrl}/search?q=Lil Nas X`, defaultFetchOpts);
+    const { res, status } = await sendReq("/search?q=Lil Nas X");
     const body = await res.json();
 
-    expect(res.status).toBe(200);
+    expect(status).toBe(200);
 
     expect(body?.error).toEqual(false);
     expect(body?.matches).toBeLessThanOrEqual(10);
@@ -60,10 +59,10 @@ describe("Search routes", () => {
 
   it("Invalid search yields error", async () => {
     const randText = randomBytes(32).toString("hex");
-    const res = await fetch(`${baseUrl}/search?q=${randText}`, defaultFetchOpts);
+    const { res, status } = await sendReq(`/search?q=${randText}`);
     const body = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(status).toBe(400);
 
     expect(body?.error).toEqual(true);
     expect(body?.matches).toEqual(0);

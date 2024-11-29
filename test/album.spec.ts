@@ -1,14 +1,14 @@
-import { baseUrl, defaultFetchOpts } from "./constants";
-import { checkAlbumProps, checkArtistProps } from "./hooks";
+import { baseUrl } from "./constants";
+import { checkAlbumProps, checkArtistProps, sendReq } from "./hooks";
 
 describe("Album routes", () => {
   //#region /album/:id
 
   it("Album details yields correct props", async () => {
-    const res = await fetch(`${baseUrl}/album/7105950`, defaultFetchOpts);
+    const { status, res } = await sendReq(`${baseUrl}/album/7105950`);
     const body = await res.json();
 
-    expect(res.status).toBe(200);
+    expect(status).toBe(200);
 
     expect(body?.error).toEqual(false);
     expect(body?.matches).toEqual(1);
@@ -21,10 +21,10 @@ describe("Album routes", () => {
   //#region inv /album/:id
 
   it("Invalid song ID yields error", async () => {
-    const res = await fetch(`${baseUrl}/album/0`, defaultFetchOpts);
+    const { res, status } = await sendReq(`${baseUrl}/album/0`);
     const body = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(status).toBe(400);
 
     expect(body?.error).toEqual(true);
     expect(body?.matches).toEqual(0);
@@ -34,10 +34,10 @@ describe("Album routes", () => {
   //#region inv /album
 
   it("Album path without ID yields error", async () => {
-    const res = await fetch(`${baseUrl}/album`, defaultFetchOpts);
+    const { res, status } = await sendReq(`${baseUrl}/album`);
     const body = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(status).toBe(400);
 
     expect(body?.error).toEqual(true);
     expect(body?.matches).toEqual(null);

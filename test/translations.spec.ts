@@ -1,14 +1,13 @@
-import { baseUrl, defaultFetchOpts } from "./constants";
-import { checkTranslationProps } from "./hooks";
+import { checkTranslationProps, sendReq } from "./hooks";
 
 describe("Translation routes", () => {
   //#region /translations/:id
 
   it("Translation yields correct props", async () => {
-    const res = await fetch(`${baseUrl}/translations/7105950`, defaultFetchOpts);
+    const { res, status } = await sendReq("/translations/7105950");
     const body = await res.json();
 
-    expect(res.status).toBe(200);
+    expect(status).toBe(200);
 
     expect(body?.error).toEqual(false);
     expect(body?.matches).toBeGreaterThan(0);
@@ -21,10 +20,10 @@ describe("Translation routes", () => {
   //#region inv /translations/:id
 
   it("Invalid song ID yields error", async () => {
-    const res = await fetch(`${baseUrl}/translations/0`, defaultFetchOpts);
+    const { res, status } = await sendReq("/translations/0");
     const body = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(status).toBe(400);
 
     expect(body?.error).toEqual(true);
     expect(body?.matches).toEqual(null);
@@ -34,10 +33,10 @@ describe("Translation routes", () => {
   //#region inv /translations
 
   it("Translations path without ID yields error", async () => {
-    const res = await fetch(`${baseUrl}/translations`, defaultFetchOpts);
+    const { res, status } = await sendReq("/translations");
     const body = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(status).toBe(400);
 
     expect(body?.error).toEqual(true);
     expect(body?.matches).toEqual(null);

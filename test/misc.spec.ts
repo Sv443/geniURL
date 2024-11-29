@@ -1,15 +1,14 @@
-import { baseUrl, defaultFetchOpts } from "./constants";
+import { sendReq } from "./hooks";
 
-describe("Misc", () => {
+describe("Miscellaneous", () => {
   //#region health check
 
   it("Health check", async () => {
-    const res = await fetch(`${baseUrl}/health`, {
-      ...defaultFetchOpts,
+    const { status, headers } = await sendReq("/health", {
       method: "HEAD",
     });
 
-    expect(res.status).toBe(200);
-    expect(res.headers.get("api-info")).not.toBeNull();
+    expect(status).toBe(200);
+    expect(headers.get("api-info")).not.toBeNull();
   });
 });

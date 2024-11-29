@@ -1,10 +1,17 @@
-export function checkValProps(val: unknown, props: string[]) {
+import { baseUrl, defaultFetchOpts } from "./constants";
+
+//#region validate objects
+
+/** Checks if the given object has the specified properties */
+export function checkObjProps(val: unknown, props: string[]) {
+  expect(typeof val).toBe("object");
   for(const prop of props)
     expect(val).toHaveProperty(prop);
 }
 
+/** Checks if the given song object has the required properties */
 export function checkSongProps(songObj: unknown) {
-  return checkValProps(songObj, [
+  return checkObjProps(songObj, [
     "url", 
     "path", 
     "lyricsState", 
@@ -15,8 +22,9 @@ export function checkSongProps(songObj: unknown) {
   ]);
 }
 
+/** Checks if the given album object has the required properties */
 export function checkAlbumProps(albumObj: unknown) {
-  return checkValProps(albumObj, [
+  return checkObjProps(albumObj, [
     "name",
     "fullTitle",
     "url",
@@ -26,8 +34,9 @@ export function checkAlbumProps(albumObj: unknown) {
   ]);
 }
 
+/** Checks if the given artist object has the required properties */
 export function checkArtistProps(artistObj: unknown) {
-  return checkValProps(artistObj, [
+  return checkObjProps(artistObj, [
     "name",
     "url",
     "image",
@@ -35,12 +44,31 @@ export function checkArtistProps(artistObj: unknown) {
   ]);
 }
 
+/** Checks if the given translation object has the required properties */
 export function checkTranslationProps(translationObj: unknown) {
-  return checkValProps(translationObj, [
+  return checkObjProps(translationObj, [
     "language",
     "id",
     "path",
     "title",
     "url",
   ]);
+}
+
+//#region send requests
+
+/** Sends a request to the specified URL with the given options. Authentication and method "GET" are set by default. */
+export async function sendReq<
+  TAsJson extends boolean,
+>(
+  path: string,
+  opts?: RequestInit & { asJson?: TAsJson },
+): Promise<{
+  res: Response;
+  status: number;
+  headers: Headers;
+}> {
+  const res = await fetch(`${baseUrl}/${path.startsWith("/") ? path.substring(1) : path}`, { ...defaultFetchOpts, ...opts });
+  
+  return { res, status: res.status, headers: res.headers };
 }
