@@ -1,13 +1,21 @@
 // NOTE:
-// requires the env vars HTTP_PORT and AUTH_TOKENS to be set
+// - requires the env vars HTTP_PORT and AUTH_TOKENS (at least 1 token to bypass rate limiting) to be set
+// - requires geniURL to run in a different process (or using the command pnpm run latency-test)
 
 import "dotenv/config";
 import _axios from "axios";
 import percentile from "percentile";
+import k from "kleur";
+import type { Stringifiable } from "svcorelib";
+import queries from "./latency-test-queries.json" with { type: "json" };
 
 const settings = {
+  /** Amount of requests to send in total. */
   amount: 100,
-  url: `http://127.0.0.1:${process.env.HTTP_PORT}/search/top?q=pink guy - dog festival directions`,
+  /** Base URL to send requests to. `{{QUERY}}` will be replaced with a random query from the `latency-test-queries.json` file. */
+  url: `http://127.0.0.1:${process.env.HTTP_PORT}/v2/search/top?q={{QUERY}}`,
+  /** Whether to log all requests to the console. */
+  logRequests: true,
 };
 
 
@@ -19,34 +27,55 @@ async function run() {
 
   const times = [] as number[];
   for(let i = 0; i < settings.amount; i++) {
+    i === 0 && console.log(`> Sent 0 of ${settings.amount} requests`);
     const start = Date.now();
-    await axios.get(settings.url, {
-      headers: {
-        "Cache-Control": "no-cache",
-        Authorization: `Bearer ${process.env.AUTH_TOKENS!.split(",")[0]}`,
-      },
-    });
-    times.push(Date.now() - start);
+    try {
+      const url = settings.url.replace("{{QUERY}}", queries[Math.floor(Math.random() * queries.length)]);
+      settings.logRequests && console.log("    *", url);
+      await axios.get(url, {
+        headers: {
+          "Cache-Control": "no-cache",
+          Authorization: `Bearer ${process.env.AUTH_TOKENS!.split(",")[0]}`,
+        },
+      });
+    }
+    catch(e) {
+      console.error("Failed to send request:", e);
+    }
+    finally {
+      times.push(Date.now() - start);
 
-    i % 10 === 0 && i !== 0 && console.log(`Sent ${i} of ${settings.amount} requests`);
+      i % 10 === 0 && i !== 0 && console.log(`> Sent ${i} of ${settings.amount} requests`);
+    }
   }
 
+  const min = times.reduce((a, c) => Math.min(a, c), Infinity).toFixed(0);
   const avg = (times.reduce((a, c) => a + c, 0) / times.length).toFixed(0);
   const max = times.reduce((a, c) => Math.max(a, c), 0).toFixed(0);
-  const perc80 = percentile(80, times);
-  const perc90 = percentile(90, times);
-  const perc95 = percentile(95, times);
-  const perc99 = percentile(99, times);
 
-  console.log(`\n>>> Latency test finished after ${((Date.now() - startTs) / 1000).toFixed(2)}s`);
+  const getPerc = (perc: number, times: number[]) => {
+    const res = percentile(perc, times);
+    if(Array.isArray(res)) return res[0];
+    return res;
+  };
+
+  const logVal = (label: string, value: Stringifiable, kleurFunc?: (str: string) => void) => {
+    const valStr = `${label}:\t${String(value).padStart(4, " ")} ms`;
+    console.log(kleurFunc ? kleurFunc(valStr) : valStr);
+  }
+
+  console.log(`\n>>> Latency test finished sending all ${settings.amount} requests after ${((Date.now() - startTs) / 1000).toFixed(2)}s - Results:`);
   console.log();
-  console.log(`avg:\t${avg}\tms`);
-  console.log(`max:\t${max}\tms`);
+  logVal("min", min);
+  logVal("avg", avg, k.bold);
+  logVal("max", max);
   console.log();
-  console.log(`80th%:\t${perc80}\tms`);
-  console.log(`90th%:\t${perc90}\tms`);
-  console.log(`95th%:\t${perc95}\tms`);
-  console.log(`99th%:\t${perc99}\tms`);
+  logVal("80th%", getPerc(80, times));
+  logVal("90th%", getPerc(90, times));
+  logVal("95th%", getPerc(95, times));
+  logVal("97th%", getPerc(97, times), k.bold);
+  logVal("98th%", getPerc(98, times));
+  logVal("99th%", getPerc(99, times));
   console.log();
 }
 
