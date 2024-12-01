@@ -135,7 +135,7 @@ async function run() {
     times: reportTimes as LatencyTestReport["times"],
   };
 
-  const reportPath = join(reportsDirPath, `report_${new Date(testFinishTs).toISOString().replace(/[:/.]/g, "-").replace(/T/g, "_").replace(/-.+Z/, "")}.json`);
+  const reportPath = join(reportsDirPath, `report_${new Date(testFinishTs).toISOString().replace(/[:/.]/g, "-").replace(/T/g, "_").replace(/-\d+Z/, "")}.json`);
 
   try {
     try {
