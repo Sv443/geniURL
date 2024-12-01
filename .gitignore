@@ -14,3 +14,5 @@ node_modules/
 
 *.ignore.*
 *.ignore
+
+**/latency-test-reports/
