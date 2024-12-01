@@ -1,7 +1,7 @@
 import "dotenv/config";
 
-import * as server from "./server";
-import { error } from "./error";
+import * as server from "@src/server.js";
+import { error } from "@src/error.js";
 
 const { env } = process;
 
