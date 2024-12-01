@@ -111,7 +111,7 @@ async function run() {
   logVal("5th%", getPerc(5, times), k.gray);
   logVal("10th%", getPerc(10, times), k.gray);
   logVal("25th%", getPerc(25, times), k.gray);
-  logVal("80th%", getPerc(80, times));
+  logVal("80th%", getPerc(80, times), k.gray);
   logVal("90th%", getPerc(90, times));
   logVal("95th%", getPerc(95, times));
   logVal("97th%", getPerc(97, times), k.bold);
