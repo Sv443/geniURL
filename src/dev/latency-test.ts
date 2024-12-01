@@ -75,8 +75,11 @@ async function run() {
 
       const elapsedStr = `${((Date.now() - testStartTs) / 1000).toFixed(1)}s elapsed`;
 
-      if(settings.logAllRequests && i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
-        console.log(`${" ".repeat(digitCount(settings.amount))}  > ${elapsedStr}, sent ${i + 1} of ${settings.amount} requests (${mapRange(i + 1, 0, settings.amount, 0, 100).toFixed(0)}%)`);
+      if(settings.logAllRequests && i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1) {
+        const spc = `${" ".repeat(digitCount(settings.amount))}  `,
+          perc = mapRange(i + 1, 0, settings.amount, 0, 100).toFixed(0);
+        console.log(`${spc}> ${elapsedStr}, sent ${i + 1} of ${settings.amount} requests (${perc}%)`);
+      }
       else if(i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
         console.log(`> Sent ${i + 1} of ${settings.amount} requests (${elapsedStr})`);
     }
@@ -132,17 +135,7 @@ async function run() {
     times: reportTimes as LatencyTestReport["times"],
   };
 
-  const reportPath = join(reportsDirPath, `report_${
-    new Date(testFinishTs).toLocaleString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      hourCycle: "h24",
-      minute: "2-digit",
-      second: "2-digit",
-    }).replace(/[/:]/g, "-").replace(/, /g, "_")
-  }.json`);
+  const reportPath = join(reportsDirPath, `report_${new Date(testFinishTs).toISOString().replace(/[:/.]/g, "-").replace(/T/g, "_").replace(/-.+Z/, "")}.json`);
 
   try {
     try {
