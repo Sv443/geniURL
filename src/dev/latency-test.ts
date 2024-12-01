@@ -35,12 +35,14 @@ const reportsDirPath = join(dirname(fileURLToPath(import.meta.url)), "latency-te
 const axios = _axios.create({ timeout: settings.maxTimeout ?? 20_000 });
 
 type LatencyTestReport = {
+  /** Local date and time string when the latency test was started. */
+  localStartDateTime: string;
   /** Local date and time string when the latency test finished. */
-  localDateTime: string;
-  /** Settings used for the latency test. */
-  settings: typeof settings;
+  localFinishDateTime: string;
   /** Total time the latency test took in seconds. */
   totalTime: number;
+  /** Settings used for the latency test. */
+  settings: typeof settings;
   /** Calculated times in milliseconds. */
   times: Record<
     "min" | "avg" | "max" | "5th%" | "10th%" | "25th%" | "80th%" | "90th%" | "95th%" | "97th%" | "98th%" | "99th%",
@@ -53,6 +55,7 @@ async function run() {
   const testStartTs = Date.now();
 
   const times = [] as number[];
+  let successRequests = 0;
   for(let i = 0; i < settings.amount; i++) {
     !settings.logAllRequests && i === 0 && console.log(`> Sent 0 of ${settings.amount} requests`);
     const reqStartTs = Date.now();
@@ -65,6 +68,7 @@ async function run() {
           Authorization: `Bearer ${process.env.AUTH_TOKENS!.split(",")[0]}`,
         },
       });
+      successRequests++;
     }
     catch(e) {
       console.error(k.red("\n>> Failed to send request:"), e);
@@ -106,7 +110,7 @@ async function run() {
   const testFinishTs = Date.now();
   const totalTime = Number(((testFinishTs - testStartTs) / 1000).toFixed(2));
 
-  console.log(`\n>>> Latency test finished sending all ${settings.amount} requests after ${totalTime}s - Results:`);
+  console.log(`\n>>> Latency test finished sending ${successRequests} successful requests after ${totalTime}s - Results:`);
   console.log();
   logVal("5th%", getPerc(5, times), k.gray);
   logVal("10th%", getPerc(10, times), k.gray);
@@ -123,15 +127,19 @@ async function run() {
   logVal("max", max);
   console.log();
 
-  const localDateTime = Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
+  const getFormattedDate = (timestamp: number) => Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
     dateStyle: "short",
     timeStyle: "long",
-  }).format(new Date(testFinishTs));
+  }).format(new Date(timestamp));
+
+  const localStartDateTime = getFormattedDate(testStartTs);
+  const localFinishDateTime = getFormattedDate(testFinishTs);
 
   const reportData: LatencyTestReport = {
-    localDateTime,
-    settings,
+    localStartDateTime,
+    localFinishDateTime,
     totalTime,
+    settings,
     times: reportTimes as LatencyTestReport["times"],
   };
 
