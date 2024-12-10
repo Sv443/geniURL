@@ -11,6 +11,7 @@
     "build-www": "cd www && pnpm run build",
     "dev-all": "concurrently \"pnpm dev\" \"pnpm dev-www\"",
     "lint": "eslint . && tsc --noEmit",
+    "format": "eslint --fix .",
     "run-unit-tests": "jest --testLocationInResults --verbose",
     "run-latency-test": "tsx src/dev/latency-test.ts",
     "test": "start-server-and-test start http://127.0.0.1:8074/v2/health run-unit-tests",

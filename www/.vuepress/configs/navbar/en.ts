@@ -104,4 +104,4 @@ export const navbarEn: NavbarOptions = [
     ],
   },*/
   // TODO: remove the type assertion
-] as NavbarOptions
+] as NavbarOptions;

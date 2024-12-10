@@ -1,4 +1,4 @@
-import type { SidebarOptions } from '@vuepress/theme-default'
+import type { SidebarOptions } from "@vuepress/theme-default";
 
 export const sidebarEn: SidebarOptions = {
   "/docs/": [
@@ -73,4 +73,4 @@ export const sidebarEn: SidebarOptions = {
       ],
     },
   ],*/
-}
+};
