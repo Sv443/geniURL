@@ -1,18 +1,10 @@
-## Routes:
-All routes support gzip, deflate and brotli compression.  
-  
-Also all routes always return the properties `error` and `matches`.  
-They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
-  
-These are the available routes:
-- [Search](#get-search)
-    - [Search (only top result)](#get-searchtop)
-- [Translations](#get-translationssongid)
-- [Associated Album](#get-albumsongid)
+---
+lang: en-US
+title: Lyrics Search
+description: Description of all routes related to searching for lyrics metadata
+---
 
-<br><br>
-
-### GET `/search`
+## GET `/search`
 
 This route gives you up to 10 results for a provided search query.  
 The returned payload contains various data like the lyrics website URL, song and thumbnail metadata and more (see below).
@@ -120,7 +112,7 @@ The structure of the XML data is similar to the shown JSON data.
 
 <br><br><br>
 
-### GET `/search/top`
+## GET `/search/top`
 
 This route is similar to `/search`, but it only gives the top result.  
 Use this if you are only interested in the top result and want to reduce traffic.
@@ -217,134 +209,4 @@ The structure of the XML data is similar to the shown JSON data.
 }
 ```
 
-</details><br>
-
-<br><br><br>
-
-### GET `/translations/:songId`
-
-This route returns all translations of a certain song.  
-Get the song ID from one of the [search routes.](#routes)  
-Example: `/translations/1644`
-
-<br>
-
-**Optional URL Parameters:**  
-`?format=json/xml`  
-Use this optional parameter to change the response format from the default (`json`) to `xml`  
-The structure of the XML data is similar to the shown JSON data.
-
-<br>
-
-**Response:**  
-
-<details><summary><b>Successful response (click to view)</b></summary>
-
-```jsonc
-{
-    "error": false,
-    "matches": 1,
-    "translations": [
-        {
-            "language": "es",
-            "title": "Artist - Song (Traducción al Español)",
-            "url": "https://genius.com/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
-            "path": "/Genius-traducciones-al-espanol-artist-song-al-espanol-lyrics",
-            "id": 6942
-        }
-    ]
-}
-```
-
 </details>
-<br>
-<details><summary>Errored response (click to view)</summary>
-
-```json
-{
-    "error": true,
-    "matches": null,
-    "message": "Something went wrong"
-}
-```
-
-</details>
-<br>
-<details><summary>Response when no result found (click to view)</summary>
-
-```json
-{
-    "error": true,
-    "matches": 0,
-    "translations": []
-}
-```
-
-</details><br>
-
-<br><br><br>
-
-### GET `/album/:songId`
-
-This route returns any associated album for a specified song.  
-Get the song ID from one of the [search routes.](#routes)  
-Example: `/album/1644`
-
-<br>
-
-**Optional URL Parameters:**  
-`?format=json/xml`  
-Use this optional parameter to change the response format from the default (`json`) to `xml`  
-The structure of the XML data is similar to the shown JSON data.
-
-<br>
-
-**Response:**  
-
-<details><summary><b>Successful response (click to view)</b></summary>
-
-```jsonc
-{
-    "error": false,
-    "matches": 1,
-    "album": {
-        "name": "Album",
-        "fullTitle": "Song by Artist",
-        "url": "https://genius.com/albums/Artist/Album",
-        "coverArt": "https://images.genius.com/...",
-        "id": 12345,
-        "artist": {
-            "name": "Artist",
-            "url": "https://genius.com/artists/Artist",
-            "image": "https://images.genius.com/...",
-            "headerImage": "https://images.genius.com/..."
-        }
-    }
-}
-```
-
-</details>
-<br>
-<details><summary>Errored response (click to view)</summary>
-
-```json
-{
-    "error": true,
-    "matches": null,
-    "message": "Something went wrong"
-}
-```
-
-</details>
-<br>
-<details><summary>Response when no result found (click to view)</summary>
-
-```json
-{
-    "error": true,
-    "matches": 0,
-    "message": "Couldn't find any associated album for this song"
-}
-```
-
-</details><br>
