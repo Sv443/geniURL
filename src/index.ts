@@ -6,21 +6,19 @@ import { error } from "@src/error.js";
 const { env } = process;
 
 async function init() {
-  try
-  {
+  try {
     const missingEnvVars = [
       "HTTP_PORT",
       "GENIUS_ACCESS_TOKEN",
     ].reduce<string[]>((a, v) => ((typeof env[v] !== "string" || env[v]!.length < 1) ? a.concat(v) : a), []);
 
     if(missingEnvVars.length > 0)
-      throw new TypeError(`Missing environment variable(s):\n- ${missingEnvVars.join("\n- ")}`);
+      throw new Error(`Missing environment variable${missingEnvVars.length > 1 ? "s" : ""}:\n- ${missingEnvVars.join("\n- ")}`);
 
     await server.init();
   }
-  catch(err)
-  {
-    error("Error while initializing", err instanceof Error ? err : undefined, true);
+  catch(err) {
+    error("Encountered fatal error while initializing:", err instanceof Error ? err : undefined, true);
   }
 }
 

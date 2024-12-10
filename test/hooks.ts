@@ -58,12 +58,7 @@ export function checkTranslationProps(translationObj: unknown) {
 //#region send requests
 
 /** Sends a request to the specified URL with the given options. Authentication and method "GET" are set by default. */
-export async function sendReq<
-  TAsJson extends boolean,
->(
-  path: string,
-  opts?: RequestInit & { asJson?: TAsJson },
-): Promise<{
+export async function sendReq(path: string, opts?: RequestInit): Promise<{
   res: Response;
   status: number;
   headers: Headers;
