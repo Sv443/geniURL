@@ -37,7 +37,7 @@ The structure of the XML data is similar to the shown JSON data.
 
 <details><summary><b>Successful response (click to view)</b></summary>
 
-```jsonc
+```json
 {
     "error": false,
     "matches": 10,
@@ -145,7 +145,7 @@ The structure of the XML data is similar to the shown JSON data.
 
 <details><summary><b>Successful response (click to view)</b></summary>
 
-```jsonc
+```json
 {
     "error": false,
     "matches": 1,

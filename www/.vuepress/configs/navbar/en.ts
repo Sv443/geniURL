@@ -11,6 +11,14 @@ export const navbarEn: NavbarOptions = [
       },
     ],
   },
+  {
+    text: "GitHub",
+    link: "https://github.com/Sv443/geniURL",
+  },
+  {
+    text: "Discord",
+    link: "https://dc.sv443.net",
+  },
   /*{
     text: 'Routes',
     children: [

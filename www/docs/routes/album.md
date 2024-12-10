@@ -7,7 +7,7 @@ description: Description of all routes related to searching for a related album
 ## GET `/album/:songId`
 
 This route returns any associated album for a specified song.  
-Get the song ID from one of the [search routes.](#routes)  
+Get the song ID from one of the [search routes.](./search)  
 Example: `/album/1644`
 
 <br>
@@ -23,7 +23,7 @@ The structure of the XML data is similar to the shown JSON data.
 
 <details><summary><b>Successful response (click to view)</b></summary>
 
-```jsonc
+```json
 {
     "error": false,
     "matches": 1,
