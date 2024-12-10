@@ -1,5 +1,14 @@
 {
   "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2021",
+    "lib": [
+      "ES5",
+      "ES6",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
@@ -7,8 +16,6 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "noUncheckedIndexedAccess": true,
     "outDir": "./out/",
     "resolveJsonModule": true,
@@ -16,7 +23,27 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2022",
     "useDefineForClassFields": true,
-  }
+    "noImplicitThis": false,
+    "allowImportingTsExtensions": false,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@routes/*": ["src/routes/*"],
+      "@www/*": ["www/*"],
+      "@root/*": ["*"],
+    }
+  },
+  "ts-node": {
+    "esm": true,
+    "preferTsExts": true,
+  },
+  "include": [
+    "src/**/*",
+    "www/**/*",
+  ],
+  "exclude": [
+    "**/node_modules/**/*",
+    "**/dist/**/*",
+    "**/dev/**/*",
+  ],
 }

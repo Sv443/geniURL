@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getMeta } from "../songData";
+import { paramValid, respond } from "@src/utils.js";
+import { getMeta } from "@src/songData.js";
 
 export function initSearchRoutes(router: Router) {
+  //#region /search
   router.get("/search", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
+      const { q, artist, song, format: fmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
-      const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
@@ -18,8 +18,6 @@ export function initSearchRoutes(router: Router) {
             artist: String(artist),
             song: String(song),
           }),
-          threshold,
-          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || meta.all.length < 1)
@@ -38,12 +36,12 @@ export function initSearchRoutes(router: Router) {
     }
   });
 
+  //#region /search/top
   router.get("/search/top", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
+      const { q, artist, song, format: fmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
-      const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
@@ -53,8 +51,6 @@ export function initSearchRoutes(router: Router) {
             artist: String(artist),
             song: String(song),
           }),
-          threshold,
-          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || !meta.top)
@@ -68,5 +64,17 @@ export function initSearchRoutes(router: Router) {
     catch(err) {
       return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
     }
+  });
+
+  //#region /search/manual
+  router.get("/search/manual", (_req, res) => {
+    res.sendFile("index.html", {
+      root: "public",
+      dotfiles: "deny",
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+      },
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
   });
 }

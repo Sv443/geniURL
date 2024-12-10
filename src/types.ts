@@ -1,4 +1,4 @@
-//#SECTION server
+//#region server
 
 export type ServerResponse<T> = SuccessResponse<T> | ErrorResponse;
 
@@ -13,7 +13,7 @@ export type ErrorResponse = {
   message: string;
 }
 
-//#SECTION meta
+//#region meta
 
 interface Artist {
   name: string | null;
@@ -52,8 +52,6 @@ export interface GetMetaArgs {
   q?: string;
   artist?: string;
   song?: string;
-  threshold?: number;
-  disableFuzzy?: boolean;
 }
 
 export type SearchFilterArgs = GetMetaArgs;
@@ -68,7 +66,7 @@ export interface GetMetaResult {
   all: SongMeta[];
 }
 
-//#SECTION translations
+//#region translations
 
 export interface SongTranslation {
   language: string;
@@ -78,13 +76,13 @@ export interface SongTranslation {
   url: string;
 }
 
-//#SECTION server
+//#region server
 
 export type ResponseType = "serverError" | "clientError" | "success";
 
 export type ResponseFormat = "json" | "xml";
 
-//#SECTION API
+//#region API
 
 /** The entire object returned by the search endpoint of the genius API */
 export type ApiSearchResult = {
@@ -173,6 +171,3 @@ export interface Album {
   id: number;
   artist: Artist;
 }
-
-//#SECTION internal
-export type SupportedMethods = "GET";
