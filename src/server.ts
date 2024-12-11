@@ -20,15 +20,18 @@ app.use(cors({
   methods: "GET,HEAD,OPTIONS",
   origin: "*",
 }));
+
 app.use(helmet({ 
   dnsPrefetchControl: true,
 }));
+
 app.use(compression({
   threshold: 256
 }));
+
 app.use(express.json());
 
-if(env.NODE_ENV?.toLowerCase() === "production")
+if(env.TRUST_PROXY?.toLowerCase() === "true")
   app.enable("trust proxy");
 
 app.disable("x-powered-by");
@@ -59,32 +62,51 @@ export async function init() {
   // rate limiting
   app.use(async (req, res, next) => {
     const fmt = req?.query?.format ? String(req.query.format) : undefined;
-    const { authorization } = req.headers;
-    const authHeader = authorization?.startsWith("Bearer ") ? authorization.substring(7) : authorization;
+    try {
+      const { authorization } = req.headers;
+      const authHeader = authorization?.trim().replace(/^Bearer\s+/i, "");
 
-    res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
+      res.setHeader("API-Info", `geniURL v${packageJson.version} (${packageJson.homepage})`);
+      res.setHeader("API-Version", packageJson.version);
 
-    if(authHeader && authTokens.has(authHeader))
-      return next();
+      if(authHeader && authTokens.has(authHeader))
+        return next();
 
-    const ipHash = await hashStr(getClientIp(req) ?? "IP_RESOLUTION_ERROR");
+      const ipHash = await hashStr(getClientIp(req) ?? "IP_RESOLUTION_ERROR");
 
-    if(rlIgnorePaths.every((path) => !req.path.match(new RegExp(`^(/?v\\d+)?${path}`)))) {
-      rateLimiter.consume(ipHash)
-        .then((rateLimiterRes: RateLimiterRes) => {
-          setRateLimitHeaders(res, rateLimiterRes);
-          return next();
-        })
-        .catch((err) => {
-          if(err instanceof RateLimiterRes) {
-            setRateLimitHeaders(res, err);
-            return respond(res, 429, { error: true, matches: null, message: "You are being rate limited. Refer to the Retry-After header for when to try again." }, fmt);
-          }
-          else return respond(res, 500, { message: "Encountered an internal error. Please try again a little later." }, fmt);
-        });
+      if(rlIgnorePaths.every((path) => !req.path.match(new RegExp(`^(/?v\\d+)?${path}`)))) {
+        rateLimiter.consume(ipHash)
+          .then((rateLimiterRes: RateLimiterRes) => {
+            setRateLimitHeaders(res, rateLimiterRes);
+            return next();
+          })
+          .catch((err) => {
+            if(err instanceof RateLimiterRes) {
+              setRateLimitHeaders(res, err);
+              return respond(res, 429, {
+                error: true,
+                matches: null,
+                message: "You are being rate limited. Refer to the Retry-After header for when to try again."
+              }, fmt);
+            }
+            else
+              return respond(res, 500, {
+                error: true,
+                matches: null,
+                message: `Encountered an internal error${e instanceof Error ? `: ${err.message}` : ""}. Please try again a little later.`,
+              }, fmt);
+          });
+      }
+      else
+        return next();
     }
-    else
-      return next();
+    catch(e) {
+      return respond(res, "serverError", {
+        error: true,
+        matches: null,
+        message: `Encountered an internal error while applying rate limiting and checking for authorization${e instanceof Error ? `: ${e.message}` : ""}`
+      }, fmt);
+    }
   });
 
   const listener = app.listen(port, host, () => {
@@ -105,8 +127,9 @@ function registerRoutes() {
   }
 }
 
+/** Returns all auth tokens as a set of strings */
 function getAuthTokens() {
-  const envVal = process.env["AUTH_TOKENS"];
+  const envVal = env.AUTH_TOKENS;
   let tokens: string[] = [];
 
   if(!envVal || envVal.length === 0)
@@ -117,7 +140,8 @@ function getAuthTokens() {
   return new Set<string>(tokens);
 }
 
-function setRateLimitHeaders (res: Response, rateLimiterRes: RateLimiterRes) {
+/** Sets all rate-limiting related headers on a response given a RateLimiterRes object */
+function setRateLimitHeaders(res: Response, rateLimiterRes: RateLimiterRes) {
   if(rateLimiterRes.remainingPoints === 0)
     res.setHeader("Retry-After", Math.ceil(rateLimiterRes.msBeforeNext / 1000));
   res.setHeader("X-RateLimit-Limit", rateLimiter.points);

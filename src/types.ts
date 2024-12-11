@@ -1,12 +1,15 @@
 //#region server
 
+/** Successful or errored response object */
 export type ServerResponse<T> = SuccessResponse<T> | ErrorResponse;
 
+/** Successful response object */
 export type SuccessResponse<T> = {
   error: false;
   matches: number;
 } & T;
 
+/** Errored response object */
 export type ErrorResponse = {
   error: true;
   matches: 0 | null;
@@ -15,6 +18,7 @@ export type ErrorResponse = {
 
 //#region meta
 
+/** genius.com artist object */
 interface Artist {
   name: string | null;
   url: string | null;
@@ -22,7 +26,7 @@ interface Artist {
   headerImage: string | null;
 }
 
-/** geniURL song meta object */
+/** genius.com song meta object */
 export interface SongMeta {
   url: string;
   path: string;
@@ -48,6 +52,7 @@ export interface SongMeta {
 
 export type MetaSearchHit = SongMeta & { uuid?: string; };
 
+/** Arguments passed to the getMeta() function */
 export interface GetMetaArgs {
   q?: string;
   artist?: string;
@@ -61,6 +66,7 @@ export type ScoredResults<T> = {
   result: T;
 };
 
+/** Resulting object from calling getMeta() */
 export interface GetMetaResult {
   top: SongMeta;
   all: SongMeta[];
@@ -68,6 +74,7 @@ export interface GetMetaResult {
 
 //#region translations
 
+/** genius.com translation object */
 export interface SongTranslation {
   language: string;
   id: number;
@@ -78,8 +85,10 @@ export interface SongTranslation {
 
 //#region server
 
+/** geniURL response type */
 export type ResponseType = "serverError" | "clientError" | "success";
 
+/** geniURL response file format */
 export type ResponseFormat = "json" | "xml";
 
 //#region API
@@ -133,6 +142,7 @@ export type SongObj = SongBaseObj & {
   }[];
 };
 
+/** Base object returned by the songs endpoints of the genius API */
 type SongBaseObj = {
   api_path: string;
   artist_names: string;
@@ -154,6 +164,7 @@ type SongBaseObj = {
   url: string;
 };
 
+/** Artist object returned by the genius API */
 type ArtistObj = {
   api_path: string;
   header_image_url: string;
@@ -163,6 +174,7 @@ type ArtistObj = {
   url: string;
 }
 
+/** Album object returned by the genius API */
 export interface Album {
   name: string;
   fullTitle: string;

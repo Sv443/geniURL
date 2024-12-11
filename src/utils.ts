@@ -73,16 +73,17 @@ export function respond(res: Response, type: ResponseType | number, data: String
   res.status(statusCode).send(finalData);
 }
 
-export function redirectToDocs(res: Response) {
-  res.redirect(`/v${verMajor}/docs/`);
+/** Redirects to the documentation page at the given path (homepage by default) */
+export function redirectToDocs(res: Response, path?: string) {
+  res.redirect(`/v${verMajor}/docs/${path ? path.replace(/^\//, "") : ""}`);
 }
 
-/** Hashes a string using SHA-512, encoded as "hex" by default */
-export function hashStr(str: string, encoding: BinaryToTextEncoding = "hex"): Promise<string> {
+/** Hashes a string. Uses SHA-512 encoded as "hex" by default */
+export function hashStr(str: string | { toString: () => string }, algorithm = "sha512", encoding: BinaryToTextEncoding = "hex"): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
-      const hash = createHash("sha512");
-      hash.update(str);
+      const hash = createHash(algorithm);
+      hash.update(String(str));
       resolve(hash.digest(encoding));
     }
     catch(e) {
@@ -92,9 +93,11 @@ export function hashStr(str: string, encoding: BinaryToTextEncoding = "hex"): Pr
 }
 
 /** Returns the length of the given data - returns -1 if the data couldn't be stringified */
-export function getByteLength(data: string | Record<string, unknown>) {
+export function getByteLength(data: string | { toString: () => string } | Record<string, unknown>) {
   if(typeof data === "string" || "toString" in data)
     return Buffer.byteLength(String(data), "utf8");
-
-  return -1;
+  else if(typeof data === "object")
+    return Buffer.byteLength(JSON.stringify(data), "utf8");
+  else
+    return -1;
 }
