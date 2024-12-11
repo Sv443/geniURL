@@ -93,7 +93,7 @@ export async function init() {
               return respond(res, 500, {
                 error: true,
                 matches: null,
-                message: `Encountered an internal error${e instanceof Error ? `: ${err.message}` : ""}. Please try again a little later.`,
+                message: `Encountered an internal error${err instanceof Error ? `: ${err.message}` : ""}. Please try again a little later.`,
               }, fmt);
           });
       }
