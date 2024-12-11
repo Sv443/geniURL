@@ -4,9 +4,7 @@ export const sidebarEn: SidebarOptions = {
   "/docs/": [
     {
       text: "Getting started",
-      children: [
-        "/docs/README.md",
-      ],
+      link: "/docs/README.md",
     },
     {
       text: "Routes",
@@ -16,6 +14,10 @@ export const sidebarEn: SidebarOptions = {
         "/docs/routes/translations.md",
         "/docs/routes/album.md",
       ],
+    },
+    {
+      text: "Try It",
+      link: "/docs/manual-search.md",
     },
   ],
   /*'/advanced/': [

@@ -12,6 +12,10 @@ export const navbarEn: NavbarOptions = [
     ],
   },
   {
+    text: "Try It",
+    link: "/docs/manual-search.md",
+  },
+  {
     text: "GitHub",
     link: "https://github.com/Sv443/geniURL",
   },
