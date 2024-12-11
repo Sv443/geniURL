@@ -30,18 +30,18 @@
       "color": "#000",
     },
     "(#?(DEBUG|DBG)#?)": { // #DEBUG or DEBUG or #DBG or #DBG#
-      "backgroundColor": "#ff0",
+      "backgroundColor": "#ff3",
       "color": "blue",
-      "overviewRulerColor": "#ff0",
+      "overviewRulerColor": "#ff3",
     },
     "(IMPORTANT:)": { // IMPORTANT:
-      "backgroundColor": "#a22",
-      "color": "#fff",
+      "backgroundColor": "#f34",
+      "color": "#000",
     },
     "(FIXME:)": { // FIXME:
-      "backgroundColor": "#a22",
+      "backgroundColor": "#811",
       "color": "#fff",
-      "overviewRulerColor": "#752020",
+      "overviewRulerColor": "#811",
     },
   },
 }
