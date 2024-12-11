@@ -16,6 +16,7 @@ import { type Stringifiable } from "svcorelib";
 import "dotenv/config";
 import queries from "./latency-test-queries.json" with { type: "json" };
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 
 const settings = {
   /** Amount of requests to send in total. */
@@ -41,6 +42,10 @@ type LatencyTestReport = {
   localFinishDateTime: string;
   /** Total time the latency test took in seconds. */
   totalTime: number;
+  /** Git SHA of the latest commit. */
+  gitSha: string;
+  /** 7-character Git SHA of the latest commit. */
+  gitShaShort: string;
   /** Settings used for the latency test. */
   settings: typeof settings;
   /** Calculated times in milliseconds. */
@@ -51,7 +56,7 @@ type LatencyTestReport = {
 };
 
 async function run() {
-  console.log(k.green(`\n>>> Starting latency test on ${settings.amount} sequential requests${settings.amount >= 50 ? k.yellow(" - this could take a while!") : ""}\n`));
+  console.log(k.green(`\n>>> Starting latency test with ${settings.amount} sequential requests${settings.amount >= 50 ? k.yellow(" - this could take a while!") : ""}\n`));
   const testStartTs = Date.now();
 
   const times = [] as number[];
@@ -80,9 +85,9 @@ async function run() {
       const elapsedStr = `${((Date.now() - testStartTs) / 1000).toFixed(1)}s elapsed`;
 
       if(settings.logAllRequests && i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1) {
-        const spc = `${" ".repeat(digitCount(settings.amount))}  `,
+        const arrow = `  ${"-".repeat(Math.max(digitCount(settings.amount), 1))}>`,
           perc = mapRange(i + 1, 0, settings.amount, 0, 100).toFixed(0);
-        console.log(`${spc}> ${elapsedStr}, sent ${i + 1} of ${settings.amount} requests (${perc}%)`);
+        console.log(`${arrow} ${elapsedStr}, sent ${i + 1} of ${settings.amount} requests (${perc}%)`);
       }
       else if(i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
         console.log(`> Sent ${i + 1} of ${settings.amount} requests (${elapsedStr})`);
@@ -135,10 +140,14 @@ async function run() {
   const localStartDateTime = getFormattedDate(testStartTs);
   const localFinishDateTime = getFormattedDate(testFinishTs);
 
+  const gitSha = getGitSha();
+
   const reportData: LatencyTestReport = {
     localStartDateTime,
     localFinishDateTime,
     totalTime,
+    gitSha,
+    gitShaShort: gitSha.slice(0, 7),
     settings,
     times: reportTimes as LatencyTestReport["times"],
   };
@@ -192,6 +201,16 @@ function mapRange(value: number, range1min: number, range1max: number, range2min
     return value * (range2max / range1max);
 
   return (value - range1min) * ((range2max - range2min) / (range1max - range1min)) + range2min;
+}
+
+/** Returns the current git SHA or "unknown" if it fails. */
+function getGitSha() {
+  try {
+    return String(execSync("git rev-parse HEAD")).trim();
+  }
+  catch {
+    return "unknown";
+  }
 }
 
 run();
