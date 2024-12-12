@@ -66,7 +66,7 @@ export async function getMeta({
 
     return {
       top: hits[0]!,
-      all: hits.slice(0, clamp(limit, 1, maxResultsAmt)),
+      all: hits.slice(0, clamp(limit ?? maxResultsAmt, 1, maxResultsAmt)),
     };
   }
   return null;

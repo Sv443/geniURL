@@ -6,8 +6,10 @@ import { verMajor } from "@src/constants.js";
 import type { ResponseType } from "@src/types.js";
 
 /** Checks if the value of a passed URL parameter is a string with length > 0 */
-export function paramValid(val: unknown): val is string {
-  return typeof val === "string" && val.length > 0;
+export function paramValid(val: unknown): boolean {
+  if(typeof val === "string")
+    return val.length > 0;
+  return typeof val !== "undefined";
 }
 
 /**

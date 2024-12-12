@@ -9,7 +9,7 @@ export function initSearchRoutes(router: Router) {
       const { q, artist, song, format: fmt, limit: lmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
-      const limit = isNaN(Number(lmt)) ? undefined : Number(lmt);
+      const limit = !paramValid(lmt) || isNaN(Number(lmt)) ? undefined : Number(lmt);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
@@ -47,6 +47,7 @@ export function initSearchRoutes(router: Router) {
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
+          limit: 1,
           ...(q ? {
             q: String(q),
           } : {
