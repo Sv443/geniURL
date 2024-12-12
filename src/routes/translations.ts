@@ -1,4 +1,4 @@
-import { Router } from "express";
+import type { Router } from "express";
 import { paramValid, respond } from "@src/utils.js";
 import { getTranslations } from "@src/songData.js";
 

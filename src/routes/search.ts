@@ -1,4 +1,4 @@
-import { Router } from "express";
+import type { Router } from "express";
 import { paramValid, respond } from "@src/utils.js";
 import { getMeta } from "@src/songData.js";
 
@@ -6,12 +6,14 @@ export function initSearchRoutes(router: Router) {
   //#region /search
   router.get("/search", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt } = req.query;
+      const { q, artist, song, format: fmt, limit: lmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
+      const limit = isNaN(Number(lmt)) ? undefined : Number(lmt);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
+          limit,
           ...(q ? {
             q: String(q),
           } : {

@@ -1,4 +1,4 @@
-import express, { Application, Router } from "express";
+import express, { type Application, Router } from "express";
 import { docsPath, verMajor } from "@src/constants.js";
 import { redirectToDocs } from "@src/utils.js";
 
@@ -25,6 +25,7 @@ export function initRouter(app: Application) {
 
   // health check
   router.get("/health", (_req, res) => res.status(200).send("Hello, World!"));
+  router.get("/ping", (_req, res) => res.status(200).send("Pong!"));
 
   if(hostHomepage) {
     // host docs files

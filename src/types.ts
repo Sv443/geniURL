@@ -57,6 +57,7 @@ export interface GetMetaArgs {
   q?: string;
   artist?: string;
   song?: string;
+  limit?: number;
 }
 
 export type SearchFilterArgs = GetMetaArgs;

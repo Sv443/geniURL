@@ -1,5 +1,6 @@
 import { axios, baseAxiosOpts } from "@src/axios.js";
-import { charReplacements } from "@src/constants.js";
+import { charReplacements, maxResultsAmt } from "@src/constants.js";
+import { clamp } from "@src/utils.js";
 import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongTranslation } from "@src/types.js";
 
 /**
@@ -10,9 +11,10 @@ export async function getMeta({
   q,
   artist,
   song,
+  limit,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
-  const query = q ? q : `${artist} ${song}`;
+  const query = (q ?? `${artist} ${song}`).trim();
 
   const {
     data: { response },
@@ -64,7 +66,7 @@ export async function getMeta({
 
     return {
       top: hits[0]!,
-      all: hits.slice(0, 10),
+      all: hits.slice(0, clamp(limit, 1, maxResultsAmt)),
     };
   }
   return null;

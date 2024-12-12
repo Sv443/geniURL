@@ -5,7 +5,7 @@ export const axios = _axios.create({
 });
 
 export function baseAxiosOpts() {
-  const authToken = process.env.GENIUS_ACCESS_TOKEN;
+  const authToken = process.env.GENIUS_ACCESS_TOKEN?.trim();
   return authToken && authToken.length > 0 ? {
     headers: {
       "Authorization": `Bearer ${authToken}`,

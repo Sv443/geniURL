@@ -2,6 +2,9 @@ import { resolve } from "node:path";
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
 import packageJson from "../package.json" with { type: "json" };
 
+/** Max amount of results that geniURL can serve */
+export const maxResultsAmt = 10;
+
 /** The version from package.json, split into a tuple of major, minor, and patch number */
 export const splitVersion = packageJson.version.split(".").map(v => Number(v)) as [major: number, minor: number, patch: number];
 

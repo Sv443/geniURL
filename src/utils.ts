@@ -101,3 +101,8 @@ export function getByteLength(data: string | { toString: () => string } | Record
   else
     return -1;
 }
+
+/** Ensures the passed {@linkcode value} always stays between {@linkcode min} and {@linkcode max} */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(Math.min(value, max), min);
+}
