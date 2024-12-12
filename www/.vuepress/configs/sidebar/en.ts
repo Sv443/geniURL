@@ -3,7 +3,7 @@ import type { SidebarOptions } from "@vuepress/theme-default";
 export const sidebarEn: SidebarOptions = {
   "/docs/": [
     {
-      text: "Getting started",
+      text: "Introduction",
       link: "/docs/README.md",
     },
     {
