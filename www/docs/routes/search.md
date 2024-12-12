@@ -29,7 +29,12 @@ Make sure these parameters are [percent/URL-encoded.](https://en.wikipedia.org/w
 **Optional URL Parameters:**  
 `?format=json/xml`  
 Use this optional parameter to change the response format from the default (`json`) to `xml`  
-The structure of the XML data is similar to the shown JSON data.
+The structure of the XML data is similar to the shown JSON data.  
+  
+`?limit=n`  
+When provided, this parameter limits the amount of possible results.  
+It will default to 10 if not provided or set to a number above 10.  
+If set to a number below 1, it will default to 1.
 
 <br>
 

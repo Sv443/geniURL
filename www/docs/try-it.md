@@ -1,6 +1,6 @@
 ---
 lang: en-US
-title: Manual Search
+title: Try It
 description: Try out geniURL by manually searching for lyrics metadata
 ---
 

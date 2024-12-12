@@ -13,7 +13,7 @@ export const navbarEn: NavbarOptions = [
   },
   {
     text: "Try It",
-    link: "/docs/manual-search.md",
+    link: "/docs/try-it.md",
   },
   {
     text: "GitHub",

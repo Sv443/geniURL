@@ -1,5 +1,6 @@
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { readdirSync } from "node:fs";
 import { defineUserConfig } from "vuepress/cli";
 import { defaultTheme } from "@vuepress/theme-default";
 import { viteBundler } from "@vuepress/bundler-vite";
@@ -12,9 +13,12 @@ import { navbarEn, sidebarEn } from "./configs/index.js";
 
 const verMajor = Number(rootPkgJson.version.split(".")![0]);
 
-const customComponents = [
-  "ManualSearch",
-];
+const componentDir = join(dirname(fileURLToPath(import.meta.url)), "./components/");
+const componentNames = readdirSync(componentDir).map((p) => {
+  const fileNameParts = p.split("/")!.at(-1).split(".");
+  fileNameParts.pop();
+  return fileNameParts.join(".");
+});
 
 export default defineUserConfig({
   lang: "en-US",
@@ -22,7 +26,7 @@ export default defineUserConfig({
   title: "geniURL",
   description: "A simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on genius.com",
   theme: defaultTheme({
-    logo: "https://vuejs.press/images/hero.png",
+    // logo: "https://vuejs.press/images/hero.png",
     navbar: navbarEn,
     sidebar: sidebarEn,
   }),
@@ -36,8 +40,8 @@ export default defineUserConfig({
       hostname: "https://api.sv443.net",
     }),
     registerComponentsPlugin({
-      components: customComponents.reduce((a, c) => {
-        a[c] = join(dirname(fileURLToPath(import.meta.url)), `./components/${c}.vue`);
+      components: componentNames.reduce((a, c) => {
+        a[c] = join(componentDir, `${c}.vue`);
         return a;
       }, {}),
     }),

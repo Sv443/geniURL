@@ -17,7 +17,7 @@ export const sidebarEn: SidebarOptions = {
     },
     {
       text: "Try It",
-      link: "/docs/manual-search.md",
+      link: "/docs/try-it.md",
     },
   ],
   /*'/advanced/': [
