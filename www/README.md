@@ -7,7 +7,7 @@ actions:
     link: /docs/
     type: primary
   - text: Try It
-    link: /docs/manual-search.html
+    link: /docs/try-it.html
     type: secondary
 features:
   - title: Free and easy to use

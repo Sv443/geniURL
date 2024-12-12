@@ -13,7 +13,7 @@ https://api.sv443.net/geniurl/v2/
 <br>
 
 ## Rate Limiting
-The public instance is rate limited to 25 requests within a 30 second timeframe.  
+The public instance is rate limited to 20 requests within a 30 second timeframe.  
 To know how many requests you have sent and are still able to send, refer to the following headers that are attached to each response:
 | Header Name             | Description                                                                                                     |
 | :---------------------- | :-------------------------------------------------------------------------------------------------------------- |
@@ -24,8 +24,9 @@ To know how many requests you have sent and are still able to send, refer to the
 
 <br>
 
-## Error detection
+## Errors
 All routes always return the properties `error` and `matches`.  
+<!-- TODO: make responses with matches = 0 have error = false -->
 They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
   
 Additionally, you can use the [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) to find out whether a request has succeeded or not.
