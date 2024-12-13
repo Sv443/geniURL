@@ -87,7 +87,7 @@ export interface SongTranslation {
 //#region server
 
 /** geniURL response type */
-export type ResponseType = "serverError" | "clientError" | "success";
+export type ResponseType = "serverError" | "clientError" | "success" | "noResults";
 
 /** geniURL response file format */
 export type ResponseFormat = "json" | "xml";

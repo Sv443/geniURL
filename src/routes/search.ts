@@ -22,8 +22,8 @@ export function initSearchRoutes(router: Router) {
           }),
         });
 
-        if(!meta || meta.all.length < 1)
-          return respond(res, "clientError", "Found no results matching your search query", format, 0);
+        if(!meta || meta.all.length < 1) // TODO: verify
+          return respond(res, "noResults",  format !== "xml" ? { top: null, all: [] } : { top: null, all: { "result": [] } }, format);
 
         // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
         const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
@@ -56,8 +56,8 @@ export function initSearchRoutes(router: Router) {
           }),
         });
 
-        if(!meta || !meta.top)
-          return respond(res, "clientError", "Found no results matching your search query", format, 0);
+        if(!meta || !meta.top) // TODO: verify
+          return respond(res, "noResults", {}, format);
 
         return respond(res, "success", meta.top, format, 1);
       }
@@ -69,6 +69,7 @@ export function initSearchRoutes(router: Router) {
     }
   });
 
+  // TODO: adjust
   //#region /search/manual
   router.get("/search/manual", (_req, res) => {
     res.sendFile("index.html", {

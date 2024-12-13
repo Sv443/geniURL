@@ -23,8 +23,8 @@ export function initAlbumRoutes(router: Router) {
 
       const album = await getAlbum(Number(songId));
 
-      if(!album)
-        return respond(res, "clientError", "Couldn't find any associated album for this song", format, 0);
+      if(!album) // TODO: verify
+        return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { album }, format, 1);
     }

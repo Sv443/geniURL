@@ -13,10 +13,12 @@ export function paramValid(val: unknown): boolean {
 }
 
 /**
- * Responds to an incoming request
+ * Responds to a request in a uniform way
+ * @param res Express response object
  * @param type Type of response or status code
  * @param data The data to send in the response body
- * @param format json / xml
+ * @param format Response format "json" or "xml"
+ * @param matchesAmt Amount of matches / datasets returned in this response
  */
 export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number) {
   let statusCode = 500;
@@ -25,19 +27,23 @@ export function respond(res: Response, type: ResponseType | number, data: String
 
   let resData = {};
 
-  if(typeof format !== "string" || !["json", "xml"].includes(format.toLowerCase()))
+  format = format?.toLowerCase();
+
+  if(typeof format !== "string" || !["json", "xml"].includes(format))
     format = "json";
 
-  format = format.toLowerCase();
-
-  switch(type)
-  {
+  switch(type) {
   case "success":
     error = false;
     matches = matchesAmt;
     statusCode = 200;
     resData = data;
     break;
+  case "noResults":
+    error = false;
+    matches = matchesAmt ?? 0;
+    statusCode = 200;
+    resData = data;
   case "clientError":
     error = true;
     matches = matchesAmt ?? null;
@@ -51,8 +57,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
     resData = { message: data };
     break;
   default:
-    if(typeof type === "number")
-    {
+    if(typeof type === "number") {
       error = false;
       matches = matchesAmt ?? 0;
       statusCode = type;
@@ -75,7 +80,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
   res.status(statusCode).send(finalData);
 }
 
-/** Redirects to the documentation page at the given path (homepage by default) */
+/** Redirects to the documentation page at the given relative path (homepage by default) */
 export function redirectToDocs(res: Response, path?: string) {
   res.redirect(`/v${verMajor}/docs/${path ? path.replace(/^\//, "") : ""}`);
 }

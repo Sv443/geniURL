@@ -23,11 +23,11 @@ export function initTranslationsRoutes(router: Router) {
 
       const translations = await getTranslations(Number(songId));
 
-      if(translations === null || (Array.isArray(translations) && translations.length === 0))
-        return respond(res, "clientError", "Couldn't find translations for this song", format, 0);
+      if(translations === null || (Array.isArray(translations) && translations.length === 0)) // TODO: verify
+        return respond(res, "noResults", {}, format);
 
-      if(translations === undefined)
-        return respond(res, "clientError", "Couldn't find a song with the provided ID", format, undefined);
+      if(translations === undefined) // TODO: verify
+        return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { translations }, format, translations.length);
     }
