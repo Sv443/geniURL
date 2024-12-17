@@ -42,6 +42,8 @@ type LatencyTestReport = {
   localFinishDateTime: string;
   /** Total time the latency test took in seconds. */
   totalTime: number;
+  /** Total time the latency test took in a human-readable format. */
+  duration: string;
   /** Git SHA of the latest commit. */
   gitSha: string;
   /** 7-character Git SHA of the latest commit. */
@@ -50,7 +52,7 @@ type LatencyTestReport = {
   settings: typeof settings;
   /** Calculated times in milliseconds. */
   times: Record<
-    "min" | "avg" | "max" | "5th%" | "10th%" | "25th%" | "80th%" | "90th%" | "95th%" | "97th%" | "98th%" | "99th%",
+    "min" | "avg" | "max" | "5th%" | "10th%" | "25th%" | "50th%" | "80th%" | "90th%" | "95th%" | "97th%" | "98th%" | "99th%",
     number
   >;
 };
@@ -82,15 +84,18 @@ async function run() {
     finally {
       times.push(Date.now() - reqStartTs);
 
-      const elapsedStr = `${((Date.now() - testStartTs) / 1000).toFixed(1)}s elapsed`;
+      const elapsedStr = `${((Date.now() - testStartTs) / 1000).toFixed(0)}s elapsed`,
+        perc = mapRange(i + 1, 0, settings.amount, 0, 100).toFixed(0),
+        percStr = `[${k.green((perc + "%").padStart(4, " "))}]`,
+        remainingSec = getRemainingTimeStr(testStartTs, i + 1, settings.amount);
 
-      if(settings.logAllRequests && i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1) {
-        const arrow = `  ${"-".repeat(Math.max(digitCount(settings.amount), 1))}>`,
-          perc = mapRange(i + 1, 0, settings.amount, 0, 100).toFixed(0);
-        console.log(`${arrow} ${elapsedStr}, sent ${i + 1} of ${settings.amount} requests (${perc}%)`);
-      }
-      else if(i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
-        console.log(`> Sent ${i + 1} of ${settings.amount} requests (${elapsedStr})`);
+      const logProgress = () => console.log(k.bold(`${percStr} • ${i + 1} / ${settings.amount} requests sent • ${elapsedStr} • about ${remainingSec} remaining`));
+
+      if(
+        (settings.logAllRequests && i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
+        || (i % settings.infoLogFrequency === settings.infoLogFrequency - 1 && i > 0 && i !== settings.amount - 1)
+      )
+        logProgress();
     }
   }
 
@@ -106,34 +111,44 @@ async function run() {
 
   const reportTimes = {} as Partial<LatencyTestReport["times"]>;
 
-  const logVal = (label?: string, value?: Stringifiable, kleurFunc?: (str: string) => void) => {
-    let valStr = label ?? "";
-    if(value) {
-      valStr += `:\t${String(value).padStart(4, " ")} ms`;
-      reportTimes[label as keyof LatencyTestReport["times"]] = Number(value);
+  const getlogVal = (label?: string, value?: Stringifiable, kleurFunc?: (str: string) => void) => {
+    let valStr = kleurFunc?.(label ?? "") ?? label ?? "";
+    if(label && value) {
+      const msVal = `${String(value).padStart(6, " ")} ms`;
+      valStr += ` ║ ${kleurFunc?.(msVal) ?? msVal}`;
+      reportTimes[(label.trim() as keyof LatencyTestReport["times"])] = Number(value);
     }
-    console.log(kleurFunc ? kleurFunc(valStr) : valStr);
+    return valStr;
   }
 
   const testFinishTs = Date.now();
   const totalTime = Number(((testFinishTs - testStartTs) / 1000).toFixed(2));
 
-  logVal(`\n>>> Latency test finished sending ${successRequests} successful requests after ${totalTime}s - Results:`);
-  logVal();
-  logVal("5th%", getPerc(5, times), k.gray);
-  logVal("10th%", getPerc(10, times), k.gray);
-  logVal("25th%", getPerc(25, times), k.gray);
-  logVal("80th%", getPerc(80, times), k.gray);
-  logVal("90th%", getPerc(90, times));
-  logVal("95th%", getPerc(95, times));
-  logVal("97th%", getPerc(97, times), k.bold);
-  logVal("98th%", getPerc(98, times));
-  logVal("99th%", getPerc(99, times));
-  logVal();
-  logVal("min", min);
-  logVal("avg", avg, k.bold);
-  logVal("max", max);
-  logVal();
+  const durStr = secondsToPrettyString(totalTime);
+
+  console.log();
+  console.log("╔══════════════════════════╗");
+  console.log(`║ ${getlogVal(k.green("Latency test results"))}     ║`);
+  console.log("╠══════════════╦═══════════╣");
+  console.log(`║     ${k.bold("duration")} ║ ${k.bold(durStr.padStart(9, " "))} ║`);
+  console.log(`║ req. success ║ ${String(successRequests).padStart(4, " ")} req. ║`);
+  console.log(`║  ${k.dim("req. target")} ║ ${k.dim(String(settings.amount).padStart(4, " "))} req. ║`);
+  console.log("╠══════════════╬═══════════╣");
+  console.log(`║ ${getlogVal("min. latency", min, k.gray)} ║`);
+  console.log(`║ ${getlogVal("max. latency", max)} ║`);
+  console.log(`║ ${getlogVal("avg. latency", avg, k.bold)} ║`);
+  console.log("║              ║           ║");
+  console.log(`║ ${getlogVal("   5th perc.", getPerc(5, times), k.gray)} ║`);
+  console.log(`║ ${getlogVal("  10th perc.", getPerc(10, times), k.gray)} ║`);
+  console.log(`║ ${getlogVal("  25th perc.", getPerc(25, times), k.gray)} ║`);
+  console.log(`║ ${getlogVal("  50th perc.", getPerc(50, times), k.gray)} ║`);
+  console.log(`║ ${getlogVal("  80th perc.", getPerc(80, times), k.gray)} ║`);
+  console.log(`║ ${getlogVal("  90th perc.", getPerc(90, times))} ║`);
+  console.log(`║ ${getlogVal("  95th perc.", getPerc(95, times))} ║`);
+  console.log(`║ ${getlogVal("  97th perc.", getPerc(97, times), k.bold)} ║`);
+  console.log(`║ ${getlogVal("  98th perc.", getPerc(98, times))} ║`);
+  console.log(`║ ${getlogVal("  99th perc.", getPerc(99, times))} ║`);
+  console.log("╚══════════════╩═══════════╝");
 
   const getFormattedDate = (timestamp: number) => Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
     dateStyle: "short",
@@ -145,15 +160,16 @@ async function run() {
 
   const gitSha = getGitSha();
 
-  const reportData: LatencyTestReport = {
+  const reportData = {
     localStartDateTime,
     localFinishDateTime,
     totalTime,
+    duration: durStr,
     gitSha,
     gitShaShort: gitSha.slice(0, 7),
     settings,
     times: reportTimes as LatencyTestReport["times"],
-  };
+  } as const satisfies LatencyTestReport;
 
   const reportPath = join(reportsDirPath, `report_${new Date(testFinishTs).toISOString().replace(/[:/.]/g, "-").replace(/T/g, "_").replace(/-\d+Z/, "")}.json`);
 
@@ -166,7 +182,7 @@ async function run() {
     }
 
     await writeFile(reportPath, JSON.stringify(reportData, null, 2));
-    console.log(k.gray(`Wrote report to file at '${reportPath}'\n`));
+    console.log(k.gray(`\n> Wrote report to ${reportPath}\n`));
   }
   catch(e) {
     console.error(k.red(`Failed to write latency test report to file at '${reportPath}':`), e);
@@ -214,6 +230,19 @@ function getGitSha() {
   catch {
     return "unknown";
   }
+}
+/** Returns the estimated remaining time in minutes (if at least 1 min) and seconds, given the start timestamp, current amount of completed requests and the total amount of requests. */
+function getRemainingTimeStr(startTs: number, current: number, total: number) {
+  const avg = (Date.now() - startTs) / current,
+    remainingSecs = avg * (total - current) / 1000;
+  return secondsToPrettyString(remainingSecs);
+}
+
+/** Turns the given amount of seconds into a string, e.g. `2m 39s` */
+function secondsToPrettyString(seconds: number) {
+  const secStr = Number(seconds.toFixed(0)),
+    minStr = Math.floor(secStr / 60);
+  return `${minStr > 0 ? `${minStr}m ` : ""}${secStr % 60}s`;
 }
 
 run();
