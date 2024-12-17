@@ -15,21 +15,22 @@ const verMajor = Number(rootPkgJson.version.split(".")![0]);
 
 const componentDir = join(dirname(fileURLToPath(import.meta.url)), "./components/");
 const componentNames = readdirSync(componentDir).map((p) => {
-  const fileNameParts = p.split("/")!.at(-1).split(".");
+  const fileNameParts = p.split("/").at(-1)!.split(".");
   fileNameParts.pop();
   return fileNameParts.join(".");
 });
 
 export default defineUserConfig({
   lang: "en-US",
-  base: process.env.HOST_HOMEPAGE === "true" ? `/v${verMajor}/docs/` : "/",
+  base: process.env.HOST_HOMEPAGE?.trim().toLowerCase() === "true" ? `/v${verMajor}/docs/` : "/",
   title: "geniURL",
-  description: "A simple JSON and XML REST API to search for song metadata, the lyrics URL and lyrics translations on genius.com",
+  description: "JSON and XML REST API to search for song metadata, lyrics URL and lyrics translations via the genius.com API without requiring an API key.",
   theme: defaultTheme({
     // logo: "https://vuejs.press/images/hero.png",
     navbar: navbarEn,
     sidebar: sidebarEn,
   }),
+  // @ts-ignore
   bundler: viteBundler(),
   plugins: [
     seoPlugin({
@@ -38,12 +39,10 @@ export default defineUserConfig({
     }),
     sitemapPlugin({
       hostname: "https://api.sv443.net",
+      changefreq: "weekly",
     }),
     registerComponentsPlugin({
-      components: componentNames.reduce((a, c) => {
-        a[c] = join(componentDir, `${c}.vue`);
-        return a;
-      }, {}),
+      components: componentNames.reduce((a, c) => ({ ...a, [c]: join(componentDir, `${c}.vue`) }), {}),
     }),
   ],
 });
