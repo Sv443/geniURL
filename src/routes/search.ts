@@ -68,17 +68,4 @@ export function initSearchRoutes(router: Router) {
       return respond(res, "serverError", `Encountered an internal server error${err instanceof Error ? err.message : ""}`, "json");
     }
   });
-
-  // TODO: adjust
-  //#region /search/manual
-  router.get("/search/manual", (_req, res) => {
-    res.sendFile("index.html", {
-      root: "public",
-      dotfiles: "deny",
-      headers: {
-        "Content-Type": "text/html; charset=utf-8",
-      },
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
-  });
 }

@@ -2,8 +2,8 @@ import { createHash, type BinaryToTextEncoding } from "node:crypto";
 import { Response } from "express";
 import { parse as jsonToXml } from "js2xmlparser";
 import type { Stringifiable } from "svcorelib";
-import { verMajor } from "@src/constants.js";
-import type { ResponseType } from "@src/types.js";
+import { docsMaxAge, mimeTypeMap, verMajor } from "@src/constants.js";
+import type { ResponseFormat, ResponseType } from "@src/types.js";
 
 /** Checks if the value of a passed URL parameter is a string with length > 0 */
 export function paramValid(val: unknown): boolean {
@@ -15,24 +15,23 @@ export function paramValid(val: unknown): boolean {
 /**
  * Responds to a request in a uniform way
  * @param res Express response object
- * @param type Type of response or status code
+ * @param typeOrStatusCode Type of response or status code
  * @param data The data to send in the response body
  * @param format Response format "json" or "xml"
  * @param matchesAmt Amount of matches / datasets returned in this response
  */
-export function respond(res: Response, type: ResponseType | number, data: Stringifiable | Record<string, unknown>, format = "json", matchesAmt?: number) {
+export function respond(res: Response, typeOrStatusCode: ResponseType | number, data: Stringifiable | Record<string, unknown>, format: ResponseFormat | string = "json", matchesAmt?: number) {
   let statusCode = 500;
   let error = true;
   let matches = null;
 
   let resData = {};
 
-  format = format?.toLowerCase();
-
-  if(typeof format !== "string" || !["json", "xml"].includes(format))
+  if(!(format in mimeTypeMap))
     format = "json";
+  format = format.toLowerCase();
 
-  switch(type) {
+  switch(typeOrStatusCode) {
   case "success":
     error = false;
     matches = matchesAmt;
@@ -44,6 +43,7 @@ export function respond(res: Response, type: ResponseType | number, data: String
     matches = matchesAmt ?? 0;
     statusCode = 200;
     resData = data;
+    break;
   case "clientError":
     error = true;
     matches = matchesAmt ?? null;
@@ -57,10 +57,10 @@ export function respond(res: Response, type: ResponseType | number, data: String
     resData = { message: data };
     break;
   default:
-    if(typeof type === "number") {
+    if(typeof typeOrStatusCode === "number") {
       error = false;
       matches = matchesAmt ?? 0;
-      statusCode = type;
+      statusCode = typeOrStatusCode;
       resData = data;
     }
     break;
@@ -75,13 +75,14 @@ export function respond(res: Response, type: ResponseType | number, data: String
   const finalData = format === "xml" ? jsonToXml("data", resData) : resData;
   const contentLen = getByteLength(typeof finalData === "string" ? finalData : JSON.stringify(finalData));
 
-  res.setHeader("Content-Type", format === "xml" ? "application/xml" : "application/json");
+  res.setHeader("Content-Type", `${mimeTypeMap[format as ResponseFormat] ?? "text/plain"}; charset=utf-8`);
   contentLen > -1 && res.setHeader("Content-Length", contentLen);
   res.status(statusCode).send(finalData);
 }
 
 /** Redirects to the documentation page at the given relative path (homepage by default) */
 export function redirectToDocs(res: Response, path?: string) {
+  res.setHeader("Cache-Control", `private, max-age=${docsMaxAge}, immutable`);
   res.redirect(`/v${verMajor}/docs/${path ? path.replace(/^\//, "") : ""}`);
 }
 
