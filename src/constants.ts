@@ -2,6 +2,10 @@ import { resolve } from "node:path";
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
 import type { ResponseFormat } from "./types.js";
 import packageJson from "../package.json" with { type: "json" };
+import type { axios } from "./axios.js";
+
+// for @linkcode in tsdoc comments
+void [{} as typeof axios];
 
 //#region rate limiting
 
@@ -28,6 +32,9 @@ export const docsMaxAge = 1000 * 60 * 60 * 24 * 2; // 2 days
 
 /** Max amount of results that geniURL can serve */
 export const maxResultsAmt = 10;
+
+/** Timeout for all requests sent using the common {@linkcode axios} instance in milliseconds */
+export const axiosTimeout = 1000 * 15;
 
 //#region other
 

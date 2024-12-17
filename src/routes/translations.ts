@@ -21,12 +21,9 @@ export function initTranslationsRoutes(router: Router) {
       if(!paramValid(songId) || isNaN(Number(songId)))
         return respond(res, "clientError", "Provided song ID is invalid", format);
 
-      const translations = await getTranslations(Number(songId));
+      const translations = await getTranslations(Number(songId)) ?? undefined;
 
-      if(translations === null || (Array.isArray(translations) && translations.length === 0)) // TODO: verify
-        return respond(res, "noResults", {}, format);
-
-      if(translations === undefined) // TODO: verify
+      if(!translations || (Array.isArray(translations) && translations.length === 0))
         return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { translations }, format, translations.length);

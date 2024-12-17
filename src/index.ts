@@ -3,7 +3,7 @@ import "dotenv/config";
 import * as server from "@src/server.js";
 import { error } from "@src/error.js";
 
-const { env } = process;
+const { env, exit } = process;
 
 async function init() {
   try {
@@ -19,6 +19,7 @@ async function init() {
   }
   catch(err) {
     error("Encountered fatal error while initializing:", err instanceof Error ? err : undefined, true);
+    setImmediate(() => exit(1));
   }
 }
 

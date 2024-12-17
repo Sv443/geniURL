@@ -23,7 +23,7 @@ export function initAlbumRoutes(router: Router) {
 
       const album = await getAlbum(Number(songId));
 
-      if(!album) // TODO: verify
+      if(!album)
         return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { album }, format, 1);

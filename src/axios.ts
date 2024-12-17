@@ -1,7 +1,8 @@
 import { default as _axios } from "axios";
+import { axiosTimeout } from "./constants.js";
 
 export const axios = _axios.create({
-  timeout: 1000 * 15,
+  timeout: axiosTimeout,
 });
 
 export function baseAxiosOpts() {

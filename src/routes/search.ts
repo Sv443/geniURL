@@ -22,7 +22,7 @@ export function initSearchRoutes(router: Router) {
           }),
         });
 
-        if(!meta || meta.all.length < 1) // TODO: verify
+        if(!meta || meta.all.length < 1)
           return respond(res, "noResults",  format !== "xml" ? { top: null, all: [] } : { top: null, all: { "result": [] } }, format);
 
         // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
@@ -56,7 +56,7 @@ export function initSearchRoutes(router: Router) {
           }),
         });
 
-        if(!meta || !meta.top) // TODO: verify
+        if(!meta || !meta.top)
           return respond(res, "noResults", {}, format);
 
         return respond(res, "success", meta.top, format, 1);
