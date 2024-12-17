@@ -25,9 +25,8 @@ To know how many requests you have sent and are still able to send, refer to the
 <br>
 
 ## Errors
-All routes always return the properties `error` and `matches`.  
-<!-- TODO: make responses with matches = 0 have error = false -->
-They can be used to determine whether a response has succeeded (error = false, matches > 0), is errored (error = true, matches = null) or just didn't yield any results (error = true, matches = 0).  
+All routes always return the properties `error` and `matches`, no matter what.  
+They can be used to determine whether a response has succeeded (error = false, matches > 0), just didn't yield any results (error = false, matches = 0) or is errored (error = true, matches = null).  
   
 Additionally, you can use the [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) to find out whether a request has succeeded or not.
 
