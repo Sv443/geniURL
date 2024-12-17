@@ -1,4 +1,4 @@
-import { baseUrl, defaultFetchOpts } from "./constants";
+import { baseUrl, defaultFetchOpts } from "./consts";
 
 //#region validate objects
 

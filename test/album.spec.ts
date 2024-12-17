@@ -1,6 +1,19 @@
 import { checkAlbumProps, checkArtistProps, sendReq } from "./hooks";
 
 describe("Album routes", () => {
+  //#region inv /album
+
+  it("Album path without ID yields error", async () => {
+    const { res, status } = await sendReq("/album");
+    const body = await res.json();
+
+    expect(status).toBe(400);
+
+    expect(body?.error).toEqual(true);
+    expect(body?.matches).toEqual(null);
+    expect(body?.message).toBeDefined();
+  });
+
   //#region /album/:id
 
   it("Album details yields correct props", async () => {
@@ -28,18 +41,5 @@ describe("Album routes", () => {
     expect(body?.error).toEqual(false);
     expect(body?.matches).toEqual(0);
     expect(body?.message).toBeUndefined();
-  });
-
-  //#region inv /album
-
-  it("Album path without ID yields error", async () => {
-    const { res, status } = await sendReq("/album");
-    const body = await res.json();
-
-    expect(status).toBe(400);
-
-    expect(body?.error).toEqual(true);
-    expect(body?.matches).toEqual(null);
-    expect(body?.message).toBeDefined();
   });
 });

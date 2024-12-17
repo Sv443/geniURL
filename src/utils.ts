@@ -21,11 +21,10 @@ export function paramValid(val: unknown): boolean {
  * @param matchesAmt Amount of matches / datasets returned in this response
  */
 export function respond(res: Response, typeOrStatusCode: ResponseType | number, data: Stringifiable | Record<string, unknown>, format: ResponseFormat | string = "json", matchesAmt?: number) {
-  let statusCode = 500;
-  let error = true;
-  let matches = null;
-
-  let resData = {};
+  let error = true,
+    matches = null,
+    statusCode = 500,
+    resData = {};
 
   if(!(format in mimeTypeMap))
     format = "json";

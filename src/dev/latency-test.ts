@@ -106,17 +106,20 @@ async function run() {
 
   const reportTimes = {} as Partial<LatencyTestReport["times"]>;
 
-  const logVal = (label: string, value: Stringifiable, kleurFunc?: (str: string) => void) => {
-    const valStr = `${label}:\t${String(value).padStart(4, " ")} ms`;
-    reportTimes[label as keyof LatencyTestReport["times"]] = Number(value);
+  const logVal = (label?: string, value?: Stringifiable, kleurFunc?: (str: string) => void) => {
+    let valStr = label ?? "";
+    if(value) {
+      valStr += `:\t${String(value).padStart(4, " ")} ms`;
+      reportTimes[label as keyof LatencyTestReport["times"]] = Number(value);
+    }
     console.log(kleurFunc ? kleurFunc(valStr) : valStr);
   }
 
   const testFinishTs = Date.now();
   const totalTime = Number(((testFinishTs - testStartTs) / 1000).toFixed(2));
 
-  console.log(`\n>>> Latency test finished sending ${successRequests} successful requests after ${totalTime}s - Results:`);
-  console.log();
+  logVal(`\n>>> Latency test finished sending ${successRequests} successful requests after ${totalTime}s - Results:`);
+  logVal();
   logVal("5th%", getPerc(5, times), k.gray);
   logVal("10th%", getPerc(10, times), k.gray);
   logVal("25th%", getPerc(25, times), k.gray);
@@ -126,11 +129,11 @@ async function run() {
   logVal("97th%", getPerc(97, times), k.bold);
   logVal("98th%", getPerc(98, times));
   logVal("99th%", getPerc(99, times));
-  console.log();
+  logVal();
   logVal("min", min);
   logVal("avg", avg, k.bold);
   logVal("max", max);
-  console.log();
+  logVal();
 
   const getFormattedDate = (timestamp: number) => Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
     dateStyle: "short",

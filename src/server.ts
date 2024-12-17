@@ -112,7 +112,7 @@ export async function init() {
   const listener = app.listen(port, host, () => {
     registerRoutes();
 
-    console.log(k.green(`Listening on ${host}:${port}\n`));
+    console.log(k.green(`geniURL is listening on ${host}:${port}\n`));
   });
 
   listener.on("error", (err) => error("General server error", err, true));

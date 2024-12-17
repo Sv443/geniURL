@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import { XMLParser } from "fast-xml-parser";
 import { checkSongProps, sendReq } from "./hooks";
+import { maxResultsAmt } from "./consts";
 
 describe("Search routes", () => {
   //#region /search/top
@@ -37,14 +38,14 @@ describe("Search routes", () => {
 
   //#region /search
 
-  it("Regular search yields <=10 results", async () => {
+  it(`Regular search yields <=${maxResultsAmt} results`, async () => {
     const { res, status } = await sendReq("/search?q=Lil Nas X");
     const body = await res.json();
 
     expect(status).toBe(200);
 
     expect(body?.error).toEqual(false);
-    expect(body?.matches).toBeLessThanOrEqual(10);
+    expect(body?.matches).toBeLessThanOrEqual(maxResultsAmt);
 
     checkSongProps(body?.top);
 
