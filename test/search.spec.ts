@@ -57,15 +57,15 @@ describe("Search routes", () => {
 
   //#region inv /search
 
-  it("Invalid search yields error", async () => {
+  it("Invalid search yields no matches", async () => {
     const randText = randomBytes(32).toString("hex");
     const { res, status } = await sendReq(`/search?q=${randText}`);
     const body = await res.json();
 
-    expect(status).toBe(400);
+    expect(status).toBe(200);
 
-    expect(body?.error).toEqual(true);
+    expect(body?.error).toEqual(false);
     expect(body?.matches).toEqual(0);
-    expect(body?.message).toBeDefined();
+    expect(body?.message).toBeUndefined();
   });
 });

@@ -19,15 +19,15 @@ describe("Album routes", () => {
 
   //#region inv /album/:id
 
-  it("Invalid song ID yields error", async () => {
+  it("Invalid song ID yields no matches", async () => {
     const { res, status } = await sendReq("/album/0");
     const body = await res.json();
 
-    expect(status).toBe(400);
+    expect(status).toBe(200);
 
-    expect(body?.error).toEqual(true);
+    expect(body?.error).toEqual(false);
     expect(body?.matches).toEqual(0);
-    expect(body?.message).toBeDefined();
+    expect(body?.message).toBeUndefined();
   });
 
   //#region inv /album

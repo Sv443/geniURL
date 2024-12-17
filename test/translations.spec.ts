@@ -19,15 +19,15 @@ describe("Translation routes", () => {
 
   //#region inv /translations/:id
 
-  it("Invalid song ID yields error", async () => {
+  it("Invalid song ID yields no matches", async () => {
     const { res, status } = await sendReq("/translations/0");
     const body = await res.json();
 
-    expect(status).toBe(400);
+    expect(status).toBe(200);
 
-    expect(body?.error).toEqual(true);
-    expect(body?.matches).toEqual(null);
-    expect(body?.message).toBeDefined();
+    expect(body?.error).toEqual(false);
+    expect(body?.matches).toEqual(0);
+    expect(body?.message).toBeUndefined();
   });
 
   //#region inv /translations
