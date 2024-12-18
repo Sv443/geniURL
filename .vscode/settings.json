@@ -1,9 +1,47 @@
 {
-  "eslint.validate": [
-    "javascript",
-  ],
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "search.exclude": {
+    "**/*.user.js": true,
+    "**/BetterYTM.css": true,
+  },
   "files.associations": {
-    ".env": "dotenv",
-    ".env.template": "dotenv",
+    "*.env": "dotenv",
+    "*.env.template": "dotenv",
+  },
+  "editor.tabSize": 2,
+
+  // requires extension: fabiospampinato.vscode-highlight
+  "highlight.regexes": {
+    "(TODO(\\((\\s|\\d|\\w|[,.-_+*&])+\\))?:?)": { // TODO: or TODO or TODO(xy): but not todo or todo:
+      "backgroundColor": "#ed0",
+      "color": "black",
+      "overviewRulerColor": "#ed0",
+    },
+    "((//\\s*|/\\*\\s*)?#region ([^\\S\\r\\n]*[\\(\\)\\w,.\\-_&+#*'\"/:]+)*)": { //#region test: (abc):
+      "backgroundColor": "#35b5d0",
+      "color": "#000",
+      "overviewRulerColor": "#35b5d0",
+    },
+    "((<!--\\s*)?</?\\{\\{[A-Z_-]+\\}\\}>(\\s*-->)?)": { // <!-- <{{FOO}}> --> and <!-- </{{FOO}}> --> or <{{BAR}}> and </{{BAR}}>
+      "backgroundColor": "#9af",
+      "overviewRulerColor": "#9af",
+      "color": "#000",
+    },
+    "(#?(DEBUG|DBG)#?)": { // #DEBUG or DEBUG or #DBG or #DBG#
+      "backgroundColor": "#ff3",
+      "color": "blue",
+      "overviewRulerColor": "#ff3",
+    },
+    "(IMPORTANT:)": { // IMPORTANT:
+      "backgroundColor": "#f34",
+      "color": "#000",
+    },
+    "(FIXME:)": { // FIXME:
+      "backgroundColor": "#811",
+      "color": "#fff",
+      "overviewRulerColor": "#811",
+    },
   },
 }

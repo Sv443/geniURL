@@ -1,14 +1,7 @@
-/* eslint-disable no-control-regex */
-
-import Fuse from "fuse.js";
-import { nanoid } from "nanoid";
-import { clamp } from "svcorelib";
-
-import { axios, baseAxiosOpts } from "./axios";
-import { charReplacements } from "./constants";
-import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongMeta, SongTranslation } from "./types";
-
-const defaultFuzzyThreshold = 0.65;
+import { axios, baseAxiosOpts } from "@src/axios.js";
+import { charReplacements, maxResultsAmt } from "@src/constants.js";
+import { clamp } from "@src/utils.js";
+import type { Album, ApiSearchResult, ApiSongResult, GetMetaArgs, GetMetaResult, MetaSearchHit, SongTranslation } from "@src/types.js";
 
 /**
  * Returns meta information about the top results of a search using the genius API
@@ -18,11 +11,10 @@ export async function getMeta({
   q,
   artist,
   song,
-  threshold,
-  disableFuzzy,
+  limit,
 }: GetMetaArgs): Promise<GetMetaResult | null>
 {
-  const query = q ? q : `${artist} ${song}`;
+  const query = (q ?? `${artist} ${song}`).trim();
 
   const {
     data: { response },
@@ -32,16 +24,11 @@ export async function getMeta({
     baseAxiosOpts()
   );
 
-  if(threshold === undefined || isNaN(threshold))
-    threshold = defaultFuzzyThreshold;
-  else
-    threshold = clamp(threshold, 0.0, 1.0);
-
   if(status >= 200 && status < 300 && Array.isArray(response?.hits)) {
     if(response.hits.length === 0)
       return null;
 
-    let hits: MetaSearchHit[] = response.hits
+    const hits: MetaSearchHit[] = response.hits
       .filter(h => h.type === "song")
       .map(({ result }) => ({
         url: result.url,
@@ -74,89 +61,14 @@ export async function getMeta({
         id: result.id ?? null,
       }));
 
-    if(disableFuzzy === true) {
-      if(hits.length === 0)
-        return null;
-
-      return {
-        top: hits[0]!,
-        all: hits.slice(0, 10),
-      };
-    }
-
-    const scoreMap: Record<string, number> = {};
-
-    hits = hits.map(h => {
-      h.uuid = nanoid();
-      return h;
-    }) as (SongMeta & { uuid: string })[];
-
-    const fuseOpts: Fuse.IFuseOptions<MetaSearchHit> = {
-      includeScore: true,
-      threshold,
-    };
-
-    // TODO:FIXME: this entire thing is unreliable af
-    const addScores = (searchRes: Fuse.FuseResult<SongMeta & { uuid?: string; }>[]) =>
-      searchRes.forEach(({ item, score }) => {
-        if(!item.uuid || !score)
-          return;
-
-        if(!scoreMap[item.uuid])
-          scoreMap[item.uuid] = score;
-        else
-          scoreMap[item.uuid] += score;
-      });
-
-    if(song && artist) {
-      const titleFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.title" ] });
-      const artistFuse = new Fuse(hits, { ...fuseOpts, keys: [ "meta.primaryArtist.name" ] });
-
-      addScores(titleFuse.search(song));
-      addScores(artistFuse.search(artist));
-    }
-    else {
-      const queryFuse = new Fuse(hits, {
-        ...fuseOpts,
-        ignoreLocation: true,
-        keys: [ "meta.title", "meta.primaryArtist.name" ],
-      });
-
-      let queryParts = [query];
-      if(query.match(/\s-\s/))
-        queryParts = query.split(/\s-\s/);
-
-      queryParts = queryParts.slice(0, 5);
-      for(const part of queryParts)
-        addScores(queryFuse.search(part.trim()));
-    }
-
-    // TODO: reduce the amount of remapping cause it takes long
-
-    const bestMatches = Object.entries(scoreMap)
-      .sort(([, valA], [, valB]) => valA > valB ? 1 : -1)
-      .map(e => e[0]);
-
-    const oldHits = [...hits];
-
-    hits = bestMatches
-      .map(uuid => oldHits.find(h => h.uuid === uuid))
-      .map(hit => {
-        if(!hit) return undefined;
-        delete hit.uuid;
-        return hit;
-      })
-      .filter(h => h !== undefined) as MetaSearchHit[];
-
     if(hits.length === 0)
       return null;
 
     return {
       top: hits[0]!,
-      all: hits.slice(0, 10),
+      all: hits.slice(0, clamp(limit ?? maxResultsAmt, 1, maxResultsAmt)),
     };
   }
-
   return null;
 }
 
@@ -185,7 +97,7 @@ export async function getTranslations(songId: number): Promise<SongTranslation[]
     }
     return null;
   }
-  catch(e) {
+  catch {
     return undefined;
   }
 }
@@ -216,7 +128,7 @@ export async function getAlbum(songId: number): Promise<Album | null> {
     }
     return null;
   }
-  catch(e) {
+  catch {
     return null;
   }
 }
@@ -236,7 +148,7 @@ function normalize(str: string): string {
     });
   }
 
-  return str
+  return str // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001F\u007F-\u009F\u200B]/g, "") // 0-width spaces & control characters
     .replace(/\u00A0/g, " "); // non-standard 1-width spaces
 }
