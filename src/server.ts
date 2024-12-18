@@ -7,13 +7,13 @@ import k from "kleur";
 import cors from "cors";
 import { getClientIp } from "request-ip";
 
-import packageJson from "../package.json" with { type: "json" };
 import { error } from "@src/error.js";
 import { hashStr, respond } from "@src/utils.js";
+import { envVarEquals, getEnvVar } from "@src/env.js";
 import { rateLimitOptions, rlIgnorePaths } from "@src/constants.js";
 import { initRouter } from "@routes/index.js";
+import packageJson from "@root/package.json" with { type: "json" };
 
-const { env } = process;
 const app = express();
 
 app.use(cors({
@@ -31,19 +31,19 @@ app.use(compression({
 
 app.use(express.json());
 
-if(env.TRUST_PROXY?.toLowerCase() === "true")
+if(envVarEquals("TRUST_PROXY", true))
   app.enable("trust proxy");
 
 app.disable("x-powered-by");
 
 const rateLimiter = new RateLimiterMemory(rateLimitOptions);
 
-const authTokens = getAuthTokens();
+const toks = getEnvVar("AUTH_TOKENS", "stringArray");
+const authTokens = new Set<string>(Array.isArray(toks) ? toks : []);
 
 export async function init() {
-  const port = parseInt(String(env.HTTP_PORT ?? "").trim());
-  const hostRaw = String(env.HTTP_HOST ?? "").trim();
-  const host = hostRaw.length < 1 ? "0.0.0.0" : hostRaw;
+  const port = getEnvVar("HTTP_PORT", "number"),
+    host = getEnvVar("HTTP_HOST").length < 1 ? "0.0.0.0" : getEnvVar("HTTP_HOST");
 
   if(await portUsed(port))
     return error(`TCP port ${port} is already used or invalid`, undefined, true);
@@ -125,19 +125,6 @@ function registerRoutes() {
   catch(err) {
     error("Error while initializing router", err instanceof Error ? err : undefined, true);
   }
-}
-
-/** Returns all auth tokens as a set of strings */
-function getAuthTokens() {
-  const envVal = env.AUTH_TOKENS;
-  let tokens: string[] = [];
-
-  if(!envVal || envVal.length === 0)
-    tokens = [];
-  else
-    tokens = envVal.split(/,/g);
-
-  return new Set<string>(tokens);
 }
 
 /** Sets all rate-limiting related headers on a response given a RateLimiterRes object */

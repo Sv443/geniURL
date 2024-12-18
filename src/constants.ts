@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
-import type { ResponseFormat } from "./types.js";
-import packageJson from "../package.json" with { type: "json" };
-import type { axios } from "./axios.js";
+import type { axios } from "@src/axios.js";
+import type { ResponseFormat } from "@src/types.js";
+import packageJson from "@root/package.json" with { type: "json" };
 
 // for @linkcode in tsdoc comments
 void [{} as typeof axios];

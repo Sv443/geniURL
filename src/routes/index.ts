@@ -1,12 +1,13 @@
 import express, { type Application, Router } from "express";
 import { docsPath, verMajor } from "@src/constants.js";
 import { redirectToDocs } from "@src/utils.js";
+import { envVarEquals } from "@src/env.js";
 
 import { initSearchRoutes } from "@routes/search.js";
 import { initTranslationsRoutes } from "@routes/translations.js";
 import { initAlbumRoutes } from "@routes/album.js";
 
-const hostHomepage = process.env.HOST_HOMEPAGE?.toLowerCase() !== "false";
+const hostHomepage = !envVarEquals("HOST_HOMEPAGE", false);
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
