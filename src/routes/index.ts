@@ -7,7 +7,7 @@ import { initSearchRoutes } from "@routes/search.js";
 import { initTranslationsRoutes } from "@routes/translations.js";
 import { initAlbumRoutes } from "@routes/album.js";
 
-const hostHomepage = !envVarEquals("HOST_HOMEPAGE", false);
+const hostHomepage = !envVarEquals("HOST_HOMEPAGE", false, false);
 
 const routeFuncs: ((router: Router) => unknown)[] = [
   initSearchRoutes,
