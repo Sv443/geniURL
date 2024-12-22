@@ -34,7 +34,7 @@ export function getEnvVar(name: string, type: EnvVarConvType = "string", default
   }
 }
 
-/** Checks if the env var with the given {@linkcode name} equals the given {@linkcode value}, converted to a string */
+/** Checks if the env var with the given {@linkcode name} equals the given {@linkcode value}, converted to a string - falls back to {@linkcode defaultVal} if the env var is not set */
 export function envVarEquals(name: string, value: Stringifiable, defaultVal = true): boolean {
   const val = getEnvVar(name, "string", String(defaultVal));
   return (typeof value === "boolean" ? val.toLowerCase() : val) === String(value);

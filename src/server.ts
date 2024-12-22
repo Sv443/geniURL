@@ -31,7 +31,7 @@ app.use(compression({
 
 app.use(express.json());
 
-if(envVarEquals("TRUST_PROXY", true, false))
+if(!envVarEquals("TRUST_PROXY", false, false))
   app.enable("trust proxy");
 
 app.disable("x-powered-by");
