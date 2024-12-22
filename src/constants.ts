@@ -1,14 +1,56 @@
+import { resolve } from "node:path";
 import type { IRateLimiterOptions } from "rate-limiter-flexible";
+import type { axios } from "@src/axios.js";
+import type { ResponseFormat } from "@src/types.js";
+import packageJson from "@root/package.json" with { type: "json" };
 
+// for @linkcode in tsdoc comments
+void [{} as typeof axios];
+
+//#region rate limiting
+
+/** Options for the rate limiter */
 export const rateLimitOptions: IRateLimiterOptions = {
-  points: 25,
+  points: 20,
   duration: 30,
 };
 
-/** Set of all supported [ISO 639-1 language codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) */
-export const langCodes = new Set<string>(["aa","ab","ae","af","ak","am","an","ar","as","av","ay","az","ba","be","bg","bh","bi","bm","bn","bo","br","bs","ca","ce","ch","co","cr","cs","cu","cv","cy","da","de","dv","dz","ee","el","en","eo","es","et","eu","fa","ff","fi","fj","fo","fr","fy","ga","gd","gl","gn","gu","gv","ha","he","hi","ho","hr","ht","hu","hy","hz","ia","id","ie","ig","ii","ik","io","is","it","iu","ja","jv","ka","kg","ki","kj","kk","kl","km","kn","ko","kr","ks","ku","kv","kw","ky","la","lb","lg","li","ln","lo","lt","lu","lv","mg","mh","mi","mk","ml","mn","mr","ms","mt","my","na","nb","nd","ne","ng","nl","nn","no","nr","nv","ny","oc","oj","om","or","os","pa","pi","pl","ps","pt","qu","rm","rn","ro","ru","rw","sa","sc","sd","se","sg","si","sk","sl","sm","sn","so","sq","sr","ss","st","su","sv","sw","ta","te","tg","th","ti","tk","tl","tn","to","tr","ts","tt","tw","ty","ug","uk","ur","uz","ve","vi","vo","wa","wo","xh","yi","yo","za","zh","zu"]);
+/** Any requests to paths starting with one of these will not be subject to rate limiting */
+export const rlIgnorePaths = [
+  "/docs",
+];
 
-/** Map of unicode variant characters and replacements used in normalizing fields before fuzzy filtering them */
+//#region docs
+
+/** Path to the VuePress build output folder - this is what gets served as the docs by the API if the `HOST_WEBSITE` env var is set to `true` */
+export const docsPath = resolve("./www/.vuepress/dist");
+
+/** Max age of the docs in milliseconds */
+export const docsMaxAge = 1000 * 60 * 60 * 24 * 2; // 2 days
+
+//#region misc
+
+/** Max amount of results that geniURL can serve */
+export const maxResultsAmt = 10;
+
+/** Timeout for all requests sent using the common {@linkcode axios} instance in milliseconds */
+export const axiosTimeout = 1000 * 15;
+
+//#region other
+
+/** The version from package.json, split into a tuple of major, minor, and patch number */
+export const splitVersion = packageJson.version.split(".").map(v => Number(v)) as [major: number, minor: number, patch: number];
+
+/** Major, minor, and patch version numbers */
+export const [verMajor, verMinor, verPatch] = splitVersion;
+
+/** Map of response formats and their corresponding MIME types */
+export const mimeTypeMap = {
+  json: "application/json",
+  xml: "application/xml",
+} as const satisfies Record<ResponseFormat, string>;
+
+/** Map of unicode variant characters and replacements used in normalizing strings served by the genius API */
 export const charReplacements = new Map<string, string>([
   ["`´’︐︑ʻ", "'"],
   ["“”", "\""],

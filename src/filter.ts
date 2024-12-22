@@ -1,7 +1,7 @@
-import type { MetaSearchHit, ScoredResults, SearchFilterArgs } from "./types";
+import type { MetaSearchHit, ScoredResults, SearchFilterArgs } from "@src/types.js";
 
-export function filterSearchResults(args: SearchFilterArgs, results: MetaSearchHit[]): MetaSearchHit[] {
-  let scored: ScoredResults<MetaSearchHit>[] = [];
+export function filterSearchResults(_args: SearchFilterArgs, _results: MetaSearchHit[]): MetaSearchHit[] {
+  const scored: ScoredResults<MetaSearchHit>[] = [];
 
   // TODO:
   // 1. check direct match
