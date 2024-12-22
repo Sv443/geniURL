@@ -15,29 +15,22 @@ export function getEnvVar(name: string, type: "stringArray"): string[]
 export function getEnvVar(name: string, type: "numberArray"): number[]
 /** Resolves the env var with the given {@linkcode name} as a string, number, boolean, string array or number array - string by default */
 export function getEnvVar(name: string, type: EnvVarConvType = "string"): string | number | boolean | string[] | number[] {
-  const val = process.env[name];
-  if(val === undefined)
+  const v = process.env[name];
+  if(v === undefined)
     throw new Error(`Environment variable "${name}" not set`);
+  const val = String(v).trim();
 
   switch(type) {
-  case "string":
-    return String(val).trim();
-  case "number": {
-    const num = Number(val);
-    if(isNaN(num))
-      throw new Error(`Environment variable "${name}" is not a number`);
-    return num;
-  }
+  default:
+    return val;
+  case "number":
+    return Number(val);
   case "boolean":
-    if(String(val).trim().toLowerCase() === "true")
-      return true;
-    if(String(val).trim().toLowerCase() === "false")
-      return false;
-    throw new Error(`Environment variable "${name}" is not a boolean`);
+    return val.toLowerCase() === "true";
   case "stringArray":
-    return String(val).split(/[,;]/g);
+    return val.split(/[,;]/g).map((v) => v.trim());
   case "numberArray":
-    return String(val).split(/[,;]/g).map(Number);
+    return val.split(/[,;]/g).map((v) => Number(v.trim()));
   }
 }
 
