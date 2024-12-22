@@ -64,6 +64,6 @@ export async function sendReq(path: string, opts?: RequestInit): Promise<{
   headers: Headers;
 }> {
   const res = await fetch(`${baseUrl}/${path.startsWith("/") ? path.substring(1) : path}`, { ...defaultFetchOpts, ...opts });
-  
+
   return { res, status: res.status, headers: res.headers };
 }

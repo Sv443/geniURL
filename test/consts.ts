@@ -11,6 +11,9 @@ const authToken = process.env.AUTH_TOKENS?.split(",")[0];
 export const defaultFetchOpts = {
   method: "GET",
   headers: {
-    ...(authToken ? { "Authentication": `Bearer ${authToken}` } : {}),
+    ...(authToken
+      ? { "Authentication": `Bearer ${authToken}` }
+      : {}
+    ),
   },
 } as const satisfies RequestInit;
