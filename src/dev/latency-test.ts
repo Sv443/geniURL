@@ -44,17 +44,12 @@ type LatencyTestReport = {
   totalTime: number;
   /** Total time the latency test took in a human-readable format. */
   duration: string;
-  /** Git SHA of the latest commit. */
+  /** 7-char Git SHA of the latest commit. */
   gitSha: string;
-  /** 7-character Git SHA of the latest commit. */
-  gitShaShort: string;
   /** Settings used for the latency test. */
   settings: typeof settings;
   /** Calculated times in milliseconds. */
-  times: Record<
-    "min" | "avg" | "max" | "5th%" | "10th%" | "25th%" | "50th%" | "80th%" | "90th%" | "95th%" | "97th%" | "98th%" | "99th%",
-    number
-  >;
+  times: Record<string, number>;
 };
 
 async function run() {
@@ -158,7 +153,7 @@ async function run() {
   const localStartDateTime = getFormattedDate(testStartTs);
   const localFinishDateTime = getFormattedDate(testFinishTs);
 
-  const gitSha = getGitSha();
+  const gitSha = getGitSha().slice(0, 7);
 
   const reportData = {
     localStartDateTime,
@@ -166,7 +161,6 @@ async function run() {
     totalTime,
     duration: durStr,
     gitSha,
-    gitShaShort: gitSha.slice(0, 7),
     settings,
     times: reportTimes as LatencyTestReport["times"],
   } as const satisfies LatencyTestReport;
@@ -175,7 +169,9 @@ async function run() {
 
   try {
     try {
-      await stat(reportsDirPath);
+      const { isDirectory } = await stat(reportsDirPath);
+      if(!isDirectory())
+        throw new Error();
     }
     catch {
       await mkdir(reportsDirPath);
