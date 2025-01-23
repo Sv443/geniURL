@@ -22,7 +22,7 @@ export const rlIgnorePaths = [
 
 //#region docs
 
-/** Path to the VuePress build output folder - this is what gets served as the docs by the API if the `HOST_WEBSITE` env var is set to `true` */
+/** Path to the VuePress build output folder - this is what gets served as the docs by the API if the `HOST_HOMEPAGE` env var is set to `true` */
 export const docsPath = resolve("./www/.vuepress/dist");
 
 /** Max age of the docs in milliseconds */
