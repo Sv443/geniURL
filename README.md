@@ -41,6 +41,7 @@ To set up geniURL locally, follow these steps:
 6. Run `pnpm start` to start the REST server  
   Alternatively, run `pnpm dev` to start the server and automatically recompile and restart when the code is changed.  
   If you want to start the documentation as well, make sure `HOST_HOMEPAGE` is set to `true` in `.env`, then run `pnpm dev-all`.
+7. Check out the `scripts` in [`package.json`](./package.json) for a list of all commands
 
 I recommend using a process manager like [PM2](https://pm2.keymetrics.io/) to keep the server running in the background, make it automatically restart on crashes and start on system boot.  
   
