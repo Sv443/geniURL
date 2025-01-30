@@ -40,6 +40,7 @@ const rateLimiter = new RateLimiterMemory(rateLimitOptions);
 
 const toks = getEnvVar("AUTH_TOKENS", "stringArray");
 const authTokens = new Set<string>(Array.isArray(toks) ? toks : []);
+const authRequired = envVarEquals("AUTH_REQUIRED", true, false);
 
 export async function init() {
   const port = getEnvVar("HTTP_PORT", "number"),
@@ -58,6 +59,20 @@ export async function init() {
 
   // preflight requests
   app.options("*", cors());
+
+  // if auth tokens are required, check for them before doing anything else
+  if(authRequired && authTokens.size < 1) {
+    app.use((req, res, next) => {
+      if(!req.headers.authorization || !authTokens.has(req.headers.authorization.trim().replace(/^Bearer\s+/i, "")))
+        return respond(res, 401, {
+          error: true,
+          matches: null,
+          message: "Unauthorized"
+        }, req?.query?.format ? String(req.query.format) : undefined);
+      else
+        return next();
+    });
+  }
 
   // rate limiting
   app.use(async (req, res, next) => {

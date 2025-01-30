@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
+import parser from "@typescript-eslint/parser";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 
@@ -43,7 +43,7 @@ const config = [
         GM: "readonly",
         unsafeWindow: "writable",
       },
-      parser: tsParser,
+      parser,
       ecmaVersion: "latest",
       sourceType: "module",
     },
