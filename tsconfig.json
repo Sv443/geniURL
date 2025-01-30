@@ -27,9 +27,10 @@
     "noImplicitThis": false,
     "allowImportingTsExtensions": false,
     "paths": {
-      "@src/*": ["src/*"],
+      "@dev/*": ["src/dev/*"],
       "@routes/*": ["src/routes/*"],
       "@www/*": ["www/*"],
+      "@src/*": ["src/*"],
       "@root/*": ["*"],
     }
   },
