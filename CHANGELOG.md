@@ -1,25 +1,18 @@
-## Version History:
-- **[1.3.3](#v133)**
-- [1.3.2](#v132)
-- [1.3.1](#v131)
-- [1.3.0](#v130)
-- [1.2.0](#v120)
-- [1.1.1](#v111)
-- [1.1.0](#v110)
-- [1.0.0](#v100)
-- [0.2.0](#v020)
-- [0.1.0](#v010)
+### v2.0.0
+geniURL v2's public instance now requires using the base path `api.sv443.net/geniurl/v2/`  
+All requests to `api.sv443.net/geniurl/` will use the old version which will be deprecated soon.
 
-<br><br>
+**Features:**
+- TODO: Added `?redirect` parameter for automatic HTTP redirection instead of returning a JSON response ([#22](https://github.com/Sv443/geniURL/issues/22))
 
-<!-- ### v1.4.0
-**Breaking changes:**
-- Removed `?preferLang` parameter due to genius API not returning a song language anymore ([#20](https://github.com/Sv443/geniURL/issues/20))
+**Changes:**
+- **Breaking:** If no results are found, the API now responds with code 200 and `"error": false` instead of responding with code 400 and `"error": true`. The `"message"` prop was also removed.
+  - If no results are found when using the `/search/top` route, the above still applies, but the `top` prop will also be set to `null` and `all` will be an empty array in JSON or `<all/>` in XML
+- **Breaking:** Removed fuzzy filtering and `?disableFuzzy` and `?threshold` parameters altogether (to maybe be added back in the future as an opt-in feature) ([#24](https://github.com/Sv443/geniURL/issues/24))
+- Reduced rate limit budget by 5, from 25 requests in 30 seconds to 20 requests in 30 seconds
+- IP addresses are now hashed before being stored in the rate limiter cache in memory
 
-**Fixes:**
-- TODO: Fuzzy filtering is now much more accurate and direct matches will be preferred ([#17](https://github.com/Sv443/geniURL/issues/17))
-
-<br> -->
+<br>
 
 ### v1.3.3
 **Changes:**

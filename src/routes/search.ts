@@ -1,29 +1,29 @@
-import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getMeta } from "../songData";
+import type { Router } from "express";
+import { paramValid, respond } from "@src/utils.js";
+import { getMeta } from "@src/songData.js";
 
 export function initSearchRoutes(router: Router) {
+  //#region /search
   router.get("/search", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
+      const { q, artist, song, format: fmt, limit: lmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
-      const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
+      const limit = !paramValid(lmt) || isNaN(Number(lmt)) ? undefined : Number(lmt);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
+          limit,
           ...(q ? {
             q: String(q),
           } : {
             artist: String(artist),
             song: String(song),
           }),
-          threshold,
-          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || meta.all.length < 1)
-          return respond(res, "clientError", "Found no results matching your search query", format, 0);
+          return respond(res, "noResults",  format !== "xml" ? { top: null, all: [] } : { top: null, all: { "result": [] } }, format);
 
         // js2xmlparser needs special treatment when using arrays to produce a decent XML structure
         const response = format !== "xml" ? meta : { ...meta, all: { "result": meta.all } };
@@ -38,27 +38,26 @@ export function initSearchRoutes(router: Router) {
     }
   });
 
+  //#region /search/top
   router.get("/search/top", async (req, res) => {
     try {
-      const { q, artist, song, format: fmt, threshold: thr, disableFuzzy } = req.query;
+      const { q, artist, song, format: fmt } = req.query;
 
       const format: string = fmt ? String(fmt) : "json";
-      const threshold = isNaN(Number(thr)) ? undefined : Number(thr);
 
       if(paramValid(q) || (paramValid(artist) && paramValid(song))) {
         const meta = await getMeta({
+          limit: 1,
           ...(q ? {
             q: String(q),
           } : {
             artist: String(artist),
             song: String(song),
           }),
-          threshold,
-          disableFuzzy: typeof disableFuzzy === "string",
         });
 
         if(!meta || !meta.top)
-          return respond(res, "clientError", "Found no results matching your search query", format, 0);
+          return respond(res, "noResults", {}, format);
 
         return respond(res, "success", meta.top, format, 1);
       }

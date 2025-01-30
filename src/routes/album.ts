@@ -1,14 +1,16 @@
-import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getAlbum } from "../songData";
+import type { Router } from "express";
+import { paramValid, respond } from "@src/utils.js";
+import { getAlbum } from "@src/songData.js";
 
 export function initAlbumRoutes(router: Router) {
+  //#region /album
   router.get("/album", (req, res) => {
     const format: string = req.query.format ? String(req.query.format) : "json";
 
     return respond(res, "clientError", "No song ID provided", format);
   });
 
+  //#region /album/:songId
   router.get("/album/:songId", async (req, res) => {
     try {
       const { songId } = req.params;
@@ -22,7 +24,7 @@ export function initAlbumRoutes(router: Router) {
       const album = await getAlbum(Number(songId));
 
       if(!album)
-        return respond(res, "clientError", "Couldn't find any associated album for this song", format, 0);
+        return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { album }, format, 1);
     }

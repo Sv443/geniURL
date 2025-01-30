@@ -1,14 +1,16 @@
-import { Router } from "express";
-import { paramValid, respond } from "../utils";
-import { getTranslations } from "../songData";
+import type { Router } from "express";
+import { paramValid, respond } from "@src/utils.js";
+import { getTranslations } from "@src/songData.js";
 
 export function initTranslationsRoutes(router: Router) {
+  //#region /translations
   router.get("/translations", (req, res) => {
     const format: string = req.query.format ? String(req.query.format) : "json";
 
     return respond(res, "clientError", "No song ID provided", format);
   });
 
+  //#region /tr/:songId
   router.get("/translations/:songId", async (req, res) => {
     const { format: fmt } = req.query;
     const format: string = fmt ? String(fmt) : "json";
@@ -19,13 +21,10 @@ export function initTranslationsRoutes(router: Router) {
       if(!paramValid(songId) || isNaN(Number(songId)))
         return respond(res, "clientError", "Provided song ID is invalid", format);
 
-      const translations = await getTranslations(Number(songId));
+      const translations = await getTranslations(Number(songId)) ?? undefined;
 
-      if(translations === null || (Array.isArray(translations) && translations.length === 0))
-        return respond(res, "clientError", "Couldn't find translations for this song", format, 0);
-
-      if(translations === undefined)
-        return respond(res, "clientError", "Couldn't find a song with the provided ID", format, undefined);
+      if(!translations || (Array.isArray(translations) && translations.length === 0))
+        return respond(res, "noResults", {}, format);
 
       return respond(res, "success", { translations }, format, translations.length);
     }
