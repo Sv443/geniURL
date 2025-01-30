@@ -6,7 +6,6 @@ import { RateLimiterMemory, RateLimiterRes } from "rate-limiter-flexible";
 import k from "kleur";
 import cors from "cors";
 import { getClientIp } from "request-ip";
-
 import { error } from "@src/error.js";
 import { hashStr, respond } from "@src/utils.js";
 import { envVarEquals, getEnvVar } from "@src/env.js";
@@ -125,21 +124,17 @@ export async function init() {
   });
 
   const listener = app.listen(port, host, () => {
-    registerRoutes();
+    try {
+      initRouter(app);
 
-    console.log(k.green(`geniURL is listening on ${host}:${port}\n`));
+      console.log(k.green(`geniURL was successfully started on ${k.blue(k.underline(`http://127.0.0.1:${port}`))}\n`));
+    }
+    catch(err) {
+      error("Error while initializing router", err instanceof Error ? err : undefined, true);
+    }
   });
 
   listener.on("error", (err) => error("General server error", err, true));
-}
-
-function registerRoutes() {
-  try {
-    initRouter(app);
-  }
-  catch(err) {
-    error("Error while initializing router", err instanceof Error ? err : undefined, true);
-  }
 }
 
 /** Sets all rate-limiting related headers on a response given a RateLimiterRes object */

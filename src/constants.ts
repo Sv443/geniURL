@@ -3,6 +3,7 @@ import type { IRateLimiterOptions } from "rate-limiter-flexible";
 import type { axios } from "@src/axios.js";
 import type { ResponseFormat } from "@src/types.js";
 import packageJson from "@root/package.json" with { type: "json" };
+import { getEnvVar } from "./env.js";
 
 // for @linkcode in tsdoc comments
 void [{} as typeof axios];
@@ -43,6 +44,9 @@ export const splitVersion = packageJson.version.split(".").map(v => Number(v)) a
 
 /** Major, minor, and patch version numbers */
 export const [verMajor, verMinor, verPatch] = splitVersion;
+
+/** Version identifier for the API, used in the base URL */
+export const apiVersion = getEnvVar("API_VERSION", "string", `v${verMajor}`);
 
 /** Map of response formats and their corresponding MIME types */
 export const mimeTypeMap = {
