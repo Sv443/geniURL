@@ -17,12 +17,13 @@ import "dotenv/config";
 import queries from "./latency-test-queries.json" with { type: "json" };
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import { apiVersion } from "../constants.js";
 
 const settings = {
   /** Amount of requests to send in total. */
   amount: 250,
   /** Base URL to send requests to. `{{QUERY}}` will be replaced with a random query from the `latency-test-queries.json` file. */
-  url: `http://127.0.0.1:${process.env.HTTP_PORT ?? 8074}/v2/search/top?q={{QUERY}}`,
+  url: `http://127.0.0.1:${process.env.HTTP_PORT ?? 8074}/${apiVersion}/search/top?q={{QUERY}}`,
   /** Whether to log all requests to the console (true) or just in increments of `infoLogFrequency` (false). */
   logAllRequests: true,
   /** Amount of requests to send before logging an info message. */
@@ -62,7 +63,7 @@ async function run() {
     !settings.logAllRequests && i === 0 && console.log(`> Sent 0 of ${settings.amount} requests`);
     const reqStartTs = Date.now();
     try {
-      const url = encodeURI(settings.url.replace("{{QUERY}}", queries[Math.floor(Math.random() * queries.length)]));
+      const url = encodeURI(settings.url.replace("{{QUERY}}", queries[Math.floor(Math.random() * queries.length)] as string));
       settings.logAllRequests && console.log(`  ${String(i + 1).padStart(digitCount(settings.amount))}.`, url);
       await axios.get(url, {
         headers: {
@@ -114,7 +115,7 @@ async function run() {
       reportTimes[(label.trim() as keyof LatencyTestReport["times"])] = Number(value);
     }
     return valStr;
-  }
+  };
 
   const testFinishTs = Date.now();
   const totalTime = Number(((testFinishTs - testStartTs) / 1000).toFixed(2));
