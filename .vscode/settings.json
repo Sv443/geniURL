@@ -1,6 +1,10 @@
 {
-  "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "npm.packageManager": "pnpm",
 
   "search.exclude": {
     "**/*.user.js": true,
@@ -11,6 +15,8 @@
     "*.env.template": "dotenv",
   },
   "editor.tabSize": 2,
+
+  "deno.enable": false,
 
   // requires extension: fabiospampinato.vscode-highlight
   "highlight.regexes": {
