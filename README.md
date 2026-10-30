@@ -12,7 +12,7 @@ Disclaimer: this project is not affiliated with or endorsed by Genius.
 ## Try it out:
 For trying out geniURL yourself, you can use [this Postman workspace.](https://www.postman.com/sv443/workspace/geniurl)  
   
-To download the collections for testing with a local client (like [Moonladder](https://moonladder.net/), [Hoppscotch](https://hoppscotch.io/), [Insomnia](https://insomnia.rest/)), refer to [the `postman_collections/` folder.](./postman_collections/)  
+To download the collections for testing with a local client (like [Moonladder](https://moonladder.net/), [Hoppscotch](https://hoppscotch.io/), [Insomnia](https://insomnia.rest/), etc.), refer to [the `postman_collections/` folder.](./postman_collections/)  
 
 <br><br>
 
