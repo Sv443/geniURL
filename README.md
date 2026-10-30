@@ -11,7 +11,9 @@ Disclaimer: this project is not affiliated with or endorsed by Genius.
 
 ## Try it out:
 For trying out geniURL yourself, you can use [this Postman workspace.](https://www.postman.com/sv443/workspace/geniurl)  
-To download it and test locally, hover over the collection, click the three-dot-menu and then "Export"
+To download it and test locally, hover over the collection, click the three-dot-menu and then "Export".  
+  
+Clients like [Moonladder](https://moonladder.net/), [Hoppscotch](https://hoppscotch.io/), [Insomnia](https://insomnia.rest/), etc. should be able to import the collection too.
 
 <br><br>
 
