@@ -1,0 +1,163 @@
+{
+  "info": {
+    "_postman_id": "8f23dbeb-7b12-4c67-a7dd-5781365b4252",
+    "name": "1 - Search for a Song",
+    "description": "## geniURL Routes\n\nThis Postman workspace gives you an overview of geniURL's routes and an interactive example of how to use them.\n\nIf you can't find the routes: Click on the \"Collections\" tab on the left, then expand the \"geniURL\" section just to the right.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12169008"
+  },
+  "item": [
+    {
+      "name": "Search by query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/search?q=michael jackson - billie jean",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "michael jackson - billie jean",
+              "description": "Artist name and song name, separated by whitespace or hyphen."
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search by query and preferred language",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/search?q=michael jackson - billie jean&preferLang=pt",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "michael jackson - billie jean",
+              "description": "Artist name and song name, separated by whitespace or hyphen."
+            },
+            {
+              "key": "preferLang",
+              "value": "pt",
+              "description": "If results of this language are found, they will be listed before results of other languages. The sorting and fuzzy search is not affected by this."
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search by query (top result only)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/search/top?q=michael jackson - billie jean",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "search",
+            "top"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "michael jackson - billie jean"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search by song + artist",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/search?artist=michael jackson&song=billie jean",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "artist",
+              "value": "michael jackson"
+            },
+            {
+              "key": "song",
+              "value": "billie jean"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search by song + artist  (top result only)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/search/top?artist=michael jackson&song=billie jean",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "search",
+            "top"
+          ],
+          "query": [
+            {
+              "key": "artist",
+              "value": "michael jackson"
+            },
+            {
+              "key": "song",
+              "value": "billie jean"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

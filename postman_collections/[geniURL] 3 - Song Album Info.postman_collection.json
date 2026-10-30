@@ -1,0 +1,33 @@
+{
+  "info": {
+    "_postman_id": "0f16283f-e0cd-46b1-a9f5-d52c46b448c3",
+    "name": "3 - Song Album Info",
+    "description": "## geniURL Routes\n\nThis Postman workspace gives you an overview of geniURL's routes and an interactive example of how to use them.\n\nIf you can't find the routes: Click on the \"Collections\" tab on the left, then expand the numbered sections just to the right.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12169008"
+  },
+  "item": [
+    {
+      "name": "Get Album by Song ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.sv443.net/geniurl/album/1644",
+          "protocol": "https",
+          "host": [
+            "api",
+            "sv443",
+            "net"
+          ],
+          "path": [
+            "geniurl",
+            "album",
+            "1644"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
